@@ -11,5 +11,11 @@
     "url": "git@gitlab.mi.hdm-stuttgart.de:ma/ws17-EthereumBlockchain.git"
   },
   "author": "",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "web3": "^0.20.1"
+  },
+  "devDependencies": {
+    "ethereumjs-testrpc": "^4.1.3"
+  }
 }
