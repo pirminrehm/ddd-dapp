@@ -4,3 +4,5 @@
 ## 8.11.2017
 + Vorstellung des aktuellen Stands der Implementierung / Tests
 + Truffle als Framework verwenden, um Ethereum zu nutzen
++ Whisper -> communication zwischen den Contracts
++ Random.org wrapper -> Oraclize
