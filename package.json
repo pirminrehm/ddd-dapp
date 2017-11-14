@@ -1,13 +1,12 @@
 {
-  "name": "truffle-init-webpack",
-  "version": "0.0.2",
-  "description": "Frontend example using truffle v3",
+  "name": "ws17-ethereum-blockchain",
+  "version": "1.0.0",
+  "description": "",
   "scripts": {
     "lint": "eslint ./",
     "build": "webpack",
     "dev": "webpack-dev-server"
   },
-  "author": "Douglas von Kohorn",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.22.2",
