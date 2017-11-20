@@ -6,10 +6,10 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import metacoin_artifacts from '../../build/contracts/MetaCoin.json'
+import location_artifacts from '../../build/contracts/Location.json'
 
-// MetaCoin is our usable abstraction, which we'll use through the code below.
-var MetaCoin = contract(metacoin_artifacts);
+// Location is our usable abstraction, which we'll use through the code below.
+var Location = contract(location_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -22,7 +22,7 @@ window.App = {
     var self = this;
 
     // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(web3.currentProvider);
+    Location.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
@@ -39,7 +39,7 @@ window.App = {
       accounts = accs;
       account = accounts[0];
 
-      self.refreshBalance();
+      self.refreshLocations();
     });
   },
 
@@ -48,40 +48,45 @@ window.App = {
     status.innerHTML = message;
   },
 
-  refreshBalance: function() {
+  refreshLocations: function() {
     var self = this;
 
     var meta;
-    MetaCoin.deployed().then(function(instance) {
+    Location.deployed().then(function(instance) {
       meta = instance;
-      return meta.getBalance.call(account, {from: account});
+      //return {'ID': 'Name'};
+      return instance.getLocationCount();
+    }).then((count) => {
+      console.log(count);
+      return count;
     }).then(function(value) {
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = value.valueOf();
+      console.log(value);
+      // var locations_element = document.getElementById("locations");
+      // locations_element.innerHTML = value.valueOf();
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error getting balance; see log.");
     });
   },
 
-  sendCoin: function() {
+  addLocation: function() {
     var self = this;
 
-    var amount = parseInt(document.getElementById("amount").value);
-    var receiver = document.getElementById("receiver").value;
+    var uid = document.getElementById("uri").value;
+    var name = document.getElementById("name").value;
 
     this.setStatus("Initiating transaction... (please wait)");
 
     var meta;
-    MetaCoin.deployed().then(function(instance) {
+    Location.deployed().then(function(instance) {
       meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
+      return meta.addLocation(uri, name, {from: account});
     }).then(function() {
       self.setStatus("Transaction complete!");
-      self.refreshBalance();
+      self.refreshLocations();
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error sending coin; see log.");
+      self.setStatus("Error adding location; see log.");
     });
   }
 };
