@@ -1,4 +1,5 @@
-pragma solidity ^0.4.4;
+pragma solidity 0.4.18;
+
 
 contract Location {
   
@@ -8,16 +9,17 @@ contract Location {
   }
 
   LocationStruct[] public locations;
-  uint count = 0;
+  uint private count = 0;
 
   function Location() public {}
 
-  function getLocation(uint index) returns (bytes32, bytes32) {
+  function getLocation(uint index) public returns (bytes32, bytes32) {
+    init = 1;
     var location = locations[index];
     return (location.uri, location.name);
   }
 
-  function getLocationCount() returns(uint) {
+  function getLocationCount() public returns(uint) {
     return count;
   }
 
