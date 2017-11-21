@@ -64,7 +64,7 @@ window.App = {
 
       var i = 0;
       while (i < count) {
-        meta.getLocatonAtIndex.call(i).then(v => {
+        meta.getLocationAtIndex.call(i).then(v => {
           const uri = web3.toAscii(v[0]);
           const name = web3.toAscii(v[1]);
           locations_element.innerHTML += `<option>${uri}: ${name}</option>`;
