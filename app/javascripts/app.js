@@ -21,7 +21,7 @@ window.App = {
   start: function() {
     var self = this;
 
-    // Bootstrap the MetaCoin abstraction for Use.
+    // Bootstrap the Location abstraction for Use.
     Location.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
@@ -50,19 +50,30 @@ window.App = {
 
   refreshLocations: function() {
     var self = this;
+    
+    // Reset the selectbox for 
+    var locations_element = document.getElementById("locations");
+    locations_element.innerHTML = '';
 
     var meta;
     Location.deployed().then(function(instance) {
       meta = instance;
-      //return {'ID': 'Name'};
-      return instance.getLocationCount();
+      return meta.getLocationCount.call();
     }).then((count) => {
+      count = Number(count.toString(10));
       console.log(count);
+
+      var i = 0;
+      while (i < count) {
+        meta.getLocationByIndex.call(i).then(v => {
+          const uri = web3.toAscii(v[0]);
+          const name = web3.toAscii(v[1]);
+          locations_element.innerHTML += `<option>${uri}: ${name}</option>`;
+        }).catch(v => console.log(v));
+        i++;
+      }
+
       return count;
-    }).then(function(value) {
-      console.log(value);
-      // var locations_element = document.getElementById("locations");
-      // locations_element.innerHTML = value.valueOf();
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error getting balance; see log.");
@@ -72,7 +83,7 @@ window.App = {
   addLocation: function() {
     var self = this;
 
-    var uid = document.getElementById("uri").value;
+    var uri = document.getElementById("uri").value;
     var name = document.getElementById("name").value;
 
     this.setStatus("Initiating transaction... (please wait)");
@@ -80,8 +91,9 @@ window.App = {
     var meta;
     Location.deployed().then(function(instance) {
       meta = instance;
-      return meta.addLocation(uri, name, {from: account});
-    }).then(function() {
+      return meta.addLocation(uri, name, {from: account, gas: 3000000});
+    }).then(function(transaction) {
+      console.log(transaction);
       self.setStatus("Transaction complete!");
       self.refreshLocations();
     }).catch(function(e) {
@@ -94,7 +106,7 @@ window.App = {
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
-    console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 MetaCoin, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
+    console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have no coins, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {

@@ -6,15 +6,20 @@
   <script src="./app.js"></script>
 </head>
 <body>
-  <h1>Simple Frontend</h1>
-  <h2>Dining Developers Dilema</h2>
+  <h1>Dining Developers Dilema</h1>
+  <h2>Test Frontend</h2>
 
-  <br>
-  <h1>Locations</h1>
+  <br><br><br><br>
+  <h4>Create a Voting:</h3>
+  <div>Select a location: <select id="locations"></select>
+  <br><br><button id="createVoting" disabled>Create Voting</button>
+  </div>
+  
 
-  <ul id="locations"></ul>
 
-  <h4>Add:</h4>
+
+  <br><br><br><br>
+  <h4>Add a location:</h4>
     <br><label for="uri">URI:</label><input type="text" id="uri" placeholder="ABC"></input>
     <br><label for="name">NAME:</label><input type="text" id="name" placeholder="e.g., McDonalds"></input>
   <br><br><button id="send" onclick="App.addLocation()">Add Location</button>
