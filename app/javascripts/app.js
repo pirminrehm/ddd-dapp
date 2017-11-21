@@ -18,6 +18,8 @@ var accounts;
 var account;
 
 window.App = {
+  count : 0,
+
   start: function() {
     var self = this;
 
@@ -58,7 +60,8 @@ window.App = {
     var meta;
     Location.deployed().then((instance) => {
       meta = instance;
-      return meta.getLocationCount.call();
+      return App.count;
+      // return meta.getLocationCount.call();
     }).then((count) => {
       count = Number(count.toString(10));
 
@@ -93,6 +96,7 @@ window.App = {
       return meta.addLocation(uri, name, {from: account, gas: 3000000}); // TODO: Check gas.
     }).then(() => {
       self.setStatus("Transaction complete!");
+      App.count++;
       self.refreshLocations();
     }).catch((e) => {
       console.log(e);
