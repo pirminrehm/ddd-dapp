@@ -25,7 +25,7 @@ window.App = {
     Location.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
-    web3.eth.getAccounts(function(err, accs) {
+    web3.eth.getAccounts((err, accs) => {
       if (err != null) {
         alert("There was an error fetching your accounts.");
         return;
@@ -56,16 +56,15 @@ window.App = {
     locations_element.innerHTML = '';
 
     var meta;
-    Location.deployed().then(function(instance) {
+    Location.deployed().then((instance) => {
       meta = instance;
       return meta.getLocationCount.call();
     }).then((count) => {
       count = Number(count.toString(10));
-      console.log(count);
 
       var i = 0;
       while (i < count) {
-        meta.getLocationByIndex.call(i).then(v => {
+        meta.getLocatonAtIndex.call(i).then(v => {
           const uri = web3.toAscii(v[0]);
           const name = web3.toAscii(v[1]);
           locations_element.innerHTML += `<option>${uri}: ${name}</option>`;
@@ -74,7 +73,7 @@ window.App = {
       }
 
       return count;
-    }).catch(function(e) {
+    }).catch((e) => {
       console.log(e);
       self.setStatus("Error getting balance; see log.");
     });
@@ -89,14 +88,13 @@ window.App = {
     this.setStatus("Initiating transaction... (please wait)");
 
     var meta;
-    Location.deployed().then(function(instance) {
+    Location.deployed().then((instance) => {
       meta = instance;
-      return meta.addLocation(uri, name, {from: account, gas: 3000000});
-    }).then(function(transaction) {
-      console.log(transaction);
+      return meta.addLocation(uri, name, {from: account, gas: 3000000}); // TODO: Check gas.
+    }).then(() => {
       self.setStatus("Transaction complete!");
       self.refreshLocations();
-    }).catch(function(e) {
+    }).catch((e) => {
       console.log(e);
       self.setStatus("Error adding location; see log.");
     });
