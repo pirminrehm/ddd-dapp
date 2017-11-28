@@ -11,9 +11,14 @@
 
   <br><br><br><br>
   <h4>Create a Voting:</h3>
-  <div>Select a location: <select id="locations"></select>
-  <br><br><button id="createVoting" disabled>Create Voting</button>
+  <div>Select a location: <select id="locations"></select></div>
+  <div>Select an account: <select id="accounts"></select></div>
+  <div>
+    <label for="points">Points:</label>
+    <input type="number" id="points" placeholder="0"></input>
   </div>
+  <br><br><button id="createVoting" onclick="App.createVoting()">Create Voting</button>
+
   
 
 

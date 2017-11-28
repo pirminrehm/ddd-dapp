@@ -1,3 +1,4 @@
+'use strict'
 // Import the page's CSS. Webpack will know what to do with it.
 import "../stylesheets/app.css";
 
@@ -7,9 +8,11 @@ import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
 import location_artifacts from '../../build/contracts/Location.json'
+import voting_artifacts from '../../build/contracts/Voting.json'
 
 // Location is our usable abstraction, which we'll use through the code below.
 var Location = contract(location_artifacts);
+var Voting = contract(voting_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -25,6 +28,7 @@ window.App = {
 
     // Bootstrap the Location abstraction for Use.
     Location.setProvider(web3.currentProvider);
+    Voting.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts((err, accs) => {
@@ -42,6 +46,7 @@ window.App = {
       account = accounts[0];
 
       self.refreshLocations();
+      self.refreshAccounts();
     });
   },
 
@@ -73,7 +78,7 @@ window.App = {
         meta.getLocationAtIndex.call(i).then(v => {
           const uri = web3.toAscii(v[0]);
           const name = web3.toAscii(v[1]);
-          locations_element.innerHTML += `<option>${uri}: ${name}</option>`;
+          locations_element.innerHTML += `<option value="${uri}">${uri}: ${name}</option>`;
         }).catch(v => console.log(v));
         i++;
       }
@@ -83,6 +88,16 @@ window.App = {
       console.log(e);
       self.setStatus("Error getting balance; see log.");
     });
+  },
+
+  refreshAccounts: function() {
+    var locations_element = document.getElementById("accounts");
+    locations_element.innerHTML = '';
+    for (let i=0; i < accounts.length; i++) {
+        const address = accounts[i]
+        const name = 'Account '+ i
+        locations_element.innerHTML += `<option value="${address}">${name}: ${address}</option>`;
+    }
   },
 
   addLocation: function() {
@@ -99,8 +114,29 @@ window.App = {
       return meta.addLocation(uri, name, {from: account, gas: 3000000}); // TODO: Check gas.
     }).then(() => {
       self.setStatus("Transaction complete!");
-      App.count++;
       self.refreshLocations();
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error adding location; see log.");
+    });
+  },
+
+  createVoting: function() {
+    var self = this;
+
+    var uri = document.getElementById("locations").value;
+    var address = document.getElementById("accounts").value;
+    var points = document.getElementById("points").value;
+
+    this.setStatus("Initiating transaction... (please wait)");
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      return meta.addVote(uri, points, {from: address, gas: 3000000}); // TODO: Check gas.
+    }).then(() => {
+      self.setStatus("Transaction complete!");
+      //todo show voting
     }).catch((e) => {
       console.log(e);
       self.setStatus("Error adding location; see log.");
