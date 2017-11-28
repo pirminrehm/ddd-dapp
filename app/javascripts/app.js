@@ -60,10 +60,13 @@ window.App = {
     var meta;
     Location.deployed().then((instance) => {
       meta = instance;
-      return App.count;
-      // return meta.getLocationCount.call();
-    }).then((count) => {
-      count = Number(count.toString(10));
+      App.globalMeta = instance;
+      //return App.count;
+      return meta.getLocationCount.call();
+    }).then((data) => {
+      
+      var count = Number(data.toString(10));
+      console.log(count);
 
       var i = 0;
       while (i < count) {
