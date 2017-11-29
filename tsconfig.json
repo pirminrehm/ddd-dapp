@@ -24,6 +24,9 @@
     "src/**/*.spec.ts",
     "src/**/__tests__/*.ts"
   ],
+  "files": [
+    "src/typings.d.ts"
+  ],
   "compileOnSave": false,
   "atom": {
     "rewriteTsconfig": false

@@ -2,6 +2,7 @@
   "name": "ws17-ethereumBlockchain",
   "app_id": "",
   "type": "ionic-angular",
-  "documentRoot": "build/www",
-  "integrations": {}
+  "integrations": {
+    "cordova": {}
+  }
 }
