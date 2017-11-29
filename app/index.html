@@ -7,30 +7,38 @@
 </head>
 <body>
   <h1>Dining Developers Dilema</h1>
-  <h2>Test Frontend</h2>
+  <div id="left">
+    
+    <h2>Test Frontend</h2>
 
-  <br><br><br><br>
-  <h4>Create a Voting:</h3>
-  <div>Select a location: <select id="locations"></select></div>
-  <div>Select an account: <select id="accounts"></select></div>
-  <div>
-    <label for="points">Points:</label>
-    <input type="number" id="points" placeholder="0"></input>
+    <br><br>
+    <h4>Create a Voting:</h4>
+    <div>Select a location: <select id="locations"></select></div>
+    <div>Select an account: <select id="accounts"></select></div>
+    <div>
+      <label for="points">Points:</label>
+      <input type="number" id="points" placeholder="0"></input>
+    </div>
+    <br><br><button id="createVoting" onclick="App.createVoting()">Create Voting</button>
+
+    <br><br>
+    <h4>Add a location:</h4>
+      <br><label for="uri">URI:</label><input type="text" id="uri" placeholder="ABC"></input>
+      <br><label for="name">NAME:</label><input type="text" id="name" placeholder="e.g., McDonalds"></input>
+    <br><br><button id="send" onclick="App.addLocation()">Add Location</button>
+    <br><br>
+    <span id="status"></span>
+    <br>
+    <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
   </div>
-  <br><br><button id="createVoting" onclick="App.createVoting()">Create Voting</button>
 
-  
-
-
-
-  <br><br><br><br>
-  <h4>Add a location:</h4>
-    <br><label for="uri">URI:</label><input type="text" id="uri" placeholder="ABC"></input>
-    <br><label for="name">NAME:</label><input type="text" id="name" placeholder="e.g., McDonalds"></input>
-  <br><br><button id="send" onclick="App.addLocation()">Add Location</button>
-  <br><br>
-  <span id="status"></span>
-  <br>
-  <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
+  <div id="right">
+    <h2>Location Points</h2>
+    <ul id="location-points"></ul>
+    <br>
+    <br>
+    <h2>User Points</h2>
+    <ul id="user-points"></ul>
+  </div>
 </body>
 </html>
