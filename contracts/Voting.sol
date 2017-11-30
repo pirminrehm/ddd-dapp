@@ -3,7 +3,14 @@ pragma solidity 0.4.18;
 
 contract Voting {
 
+  //*************** Public Vars ***************//
+  //-------------------------------------------//
   bytes32 public name;
+
+  //************** Private Vars ***************//
+  //-------------------------------------------//
+  bytes32[] private testList;
+  mapping (bytes32 => uint) private test;
   
   address[] private votingUsers;
   mapping (address => uint) private userPoints;
@@ -11,23 +18,25 @@ contract Voting {
   bytes32[] private votedLocations;
   mapping (bytes32 => uint) private locationPoints;
 
-  // function Voting (bytes3232 _name) public {
-  //   name = _name;
-  // }
-  function Voting() public {
-    //constructor
+  //************** Constructor ****************//
+  //-------------------------------------------//
+  function Voting (bytes32 _name) public {
+    name = _name;
   }
 
+  //************** Transactions ***************//
+  //-------------------------------------------//
+  function addVote (bytes32 locationURI, uint points) public 
   //missing: check for allowed votingUsers
-  function addVote (bytes32 locationURI, uint points) public willNotExceed100Points(points) {
+  hasValidePoints(points)
+  willNotExceed100Points(points) {
 
     //init user, if first vote of user
     if (userPoints[msg.sender] == 0) {
       votingUsers.push(msg.sender);
       userPoints[msg.sender] = 0;
     }
-    //userPoints[msg.sender] += points;
-    userPoints[msg.sender] += 1;
+    userPoints[msg.sender] += points;
 
     //init location, if first vote for location
     if (locationPoints[locationURI] == 0) {
@@ -36,7 +45,6 @@ contract Voting {
     }
     //locationPoints[locationURI] += points;
     locationPoints[locationURI] += points;
-
   }
 
   //********* LocationPoints Getter ***********//
@@ -67,11 +75,23 @@ contract Voting {
     return votingUsers.length;
   }
 
+  //************* Other Getter **************//
+  //-------------------------------------------//
+  function getVotingName() public constant returns (bytes32 votingName) {
+    return name;
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
-  modifier willNotExceed100Points(uint points) { // Modifier
-    //require(points > 0);
-    //require((userPoints[msg.sender]+points) <= 100);
+  modifier hasValidePoints(uint points) {
+    //if points == 0 -> check for fist invocation not possible + stupid call
+    //if points are too big overlaod is possible -> negative even if uint
+    require(points > 0 && points <= 100);
+    _;
+  }
+
+  modifier willNotExceed100Points(uint points) {
+    require((userPoints[msg.sender]+points) <= 100);
     _;
   }
 }

@@ -78,8 +78,8 @@ window.App = {
       var i = 0;
       while (i < count) {
         meta.getLocationAtIndex.call(i).then(v => {
-          const uri = web3.toAscii(v[0]);
-          const name = web3.toAscii(v[1]);
+          const uri = web3.toUtf8(v[0]);
+          const name = web3.toUtf8(v[1]);
           locations_element.innerHTML += `<option value="${uri}">${uri}: ${name}</option>`;
         }).catch(v => console.log(v));
         i++;
@@ -105,7 +105,7 @@ window.App = {
   addLocation: function() {
     var self = this;
 
-    var uri = web3.fromAscii(document.getElementById("uri").value);
+    var uri = web3.fromUtf8(document.getElementById("uri").value);
     var name = web3.fromAscii(document.getElementById("name").value);
 
     this.setStatus("Initiating transaction... (please wait)");
@@ -126,9 +126,9 @@ window.App = {
   createVoting: function() {
     var self = this;
 
-    var uri = web3.fromAscii(document.getElementById("locations").value);
+    var uri = web3.fromUtf8(document.getElementById("locations").value);
     var address = document.getElementById("accounts").value;
-    var points = document.getElementById("points").value;
+    var points = web3.toBigNumber(document.getElementById("points").value);
 
     console.log('send points:' ,points)
 
@@ -144,7 +144,7 @@ window.App = {
       self.refreshUserPoints()
     }).catch((e) => {
       console.log(e);
-      self.setStatus("Error adding location; see log.");
+      self.setStatus("Error adding vote; see log.");
     });
   },
 
@@ -169,9 +169,9 @@ window.App = {
       while (i < count) {
         meta.getLocationPointsByIndex.call(i).then(v => {
           console.log(v)
-          const uri = web3.toAscii(v[0]);
+          const uri = web3.toUtf8(v[0]);
           const points = Number(v[1].toString(10));
-          locationPoints_element.innerHTML += `<li>${uri}: ${points}</li>`;
+          locationPoints_element.innerHTML += `<li>${uri}:<ul><li>${points}</li></ul></li>`;
         }).catch(v => console.log(v));
         i++;
       }
@@ -182,6 +182,8 @@ window.App = {
       self.setStatus("Error getting balance; see log.");
     });
   },
+
+
 
   refreshUserPoints: function() {
     var self = this;
@@ -204,7 +206,7 @@ window.App = {
         meta.getUserPointsByIndex.call(i).then(v => {
           const adr = v[0];
           const points = Number(v[1].toString(10));
-          userPoints_element.innerHTML += `<li>${adr}: ${points}</li>`;
+          userPoints_element.innerHTML += `<li>Account ${accounts.indexOf(adr)}:<ul><li>${points}</li></ul></li>`;
         }).catch(v => console.log(v));
         i++;
       }
@@ -213,6 +215,27 @@ window.App = {
     }).catch((e) => {
       console.log(e);
       self.setStatus("Error getting balance; see log.");
+    });
+  },
+
+
+  getVotingName: function() {
+    var self = this;
+    
+    // Reset the selectbox for 
+    var votingName_element = document.getElementById("voting-name");
+    votingName_element.innerHTML = '';
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      return meta.getVotingName.call();
+    }).then((data) => {
+      console.log(data)
+      votingName_element.innerHTML = web3.toUtf8(data);
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error getting voting name; see log.");
     });
   },
 };

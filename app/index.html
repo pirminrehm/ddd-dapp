@@ -20,12 +20,12 @@
       <input type="number" id="points" placeholder="0"></input>
     </div>
     <br><br><button id="createVoting" onclick="App.createVoting()">Create Voting</button>
-
     <br><br>
     <h4>Add a location:</h4>
       <br><label for="uri">URI:</label><input type="text" id="uri" placeholder="ABC"></input>
       <br><label for="name">NAME:</label><input type="text" id="name" placeholder="e.g., McDonalds"></input>
     <br><br><button id="send" onclick="App.addLocation()">Add Location</button>
+
     <br><br>
     <span id="status"></span>
     <br>
@@ -33,6 +33,11 @@
   </div>
 
   <div id="right">
+    
+    <div>
+      <h2>Voting Name: <span style="font-size: 70%" id="voting-name"></span></h2><br>
+      <button id="createVoting" onclick="App.getVotingName()">Get Voting Name</button>
+    </div><br>
     <h2>Location Points</h2>
     <ul id="location-points"></ul>
     <br>
