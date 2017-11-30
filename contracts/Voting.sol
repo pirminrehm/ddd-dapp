@@ -8,10 +8,7 @@ contract Voting {
   bytes32 public name;
 
   //************** Private Vars ***************//
-  //-------------------------------------------//
-  bytes32[] private testList;
-  mapping (bytes32 => uint) private test;
-  
+  //-------------------------------------------//  
   address[] private votingUsers;
   mapping (address => uint) private userPoints;
 
@@ -27,9 +24,9 @@ contract Voting {
   //************** Transactions ***************//
   //-------------------------------------------//
   function addVote (bytes32 locationURI, uint points) public 
-  //missing: check for allowed votingUsers
-  hasValidePoints(points)
-  willNotExceed100Points(points) {
+    //missing: check for allowed votingUsers
+    hasValidePoints(points)
+    willNotExceed100Points(points) {
 
     //init user, if first vote of user
     if (userPoints[msg.sender] == 0) {
@@ -43,7 +40,6 @@ contract Voting {
       votedLocations.push(locationURI);
       locationPoints[locationURI] = 0;
     }
-    //locationPoints[locationURI] += points;
     locationPoints[locationURI] += points;
   }
 
@@ -54,7 +50,7 @@ contract Voting {
   }
 
   function getLocationPointsByURI(bytes32 _uri) public constant returns (bytes32 uri, uint points) {
-    return ( _uri, locationPoints[_uri]);
+    return (_uri, locationPoints[_uri]);
   }
 
   function getVotedLocationsCount() public constant returns (uint votedLocationsCount) {
