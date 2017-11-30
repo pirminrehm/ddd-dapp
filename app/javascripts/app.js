@@ -1,3 +1,4 @@
+'use strict'
 // Import the page's CSS. Webpack will know what to do with it.
 import "../stylesheets/app.css";
 
@@ -7,9 +8,11 @@ import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
 import location_artifacts from '../../build/contracts/Location.json'
+import voting_artifacts from '../../build/contracts/Voting.json'
 
 // Location is our usable abstraction, which we'll use through the code below.
 var Location = contract(location_artifacts);
+var Voting = contract(voting_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -25,6 +28,7 @@ window.App = {
 
     // Bootstrap the Location abstraction for Use.
     Location.setProvider(web3.currentProvider);
+    Voting.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts((err, accs) => {
@@ -42,6 +46,9 @@ window.App = {
       account = accounts[0];
 
       self.refreshLocations();
+      self.refreshAccounts();
+      self.refreshLocationPoints()
+      self.refreshUserPoints()
     });
   },
 
@@ -66,14 +73,14 @@ window.App = {
     }).then((data) => {
       
       var count = Number(data.toString(10));
-      console.log(count);
+      //console.log(count);
 
       var i = 0;
       while (i < count) {
         meta.getLocationAtIndex.call(i).then(v => {
-          const uri = web3.toAscii(v[0]);
-          const name = web3.toAscii(v[1]);
-          locations_element.innerHTML += `<option>${uri}: ${name}</option>`;
+          const uri = web3.toUtf8(v[0]);
+          const name = web3.toUtf8(v[1]);
+          locations_element.innerHTML += `<option value="${uri}">${uri}: ${name}</option>`;
         }).catch(v => console.log(v));
         i++;
       }
@@ -85,11 +92,21 @@ window.App = {
     });
   },
 
+  refreshAccounts: function() {
+    var locations_element = document.getElementById("accounts");
+    locations_element.innerHTML = '';
+    for (let i=0; i < accounts.length; i++) {
+        const address = accounts[i]
+        const name = 'Account '+ i
+        locations_element.innerHTML += `<option value="${address}">${name}: ${address}</option>`;
+    }
+  },
+
   addLocation: function() {
     var self = this;
 
-    var uri = document.getElementById("uri").value;
-    var name = document.getElementById("name").value;
+    var uri = web3.fromUtf8(document.getElementById("uri").value);
+    var name = web3.fromUtf8(document.getElementById("name").value);
 
     this.setStatus("Initiating transaction... (please wait)");
 
@@ -99,13 +116,128 @@ window.App = {
       return meta.addLocation(uri, name, {from: account, gas: 3000000}); // TODO: Check gas.
     }).then(() => {
       self.setStatus("Transaction complete!");
-      App.count++;
       self.refreshLocations();
     }).catch((e) => {
       console.log(e);
       self.setStatus("Error adding location; see log.");
     });
-  }
+  },
+
+  createVoting: function() {
+    var self = this;
+
+    var uri = web3.fromUtf8(document.getElementById("locations").value);
+    var address = document.getElementById("accounts").value;
+    var points = web3.toBigNumber(document.getElementById("points").value);
+
+    console.log('send points:' ,points)
+
+    this.setStatus("Initiating transaction... (please wait)");
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      return meta.addVote(uri, points, {from: address, gas: 3000000}); // TODO: Check gas.
+    }).then(() => {
+      self.setStatus("Transaction complete!");
+      self.refreshLocationPoints()
+      self.refreshUserPoints()
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error adding vote; see log.");
+    });
+  },
+
+  refreshLocationPoints: function() {
+    var self = this;
+    
+    // Reset the selectbox for 
+    var locationPoints_element = document.getElementById("location-points");
+    locationPoints_element.innerHTML = '';
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      console.log('try getVotedLocationsCount')
+      return meta.getVotedLocationsCount.call();
+    }).then((data) => {
+      
+      var count = Number(data.toString(10));
+      console.log('getVotedLocationsCount:',count);
+
+      var i = 0;
+      while (i < count) {
+        meta.getLocationPointsByIndex.call(i).then(v => {
+          console.log(v)
+          const uri = web3.toUtf8(v[0]);
+          const points = Number(v[1].toString(10));
+          locationPoints_element.innerHTML += `<li>${uri}:<ul><li>${points}</li></ul></li>`;
+        }).catch(v => console.log(v));
+        i++;
+      }
+
+      return count;
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error getting balance; see log.");
+    });
+  },
+
+
+
+  refreshUserPoints: function() {
+    var self = this;
+    
+    // Reset the selectbox for 
+    var userPoints_element = document.getElementById("user-points");
+    userPoints_element.innerHTML = '';
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      return meta.getVotingUsersCount.call();
+    }).then((data) => {
+      
+      var count = Number(data.toString(10));
+      console.log('getVotingUsersCount:',count);
+
+      var i = 0;
+      while (i < count) {
+        meta.getUserPointsByIndex.call(i).then(v => {
+          const adr = v[0];
+          const points = Number(v[1].toString(10));
+          userPoints_element.innerHTML += `<li>Account ${accounts.indexOf(adr)}:<ul><li>${points}</li></ul></li>`;
+        }).catch(v => console.log(v));
+        i++;
+      }
+
+      return count;
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error getting balance; see log.");
+    });
+  },
+
+
+  getVotingName: function() {
+    var self = this;
+    
+    // Reset the selectbox for 
+    var votingName_element = document.getElementById("voting-name");
+    votingName_element.innerHTML = '';
+
+    var meta;
+    Voting.deployed().then((instance) => {
+      meta = instance;
+      return meta.getVotingName.call();
+    }).then((data) => {
+      console.log(data)
+      votingName_element.innerHTML = web3.toUtf8(data);
+    }).catch((e) => {
+      console.log(e);
+      self.setStatus("Error getting voting name; see log.");
+    });
+  },
 };
 
 window.addEventListener('load', function() {
