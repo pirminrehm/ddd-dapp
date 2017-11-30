@@ -106,7 +106,7 @@ window.App = {
     var self = this;
 
     var uri = web3.fromUtf8(document.getElementById("uri").value);
-    var name = web3.fromAscii(document.getElementById("name").value);
+    var name = web3.fromUtf8(document.getElementById("name").value);
 
     this.setStatus("Initiating transaction... (please wait)");
 
