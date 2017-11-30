@@ -3,10 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LocationPage } from './../pages/location/location';
+import { VotingPage } from './../pages/voting/voting';
 
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -17,9 +17,9 @@ import { LocationProvider } from './../providers/web3/location';
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
     HomePage,
     LocationPage,
+    VotingPage,
     TabsPage
   ],
   imports: [
@@ -29,9 +29,9 @@ import { LocationProvider } from './../providers/web3/location';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
     HomePage,
     LocationPage,
+    VotingPage,
     TabsPage
   ],
   providers: [
