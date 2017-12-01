@@ -14,14 +14,6 @@
 
 
 <ion-content padding>
-  <h4>Create a Voting:</h4>
-  <div>Select a location: 
-    <select id="locations">
-      <option *ngFor="let location of locations">{{ location.uri }} {{ location.name }}</option>
-    </select>
-  <br><br><button id="createVoting" disabled>Create Voting</button>
-  </div>
-
 
   <br><br><br><br>
   <h4>Add a location:</h4>
@@ -36,7 +28,7 @@
     <div class="form-group">
       <label for="uri">Uri:</label>
       <input class="form-control" type="text" id="uri" formControlName="uri">
-    </div>.
+    </div>
 
     <br><br>
     

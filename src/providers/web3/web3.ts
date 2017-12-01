@@ -72,4 +72,11 @@ export class Web3Provider {
     }
     return this.account;
   }
+
+  getAccounts() {
+    if(!this.account) {
+      throw "Error fetching web3 accounts: Web3 not yet initialized";
+    }
+    return this.accounts;
+  }
 }

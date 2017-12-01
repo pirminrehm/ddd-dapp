@@ -13,6 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Web3Provider } from '../providers/web3/web3';
 import { LocationProvider } from './../providers/web3/location';
+import { VotingProvider } from '../providers/web3/voting';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { LocationProvider } from './../providers/web3/location';
   providers: [
     Web3Provider,
     LocationProvider,
+    VotingProvider,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
