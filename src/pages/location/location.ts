@@ -47,10 +47,6 @@ export class LocationPage implements OnInit {
     this.locationProvider
       .getCount()
       .then(count => this.queryLocations(count))
-      .catch((e) => {
-        console.log(e);
-        this.status = "Error getting balance; see log.";
-      });
   }
 
   addLocation() {
@@ -62,10 +58,6 @@ export class LocationPage implements OnInit {
       .then((traId) => {
         this.status = "Transaction complete!";
         self.refreshLocations();
-      })
-      .catch((e) => {
-        console.log(e);
-        this.status = "Error adding location; see log.";
       });
   }
 
@@ -76,7 +68,6 @@ export class LocationPage implements OnInit {
       this.locationProvider
         .getLocationAtIndex(i)
         .then(location => this.locations.push(location))
-        .catch(v => console.log(v));
       i++;
     }
   }

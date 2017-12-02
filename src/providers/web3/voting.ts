@@ -32,13 +32,15 @@ export class VotingProvider {
   getVotingName() {
     return this.getContract()
       .then(c => c.getVotingName.call())
-      .then(name => this.web3Provider.getWeb3().toUtf8(name));
+      .then(name => this.web3Provider.getWeb3().toUtf8(name))
+      .catch(e => this.handleError(e));
   }
 
   getVotingUsersCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getVotingUsersCount.call())
-      .then(data => Number(data.toString(10)));
+      .then(data => Number(data.toString(10)))
+      .catch(e => this.handleError(e));
   }
 
   getUserPointsByIndex(index: number): Promise<UserPoint> {
@@ -49,13 +51,15 @@ export class VotingProvider {
           account: `Account: ${v[0]}`, 
           points: Number(v[1].toString(10))
         };
-      });
+      })
+      .catch(e => this.handleError(e));
   }
 
   getVotedLocationsCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getVotedLocationsCount.call())
-      .then(data => Number(data.toString(10)));
+      .then(data => Number(data.toString(10)))
+      .catch(e => this.handleError(e));
   }
 
   getLocationPointsByIndex(index: number): Promise<LocationPoint> {
@@ -67,7 +71,8 @@ export class VotingProvider {
           "uri": 'TODO',
           "points": Number(v[1].toString(10))
         }
-      });
+      })
+      .catch(e => this.handleError(e));
   }
 
 
@@ -75,5 +80,9 @@ export class VotingProvider {
     const voting = contract(votingArtifacts);
     voting.setProvider(this.web3Provider.getWeb3().currentProvider);
     return voting.deployed();
+  }
+
+  private handleError(e: Error) {
+    console.log(e);
   }
 }

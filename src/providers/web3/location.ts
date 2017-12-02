@@ -23,7 +23,8 @@ export class LocationProvider {
   getCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getLocationCount.call())
-      .then(data =>  Number(data.toString(10)));
+      .then(data =>  Number(data.toString(10)))
+      .catch(e => this.handleError(e));
   }
 
   getLocationAtIndex(index: number): Promise<Location> {
@@ -33,7 +34,8 @@ export class LocationProvider {
         const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
         const name = this.web3Provider.getWeb3().toUtf8(v[1]);
         return new Location(uri, name);
-      });
+      })
+      .catch(e => this.handleError(e));
   }
 
   addLocation(uri, name) {
@@ -42,12 +44,18 @@ export class LocationProvider {
         from: this.web3Provider.getAccount(), 
         gas: 3000000 // TODO: Check gas.
       });
-    });
+    })
+    .catch(e => this.handleError(e));
   }
 
   private getContract(): any {
     const location = contract(locationArtifacts);
     location.setProvider(this.web3Provider.getWeb3().currentProvider);
     return location.deployed();
+  }
+
+
+  private handleError(e: Error) {
+    console.log(e);
   }
 }

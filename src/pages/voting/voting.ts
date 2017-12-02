@@ -71,35 +71,22 @@ export class VotingPage implements OnInit {
 
     this.votingProvider
       .addVote(address, uri, points)
-      .then(() => {
+      .then(_ => {
         // self.setStatus("Transaction complete!");
         this.refreshLocationPoints()
         this.refreshUserPoints()
-      }).catch((e) => {
-        console.log(e);
-        // self.setStatus("Error adding vote; see log.");
       });
   }
 
   getVotingName() {
-    this.votingProvider
-    .getVotingName()
-    .then(name => this.votingName = name)
-    .catch((e) => {
-      console.log(e);
-      // self.setStatus("Error getting voting name; see log.");
-    });
+    this.votingProvider.getVotingName().then(name => this.votingName = name);
   }
 
 
   refreshLocationPoints() {
     this.votingProvider
       .getVotedLocationsCount()
-      .then(count => this.queryLocationPoints(count))
-      .catch((e) => {
-        console.log(e);
-        // self.setStatus("Error getting balance; see log.");
-      });
+      .then(count => this.queryLocationPoints(count));
   }
 
   private queryLocationPoints(count: number) {
@@ -108,8 +95,7 @@ export class VotingPage implements OnInit {
     while (i < count) {
       this.votingProvider
         .getLocationPointsByIndex(i)
-        .then(locationsPoint => this.locationPoints.push(locationsPoint))
-        .catch(v => console.log(v));
+        .then(locationsPoint => this.locationPoints.push(locationsPoint));
       i++;
     }
   }
@@ -117,11 +103,7 @@ export class VotingPage implements OnInit {
 
   private refreshUserPoints() {
     this.votingProvider.getVotingUsersCount()
-      .then(count => this.queryUserPoints(count))
-      .catch((e) => {
-        console.log(e);
-        // self.setStatus("Error getting balance; see log.");
-      });
+      .then(count => this.queryUserPoints(count));
   }
 
 
@@ -131,8 +113,7 @@ export class VotingPage implements OnInit {
     while (i < count) {
       this.votingProvider
         .getUserPointsByIndex(i)
-        .then(userPoint => this.userPoints.push(userPoint))
-        .catch(v => console.log(v));
+        .then(userPoint => this.userPoints.push(userPoint));
       i++;
     }
     return count;
@@ -142,11 +123,7 @@ export class VotingPage implements OnInit {
   private prepareLocations() {
     this.locationProvider
       .getCount()
-      .then(count => this.queryLocations(count))
-      .catch((e) => {
-        console.log(e);
-        // this.status = "Error getting balance; see log.";
-      });
+      .then(count => this.queryLocations(count));
   }
 
   private queryLocations(count) {
@@ -155,8 +132,7 @@ export class VotingPage implements OnInit {
     while (i < count) {
       this.locationProvider
         .getLocationAtIndex(i)
-        .then(location => this.locations.push(location))
-        .catch(v => console.log(v));
+        .then(location => this.locations.push(location));
       i++;
     }
   }
