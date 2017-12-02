@@ -5,26 +5,10 @@ import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-
-interface Account {
-  address: string,
-  name: string
-}
-
-interface Location {
-  name: string,
-  uri: string
-}
-
-export interface UserPoint {
-  account: string,
-  points: number
-}
-
-export interface LocationPoint {
-  uri: string,
-  points: number
-}
+import { LocationPoint } from './../../models/location-point';
+import { UserPoint } from './../../models/user-point';
+import { Account } from './../../models/account';
+import { Location } from './../../models/location';
 
 /**
  * Generated class for the VotingPage page.
@@ -68,7 +52,7 @@ export class VotingPage implements OnInit {
     });
 
     this.accounts = this.web3Provider.getAccounts()
-      .map((address, index) => ({ "address": address, "name": "Account " + index}));
+      .map((address, index) => (new Account(address, `Account ${index}`)));
 
     this.prepareLocations();
     this.refreshUserPoints();
@@ -171,13 +155,7 @@ export class VotingPage implements OnInit {
     while (i < count) {
       this.locationProvider
         .getLocationAtIndex(i)
-        .then(v => {
-          console.log(v, 'V');
-          const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
-          const name = this.web3Provider.getWeb3().toUtf8(v[1]);
-          console.log(this.locations);
-          this.locations.push({uri, name});
-        })
+        .then(location => this.locations.push(location))
         .catch(v => console.log(v));
       i++;
     }

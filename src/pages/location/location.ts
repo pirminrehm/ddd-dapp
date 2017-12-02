@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-import { Web3Provider } from './../../providers/web3/web3';
 import { LocationProvider } from './../../providers/web3/location';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-
-interface Location {
-  name: string,
-  uri: string
-}
+import { Location } from '../../models/location';
 
 
 /**
@@ -24,15 +19,14 @@ interface Location {
   selector: 'page-location',
   templateUrl: 'location.html',
 })
-export class LocationPage {
+export class LocationPage implements OnInit {
   status = "";
   locations: Location[];
   locationForm: FormGroup;
   
 
   constructor(public navCtrl: NavController, 
-              public navParams: NavParams, 
-              private web3Provider: Web3Provider, 
+              public navParams: NavParams,
               private locationProvider: LocationProvider,
               private fb: FormBuilder) {
   }
@@ -50,8 +44,6 @@ export class LocationPage {
   }
 
   refreshLocations() {
-    // Reset the selectbox for 
-    var locationInstance;
     this.locationProvider
       .getCount()
       .then(count => this.queryLocations(count))
@@ -83,11 +75,7 @@ export class LocationPage {
     while (i < count) {
       this.locationProvider
         .getLocationAtIndex(i)
-        .then(v => {
-          const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
-          const name = this.web3Provider.getWeb3().toUtf8(v[1]);
-          this.locations.push({uri, name});
-        })
+        .then(location => this.locations.push(location))
         .catch(v => console.log(v));
       i++;
     }

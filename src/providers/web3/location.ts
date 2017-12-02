@@ -6,6 +6,8 @@ import { Web3Provider } from './web3';
 const locationArtifacts = require('../../../build/contracts/Location.json');
 const contract = require('truffle-contract');
 
+import { Location } from './../../models/location';
+
 /*
   Generated class for the Locations provider.
 
@@ -18,14 +20,20 @@ export class LocationProvider {
   constructor(private web3Provider: Web3Provider) {
   }
 
-  getCount() {
+  getCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getLocationCount.call())
       .then(data =>  Number(data.toString(10)));
   }
 
-  getLocationAtIndex(index: number) {
-    return this.getContract().then(c => c.getLocationAtIndex.call(index));
+  getLocationAtIndex(index: number): Promise<Location> {
+    return this.getContract()
+      .then(c => c.getLocationAtIndex.call(index))
+      .then(v => {
+        const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
+        const name = this.web3Provider.getWeb3().toUtf8(v[1]);
+        return new Location(uri, name);
+      });
   }
 
   addLocation(uri, name) {
