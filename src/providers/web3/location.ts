@@ -20,6 +20,8 @@ export class LocationProvider {
   constructor(private web3Provider: Web3Provider) {
   }
 
+  // CONTRACT ACCESSORS
+
   getCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getLocationCount.call())
@@ -47,6 +49,25 @@ export class LocationProvider {
     })
     .catch(e => this.handleError(e));
   }
+
+
+  // HELPERS
+
+  getAllLocations(): Promise<Location[]> {
+    return this.getCount().then(count => {
+      const locations = [];
+      let i = 0;
+      while (i < count) {
+        this.getLocationAtIndex(i)
+          .then(location => locations.push(location));
+        i++;
+      }
+      return locations;
+    });
+  }
+
+
+  // INTERNAL
 
   private getContract(): any {
     const location = contract(locationArtifacts);

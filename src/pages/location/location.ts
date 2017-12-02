@@ -45,8 +45,8 @@ export class LocationPage implements OnInit {
 
   refreshLocations() {
     this.locationProvider
-      .getCount()
-      .then(count => this.queryLocations(count))
+      .getAllLocations()
+      .then(locations => this.locations = locations);
   }
 
   addLocation() {
@@ -59,16 +59,5 @@ export class LocationPage implements OnInit {
         this.status = "Transaction complete!";
         self.refreshLocations();
       });
-  }
-
-  private queryLocations(count) {
-    this.locations = [];
-    let i = 0;
-    while (i < count) {
-      this.locationProvider
-        .getLocationAtIndex(i)
-        .then(location => this.locations.push(location))
-      i++;
-    }
   }
 }

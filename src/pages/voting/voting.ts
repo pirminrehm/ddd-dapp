@@ -54,7 +54,10 @@ export class VotingPage implements OnInit {
     this.accounts = this.web3Provider.getAccounts()
       .map((address, index) => (new Account(address, `Account ${index}`)));
 
-    this.prepareLocations();
+    this.locationProvider
+      .getAllLocations()
+      .then(locations => this.locations = locations);
+
     this.refreshUserPoints();
     this.refreshLocationPoints();
   }
@@ -78,62 +81,19 @@ export class VotingPage implements OnInit {
       });
   }
 
-  getVotingName() {
+  fetchVotingName() {
     this.votingProvider.getVotingName().then(name => this.votingName = name);
   }
 
 
-  refreshLocationPoints() {
+  private refreshLocationPoints() {
     this.votingProvider
-      .getVotedLocationsCount()
-      .then(count => this.queryLocationPoints(count));
+      .getAllLocationPoints()
+      .then(locationPoints => this.locationPoints = locationPoints);
   }
-
-  private queryLocationPoints(count: number) {
-    this.locationPoints = [];
-    var i = 0;
-    while (i < count) {
-      this.votingProvider
-        .getLocationPointsByIndex(i)
-        .then(locationsPoint => this.locationPoints.push(locationsPoint));
-      i++;
-    }
-  }
-
 
   private refreshUserPoints() {
-    this.votingProvider.getVotingUsersCount()
-      .then(count => this.queryUserPoints(count));
-  }
-
-
-  private queryUserPoints(count: number) {
-    this.userPoints = [];
-    var i = 0;
-    while (i < count) {
-      this.votingProvider
-        .getUserPointsByIndex(i)
-        .then(userPoint => this.userPoints.push(userPoint));
-      i++;
-    }
-    return count;
-  }
-
-
-  private prepareLocations() {
-    this.locationProvider
-      .getCount()
-      .then(count => this.queryLocations(count));
-  }
-
-  private queryLocations(count) {
-    this.locations = [];
-    let i = 0;
-    while (i < count) {
-      this.locationProvider
-        .getLocationAtIndex(i)
-        .then(location => this.locations.push(location));
-      i++;
-    }
+    this.votingProvider.getAllUserPoints()
+      .then(userPoints => this.userPoints = userPoints);
   }
 }

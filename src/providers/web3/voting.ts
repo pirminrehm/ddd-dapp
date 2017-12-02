@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { Web3Provider } from './web3';
+import { UserPoint } from '../../models/user-point';
+import { LocationPoint } from '../../models/location-point';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const votingArtifacts = require('../../../build/contracts/Voting.json');
 const contract = require('truffle-contract');
-
-import { LocationPoint, UserPoint } from './../../pages/voting/voting';
 
 /*
   Generated class for the Voting provider.
@@ -20,6 +20,8 @@ export class VotingProvider {
   constructor(private web3Provider: Web3Provider) {
   }
 
+
+  // CONTRACT ACCESSORS
 
   addVote(address: string, uri: string, points: any) {
     uri = this.web3Provider.getWeb3().fromUtf8(uri);
@@ -46,12 +48,7 @@ export class VotingProvider {
   getUserPointsByIndex(index: number): Promise<UserPoint> {
     return this.getContract()
       .then(c => c.getUserPointsByIndex.call(index))
-      .then(v => {
-        return {
-          account: `Account: ${v[0]}`, 
-          points: Number(v[1].toString(10))
-        };
-      })
+      .then(v => new UserPoint(`Account: ${v[0]}`, Number(v[1].toString(10))))
       .catch(e => this.handleError(e));
   }
 
@@ -65,16 +62,42 @@ export class VotingProvider {
   getLocationPointsByIndex(index: number): Promise<LocationPoint> {
     return this.getContract()
       .then(c => c.getUserPointsByIndex.call(index))
-      .then(v => {
         // const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
-        return {
-          "uri": 'TODO',
-          "points": Number(v[1].toString(10))
-        }
-      })
+      .then(v => new LocationPoint('TODO', Number(v[1].toString(10))))
       .catch(e => this.handleError(e));
   }
 
+
+  // HELPERS
+
+  getAllUserPoints(): Promise<UserPoint[]> {
+    return this.getVotingUsersCount().then(count => {
+      const userPoints = [];
+      var i = 0;
+      while (i < count) {
+        this.getUserPointsByIndex(i)
+          .then(userPoint => userPoints.push(userPoint));
+        i++;
+      }
+      return userPoints;
+    });
+  }
+
+  getAllLocationPoints(): Promise<LocationPoint[]> {
+    return this.getVotedLocationsCount().then(count => {
+      const locationPoints = [];
+      var i = 0;
+      while (i < count) {
+        this.getLocationPointsByIndex(i)
+          .then(locationsPoint => locationPoints.push(locationsPoint));
+        i++;
+      }
+      return locationPoints;
+    });
+  }
+
+
+  // INTERNAL
 
   private getContract(): any {
     const voting = contract(votingArtifacts);
