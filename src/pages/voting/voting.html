@@ -7,58 +7,63 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>voting</ion-title>
+    <ion-title>Votings</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <h4>Create a Voting:</h4>
+  <ion-card>
+    <ion-card-header>Add a vote</ion-card-header>
 
-  <form [formGroup]="votingForm" (submit)="createVoting()">
-    <div class="form-group">
-      <label for="location">Select a location</label>
-      <select formControlName="location">
-        <option>Please select</option>
-        <option *ngFor="let location of locations">{{ location.uri }} {{ location.name }}</option>
-      </select>
-    </div>
+    <ion-card-content>
+      <form [formGroup]="votingForm" (submit)="createVoting()">
+        <ion-item>
+          <ion-label>Select a location</ion-label>
+          <ion-select formControlName="location">
+            <ion-option>Please select</ion-option>
+            <ion-option *ngFor="let location of locations">{{ location.uri }} {{ location.name }}</ion-option>
+          </ion-select>
+        </ion-item>
 
-    <div class="form-group">
-      <label for="address">Select an account:</label>
-      <select formControlName="address">
-        <option>Please select</option>
-        <option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</option>
-      </select>
-    </div>
+        <ion-item>
+          <ion-label for="address">Select an account:</ion-label>
+          <ion-select formControlName="address">
+            <ion-option>Please select</ion-option>
+            <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
+          </ion-select>
+        </ion-item>
 
-    <div class="form-group">
-      <label for="points">Points:</label>
-      <input type="number" id="points" formControlName="points" />
-    </div>
-    
-    <button type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Create Voting</button>
-  </form>
+        <ion-item>
+          <ion-label for="points">Points:</ion-label>
+          <ion-input type="number" id="points" formControlName="points"></ion-input>
+        </ion-item>
+        
+        <button ion-button type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Add a vote</button>
+      </form>
+    </ion-card-content>
+  </ion-card>
 
-  <br><br><br>
+  <ion-card>
+    <ion-card-header>Get Voting Name</ion-card-header>
+    <ion-card-content>
+      <div>Voting Name: {{ votingName }}</div>
+      <button ion-button (click)="fetchVotingName()">Get Voting Name</button>
+    </ion-card-content>
+  </ion-card>
 
-  <div>
-    <h2>Voting Name: <span>{{ votingName }}</span></h2><br>
-    <button (click)="fetchVotingName()">Get Voting Name</button>
-  </div>
-  
-  <br><br><br>
+  <ion-card>
+    <ion-card-header>Location Points</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let locationPoint of locationPoints">{{locationPoint.uri}}: {{ locationPoint.points }}</ion-item>
+    </ion-list>
+  </ion-card>
 
-  <h2>Location Points</h2>
-  <ul>
-    <li *ngFor="let locationPoint of locationPoints">{{locationPoint.uri}}: {{ locationPoint.points }}</li>
-  </ul>
-  <br>
-  <br>
-
-  <h2>User Points</h2>
-  <ul>
-    <li *ngFor="let userPoint of userPoints">{{userPoint.account}}: {{ userPoint.points }}</li>
-  </ul>
+  <ion-card>
+    <ion-card-header>User Points</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let userPoint of userPoints">{{userPoint.account}}: {{ userPoint.points }}</ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>

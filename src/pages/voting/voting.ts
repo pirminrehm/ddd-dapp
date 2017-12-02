@@ -50,9 +50,11 @@ export class VotingPage implements OnInit {
       location: ['', Validators.required],
       points: ['', Validators.required]
     });
+  }
 
+  ionViewWillEnter() {
     this.accounts = this.web3Provider.getAccounts()
-      .map((address, index) => (new Account(address, `Account ${index}`)));
+    .map((address, index) => (new Account(address, `Account ${index}`)));
 
     this.locationProvider
       .getAllLocations()

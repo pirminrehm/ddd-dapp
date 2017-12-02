@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>location</ion-title>
+    <ion-title>Locations</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -15,27 +15,33 @@
 
 <ion-content padding>
 
-  <br><br><br><br>
-  <h4>Add a location:</h4>
-
-  <form [formGroup]="locationForm" (submit)="addLocation()">
-
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input class="form-control" type="text" id="name" formControlName="name">
-    </div>
-
-    <div class="form-group">
-      <label for="uri">Uri:</label>
-      <input class="form-control" type="text" id="uri" formControlName="uri">
-    </div>
-
-    <br><br>
+  <ion-card>
+    <ion-card-header>Add a location</ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="locationForm" (submit)="addLocation()">
+        
+        <ion-item>
+          <ion-label for="name">Name:</ion-label>
+          <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
+        </ion-item>
     
-    <button type="submit" [disabled]="loading || locationForm.invalid || locationForm.pristine">Add Location</button>
+        <ion-item>
+          <ion-label for="uri">Uri:</ion-label>
+          <ion-input class="form-control" type="text" id="uri" formControlName="uri"></ion-input>
+        </ion-item>
+        
+        <button ion-button type="submit" [disabled]="loading || locationForm.invalid || locationForm.pristine">Add Location</button>
+    
+      </form>
+    </ion-card-content>
+  </ion-card>
 
-  </form>
-
+  <ion-card>
+    <ion-card-header>Locations</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let location of locations">{{location.uri}}: {{location.name}}</ion-item>
+    </ion-list>
+  </ion-card>
    
   <br><br>
   
