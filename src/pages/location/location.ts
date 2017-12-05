@@ -54,10 +54,13 @@ export class LocationPage implements OnInit {
     this.status = "Initiating transaction... (please wait)";  
     
     this.locationProvider
-      .addLocation(this.locationForm.value.name, this.locationForm.value.uri)
+      .addLocation(this.locationForm.value.uri, this.locationForm.value.name)
       .then((traId) => {
         this.status = "Transaction complete!";
         self.refreshLocations();
+      }).catch(e => {
+        this.status = "Error, maybe duplicated uri?";
+        console.log(e)
       });
   }
 }

@@ -20,17 +20,15 @@
     <ion-card-content>
       <form [formGroup]="votingForm" (submit)="createVoting()">
         <ion-item>
-          <ion-label>Select a location</ion-label>
+          <ion-label>Location</ion-label>
           <ion-select formControlName="location">
-            <ion-option>Please select</ion-option>
-            <ion-option *ngFor="let location of locations">{{ location.uri }} {{ location.name }}</ion-option>
+            <ion-option *ngFor="let location of locations" [value]="location.uri">{{ location.uri }} {{ location.name }}</ion-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
-          <ion-label for="address">Select an account:</ion-label>
-          <ion-select formControlName="address">
-            <ion-option>Please select</ion-option>
+          <ion-label for="address">Account</ion-label>
+          <ion-select formControlName="address">    
             <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
           </ion-select>
         </ion-item>
@@ -67,3 +65,6 @@
     </ion-list>
   </ion-card>
 </ion-content>
+
+
+<!-- <ion-option>Please select</ion-option> -->

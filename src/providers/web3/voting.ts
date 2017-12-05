@@ -48,7 +48,8 @@ export class VotingProvider {
   getUserPointsByIndex(index: number): Promise<UserPoint> {
     return this.getContract()
       .then(c => c.getUserPointsByIndex.call(index))
-      .then(v => new UserPoint(`Account: ${v[0]}`, Number(v[1].toString(10))))
+      //v[0] returns type 'address' -> do not cast toUtf8!
+      .then(v => new UserPoint(`Account: ${this.web3Provider.getAccounts().indexOf(v[0])}`, Number(v[1].toString(10))))
       .catch(e => this.handleError(e));
   }
 
@@ -61,9 +62,8 @@ export class VotingProvider {
 
   getLocationPointsByIndex(index: number): Promise<LocationPoint> {
     return this.getContract()
-      .then(c => c.getUserPointsByIndex.call(index))
-        // const uri = this.web3Provider.getWeb3().toUtf8(v[0]);
-      .then(v => new LocationPoint('TODO', Number(v[1].toString(10))))
+      .then(c => c.getLocationPointsByIndex.call(index))
+      .then(v => new LocationPoint(`Location: ${this.web3Provider.getWeb3().toUtf8(v[0])}`, Number(v[1].toString(10))))
       .catch(e => this.handleError(e));
   }
 

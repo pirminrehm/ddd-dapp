@@ -47,7 +47,7 @@ export class LocationProvider {
         gas: 3000000 // TODO: Check gas.
       });
     })
-    .catch(e => this.handleError(e));
+    //.catch(e => this.handleError(e));
   }
 
 

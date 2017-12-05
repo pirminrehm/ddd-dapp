@@ -71,6 +71,8 @@ export class VotingPage implements OnInit {
     const points = this.votingForm.value.points;
 
     console.log('send points:', points);
+    console.log('send address:', address);
+    console.log('send uri:', uri);
 
     // this.status = "Initiating transaction... (please wait)";
 
