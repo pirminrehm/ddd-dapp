@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 const Web3 = require('web3');
 
+const contract = require('truffle-contract');
+
 declare var window: any;
 
 /*
@@ -59,13 +61,6 @@ export class Web3Provider {
 
   // GETTER
 
-  getWeb3(): any {
-    if(!this.web3) {
-      throw "Error fetching web3 instance: Web3 not yet initialized";
-    }
-    return this.web3;
-  }
-
   getAccount() {
     if(!this.account) {
       throw "Error fetching web3 accounts: Web3 not yet initialized";
@@ -78,5 +73,33 @@ export class Web3Provider {
       throw "Error fetching web3 accounts: Web3 not yet initialized";
     }
     return this.accounts;
+  }
+
+
+  // INTERACTORS
+
+  toWeb3String(value: string) {
+    return this.web3.fromUtf8(value);
+  }
+
+  fromWeb3String(value: any) {
+    return this.web3.toUtf8(value);
+  }
+
+  toWeb3Number(value: number) {
+    return this.web3.toBigNumber(value);
+  }
+
+  fromWeb3Number(value: any) {
+    return Number(value.toString(10));
+  }
+
+
+  // HELPERS
+
+  getDeployedContract(artifact: any) {
+    const location = contract(artifact);
+    location.setProvider(this.web3.currentProvider);
+    return location.deployed();
   }
 }

@@ -6,7 +6,6 @@ import { LocationPoint } from '../../models/location-point';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const votingArtifacts = require('../../../build/contracts/Voting.json');
-const contract = require('truffle-contract');
 
 /*
   Generated class for the Voting provider.
@@ -24,8 +23,8 @@ export class VotingProvider {
   // CONTRACT ACCESSORS
 
   addVote(address: string, uri: string, points: any) {
-    uri = this.web3Provider.getWeb3().fromUtf8(uri);
-    points = this.web3Provider.getWeb3().toBigNumber(points);
+    uri = this.web3Provider.toWeb3String(uri);
+    points = this.web3Provider.toWeb3Number(points);
     
     return this.getContract()
       .then(c => c.addVote(uri, points, { from: address, gas: 3000000 }));
@@ -34,7 +33,7 @@ export class VotingProvider {
   getVotingName() {
     return this.getContract()
       .then(c => c.getVotingName.call())
-      .then(name => this.web3Provider.getWeb3().toUtf8(name))
+      .then(name => this.web3Provider.fromWeb3String(name))
       .catch(e => this.handleError(e));
   }
 
@@ -49,21 +48,27 @@ export class VotingProvider {
     return this.getContract()
       .then(c => c.getUserPointsByIndex.call(index))
       //v[0] returns type 'address' -> do not cast toUtf8!
-      .then(v => new UserPoint(`Account: ${this.web3Provider.getAccounts().indexOf(v[0])}`, Number(v[1].toString(10))))
+      .then(v => new UserPoint(
+        `Account: ${this.web3Provider.getAccounts().indexOf(v[0])}`, 
+        this.web3Provider.fromWeb3Number(v[1])
+      ))
       .catch(e => this.handleError(e));
   }
 
   getVotedLocationsCount(): Promise<number> {
     return this.getContract()
       .then(c => c.getVotedLocationsCount.call())
-      .then(data => Number(data.toString(10)))
+      .then(data => this.web3Provider.fromWeb3Number(data))
       .catch(e => this.handleError(e));
   }
 
   getLocationPointsByIndex(index: number): Promise<LocationPoint> {
     return this.getContract()
       .then(c => c.getLocationPointsByIndex.call(index))
-      .then(v => new LocationPoint(`Location: ${this.web3Provider.getWeb3().toUtf8(v[0])}`, Number(v[1].toString(10))))
+      .then(v => new LocationPoint(
+        `Location: ${this.web3Provider.fromWeb3String(v[0])}`, 
+        this.web3Provider.fromWeb3Number(v[1])
+      ))
       .catch(e => this.handleError(e));
   }
 
@@ -100,9 +105,7 @@ export class VotingProvider {
   // INTERNAL
 
   private getContract(): any {
-    const voting = contract(votingArtifacts);
-    voting.setProvider(this.web3Provider.getWeb3().currentProvider);
-    return voting.deployed();
+    return this.web3Provider.getDeployedContract(votingArtifacts);
   }
 
   private handleError(e: Error) {
