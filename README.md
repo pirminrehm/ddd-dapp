@@ -6,19 +6,25 @@ This project bases on the [webpack-box](https://github.com/truffle-box/webpack-b
 
 ## Getting started
 
-1. Install truffle: 
+1. Prerequisites: node 8.9.1. You can use nvm to support multiple node versions, run 
+  ```shell
+  $ nvm install 
+  ```
+within this directory to install the supported version.
+
+2. Install truffle: 
   ```shell
   $ npm install -g truffle
   ```
 
-2. Clone the `ws17-EthereumBlockchain` project:
+3. Clone the `ws17-EthereumBlockchain` project:
 
   ```shell
   $ git clone https://gitlab.mi.hdm-stuttgart.de/ma/ws17-EthereumBlockchain/
   $ cd ws17-EthereumBlockchain
   ```
 
-3. Install dependencies. We assume that you have already installed `npm` in your system.
+4. Install dependencies. We assume that you have already installed `npm` in your system.
 
   ```shell
   $ npm install
