@@ -28,7 +28,6 @@ contract('Team', (accounts) => {
 
     it("should send a join team request", async () => {
       const count = await contract.sendJoinTeamRequest(
-        accounts[0],
         web3.fromUtf8('test-name'),
         {from: accounts[0]}
       );
@@ -42,7 +41,6 @@ contract('Team', (accounts) => {
     it('should not be possible to send a request again', async () => {
       try {
         await contract.sendJoinTeamRequest(
-          accounts[0],
           web3.fromUtf8('test-name'),
           {from: accounts[0]}
         );

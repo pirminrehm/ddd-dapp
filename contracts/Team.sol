@@ -28,14 +28,14 @@ contract Team {
 
   //************** Transactions ***************//
   //-------------------------------------------//
-  function sendJoinTeamRequest(address account, bytes32 name) public 
-    isNotAMember(account)
-    isNotAPendingMember(account) 
+  function sendJoinTeamRequest(bytes32 name) public 
+    isNotAMember(msg.sender)
+    isNotAPendingMember(msg.sender) 
     {
 
-    pendingMembers[account].account = account;
-    pendingMembers[account].name = name;
-    pendingMemberAddresses.push(account) - 1;
+    pendingMembers[msg.sender].account = msg.sender;
+    pendingMembers[msg.sender].name = name;
+    pendingMemberAddresses.push(msg.sender) - 1;
   }
 
   //********* Getter ***********//
