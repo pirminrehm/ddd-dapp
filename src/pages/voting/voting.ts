@@ -52,20 +52,17 @@ export class VotingPage implements OnInit {
     });
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     this.accounts = this.web3Provider.getAccounts()
-    .map((address, index) => (new Account(address, `Account ${index}`)));
+      .map((address, index) => (new Account(address, `Account ${index}`)));
 
-    this.locationProvider
-      .getAllLocations()
-      .then(locations => this.locations = locations);
-
+    this.locations = await this.locationProvider.getAllLocations();
     this.refreshUserPoints();
     this.refreshLocationPoints();
   }
 
 
-  createVoting() {
+  async createVoting() {
     const uri = this.votingForm.value.location;
     const address = this.votingForm.value.address;
     const points = this.votingForm.value.points;
@@ -76,28 +73,22 @@ export class VotingPage implements OnInit {
 
     // this.status = "Initiating transaction... (please wait)";
 
-    this.votingProvider
-      .addVote(address, uri, points)
-      .then(_ => {
-        // self.setStatus("Transaction complete!");
-        this.refreshLocationPoints()
-        this.refreshUserPoints()
-      });
+    await this.votingProvider.addVote(address, uri, points);
+    // self.setStatus("Transaction complete!");
+    this.refreshLocationPoints()
+    this.refreshUserPoints()
   }
 
-  fetchVotingName() {
-    this.votingProvider.getVotingName().then(name => this.votingName = name);
+  async fetchVotingName() {
+    this.votingName = await this.votingProvider.getVotingName();
   }
 
 
-  private refreshLocationPoints() {
-    this.votingProvider
-      .getAllLocationPoints()
-      .then(locationPoints => this.locationPoints = locationPoints);
+  private async refreshLocationPoints() {
+    this.locationPoints = await this.votingProvider.getAllLocationPoints();
   }
 
-  private refreshUserPoints() {
-    this.votingProvider.getAllUserPoints()
-      .then(userPoints => this.userPoints = userPoints);
+  private async refreshUserPoints() {
+    this.userPoints = await this.votingProvider.getAllUserPoints();
   }
 }

@@ -43,15 +43,18 @@ export class HomePage implements OnInit {
           .map((address, index) => (new Account(address, `Account ${index}`)));
       })
     
-    this.teamProvider.getMembersCount().then(c => this.membersCount = c);
-    this.teamProvider.getPendingMembersCount().then(c => this.pendingMembersCount = c)
+    this.membersCount = await this.teamProvider.getMembersCount();
+    this.pendingMembersCount = await this.teamProvider.getPendingMembersCount();
   }
 
-  sendJoinTeamRequest() {
-    this.teamProvider.sendJoinTeamRequest(
-      this.teamForm.value.address,
-      this.teamForm.value.name
-    ).catch(e => alert('An error occurred, maybe already a pending user?'));
+  async sendJoinTeamRequest() {
+    try {
+      const address = this.teamForm.value.address;
+      const name = this.teamForm.value.name;
+      await this.teamProvider.sendJoinTeamRequest(address, name);
+    } catch(e) {
+      alert('An error occurred, maybe already a pending user?');
+    }
   }
 }
  

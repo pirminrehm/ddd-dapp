@@ -20,28 +20,23 @@ export class TeamProvider {
 
   // CONTRACT ACCESSORS
 
-  sendJoinTeamRequest(account: string, name: string) {
+  async getPendingMembersCount(): Promise<number> {
+    const count = await this.call('getPendingMembersCount');
+    return this.web3Provider.fromWeb3Number(count);
+  }
+
+  async getMembersCount(): Promise<number> {
+    const count = await this.call('getMembersCount');
+    return this.web3Provider.fromWeb3Number(count);
+  }
+
+
+  // TRANSACTIONS
+
+  async sendJoinTeamRequest(account: string, name: string) {
     name = this.web3Provider.toWeb3String(name);
-    return this
-      .getContract()
-      .then(c => {
-        console.log(c, "CONTRACT");
-        console.log(account);
-        return c.sendJoinTeamRequest(name, { from: account, gas: 3000000 })});
-  }
-
-  getPendingMembersCount(): Promise<number> {
-    return this.getContract()
-      .then(c => c.getPendingMembersCount.call())
-      .then(data => this.web3Provider.fromWeb3Number(data))
-      .catch(e => this.handleError(e));
-  }
-
-  getMembersCount(): Promise<number> {
-    return this.getContract()
-    .then(c => c.getMembersCount.call())
-    .then(data => this.web3Provider.fromWeb3Number(data))
-    .catch(e => this.handleError(e));
+    const contract = await this.getContract();
+    return contract.sendJoinTeamRequest(name, { from: account, gas: 3000000 });
   }
 
 
@@ -49,6 +44,15 @@ export class TeamProvider {
 
   private getContract(): any {
     return this.web3Provider.getDeployedContract(teamArtifacts);
+  }
+
+  private async call(name: string, ...params): Promise<any> {
+    const contract =  await this.getContract();
+    try {
+      return contract[name].call(...params);
+    } catch(e) {
+      e => this.handleError(e);
+    }
   }
 
   private handleError(e: Error) {
