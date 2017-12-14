@@ -13,7 +13,9 @@ contract Team {
   bytes32 public name;
 
   //************** Private Vars ***************//
-  //-------------------------------------------//  
+  //-------------------------------------------//
+  mapping (bytes32 => bool) private invitationTokens;
+
   address[] private memberAddresses;
   mapping (address => MemberStruct) private members;
 
@@ -28,10 +30,23 @@ contract Team {
 
   //************** Transactions ***************//
   //-------------------------------------------//
-  function sendJoinTeamRequest(bytes32 name) public 
+  function createInvitationToken() public 
+    // isAMember(msg.sender) TODO: Uncomment this line as soon as we have the create team epic.
+    returns (bytes32 token) 
+  {
+    token = generateToken(msg.sender);
+    invitationTokens[token] = true;
+    return token;
+  }
+
+
+  function sendJoinTeamRequest(bytes32 token, bytes32 name) public 
     isNotAMember(msg.sender)
-    isNotAPendingMember(msg.sender) 
-    {
+    isNotAPendingMember(msg.sender)
+    isValidInvitationToken(token)
+  {
+
+    invitationTokens[token] = false;
 
     pendingMembers[msg.sender].account = msg.sender;
     pendingMembers[msg.sender].name = name;
@@ -40,6 +55,16 @@ contract Team {
 
   //********* Getter ***********//
   //-------------------------------------------//
+  function getInvitationToken() public constant
+    // isAMember(msg.sender) TODO: Uncomment this line as soon as we have the create team epic.
+    returns (bytes32 token) 
+  {
+    token = generateToken(msg.sender);
+    require(invitationTokens[token] == true);
+    
+    return token;
+  }
+
   function getMembersCount() public constant returns (uint memberCount) {
     return memberAddresses.length;
   }  
@@ -56,8 +81,27 @@ contract Team {
     _;
   }
 
+  modifier isAMember(address account) {
+    require(members[account].account == account);
+    _;
+  }
+
   modifier isNotAMember(address account) {
     require(members[account].account != account);
     _;
   }
+
+  modifier isValidInvitationToken(bytes32 token) {
+    require(invitationTokens[token] == true);
+    _;
+  }
+
+
+  //***************** INTERNAL ****************//
+  //-------------------------------------------//
+
+  function generateToken(address sender) private pure returns (bytes32 token) {
+    return sha256(sender);
+  }
+
 }

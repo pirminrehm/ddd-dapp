@@ -8,6 +8,7 @@ nr = (num) => Number(num.toString(10));
 contract('Team', (accounts) => {
 
   let contract;
+  let token;
   beforeEach((done) => {
     Team.deployed().then(instance => {
       contract = instance;
@@ -26,8 +27,14 @@ contract('Team', (accounts) => {
       assert.strictEqual(nr(count), 0, "Members count is not 0");
     });
 
+    it("should create a validation token", async () => {
+      const res = await contract.createInvitationToken({from: accounts[0]});
+      assert.isNotNull(res, "Transaction returns null");
+    });
+
     it("should send a join team request", async () => {
       const count = await contract.sendJoinTeamRequest(
+        await contract.getInvitationToken.call(),
         web3.fromUtf8('test-name'),
         {from: accounts[0]}
       );
@@ -41,6 +48,7 @@ contract('Team', (accounts) => {
     it('should not be possible to send a request again', async () => {
       try {
         await contract.sendJoinTeamRequest(
+          await contract.getInvitationToken.call(),
           web3.fromUtf8('test-name'),
           {from: accounts[0]}
         );
