@@ -29,3 +29,6 @@ non-goals: tamper proof random number generation
 
 ### research task
 * how to authenticate with ethereum account
+
+### backlog grooming
+* create blueprint for media night demo
