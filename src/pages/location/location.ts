@@ -43,24 +43,23 @@ export class LocationPage implements OnInit {
     this.refreshLocations();
   }
 
-  refreshLocations() {
-    this.locationProvider
-      .getAllLocations()
-      .then(locations => this.locations = locations);
+  async refreshLocations() {
+    this.locations = await this.locationProvider.getAllLocations();
   }
 
-  addLocation() {
-    var self = this;
+  async addLocation() {
     this.status = "Initiating transaction... (please wait)";  
     
-    this.locationProvider
-      .addLocation(this.locationForm.value.uri, this.locationForm.value.name)
-      .then((traId) => {
-        this.status = "Transaction complete!";
-        self.refreshLocations();
-      }).catch(e => {
-        this.status = "Error, maybe duplicated uri?";
-        console.log(e)
-      });
+    try { 
+      const uri = this.locationForm.value.uri;
+      const name = this.locationForm.value.name;
+      await this.locationProvider.addLocation(uri, name)
+      
+      this.status = "Transaction complete!";
+      this.refreshLocations();
+    } catch(e) {
+      this.status = "Error, maybe duplicated uri?";
+      console.log(e)
+    }
   }
 }

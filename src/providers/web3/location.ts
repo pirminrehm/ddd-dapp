@@ -21,48 +21,37 @@ export class LocationProvider {
 
   // CONTRACT ACCESSORS
 
-  getCount(): Promise<number> {
-    return this.getContract()
-      .then(c => c.getLocationCount.call())
-      .then(data =>  this.web3Provider.fromWeb3Number(data))
-      .catch(e => this.handleError(e));
+  async getCount(): Promise<number> {
+    const count = await this.call('getLocationCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
-  getLocationAtIndex(index: number): Promise<Location> {
-    return this.getContract()
-      .then(c => c.getLocationAtIndex.call(index))
-      .then(v => {
-        const uri = this.web3Provider.fromWeb3String(v[0]);
-        const name = this.web3Provider.fromWeb3String(v[1]);
-        return new Location(uri, name);
-      })
-      .catch(e => this.handleError(e));
+  async getLocationAtIndex(index: number): Promise<Location> {
+    const v = await this.call('getLocationAtIndex', index);
+
+    const uri = this.web3Provider.fromWeb3String(v[0]);
+    const name = this.web3Provider.fromWeb3String(v[1]);
+    return new Location(uri, name);
   }
 
-  addLocation(uri, name) {
-    return this.getContract().then((instance) => {
-      return instance.addLocation(uri, name, {
-        from: this.web3Provider.getAccount(), 
-        gas: 3000000 // TODO: Check gas.
-      });
-    })
-    //.catch(e => this.handleError(e));
+  async addLocation(uri, name) {
+    const contract = await this.getContract();
+    contract.addLocation(uri, name, {
+      from: this.web3Provider.getAccount(), 
+      gas: 3000000 // TODO: Check gas.
+    });
   }
 
 
   // HELPERS
 
-  getAllLocations(): Promise<Location[]> {
-    return this.getCount().then(count => {
-      const locations = [];
-      let i = 0;
-      while (i < count) {
-        this.getLocationAtIndex(i)
-          .then(location => locations.push(location));
-        i++;
-      }
-      return locations;
-    });
+  async getAllLocations(): Promise<Location[]> {
+    const count = await this.getCount();
+    const locations = [];
+    for(let i = 0; i < count; i++) {
+      locations.push(await this.getLocationAtIndex(i));
+    }
+    return locations;
   }
 
 
@@ -72,6 +61,14 @@ export class LocationProvider {
     return this.web3Provider.getDeployedContract(locationArtifacts);
   }
 
+  private async call(name: string, ...params): Promise<any> {
+    const contract =  await this.getContract();
+    try {
+      return contract[name].call(...params);
+    } catch(e) {
+      e => this.handleError(e);
+    }
+  }
 
   private handleError(e: Error) {
     console.log(e);

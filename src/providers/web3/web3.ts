@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
 const Web3 = require('web3');
 
 const contract = require('truffle-contract');
@@ -14,12 +16,14 @@ declare var window: any;
 @Injectable()
 export class Web3Provider {
 
+  private loaded = new BehaviorSubject<boolean>(false);
+
   private web3: any;
   private account: string;
   private accounts: string[];
 
   constructor() {}
-
+r
   init() {
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof window.web3 !== 'undefined') {
@@ -55,7 +59,12 @@ export class Web3Provider {
       }
       this.accounts = accs;
       this.account = this.accounts[0];
+      this.loaded.next(true);
     });
+  }
+
+  isLoaded() {
+    return this.loaded.asObservable();
   }
 
 

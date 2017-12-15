@@ -6,10 +6,35 @@
 
 <ion-content padding>
   <h2>Welcome to Dining Developers Dilemma!</h2>
-  <p>
-    This purpose of this project is to evaluate if Blockchains can be used for decision making in a team (voting & stochastic selection of options on basis of preferences). 
-  </p>
-  <p>
-    Comes with simple tabs-based layout for apps.
-  </p>
+
+  <ion-card>
+    <ion-card-header>Join the team</ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="teamForm" (submit)="sendJoinTeamRequest()">
+        
+        <ion-item>
+          <ion-label for="address">Account</ion-label>
+          <ion-select formControlName="address">    
+            <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label for="name">Name:</ion-label>
+          <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
+        </ion-item>
+        
+        <button ion-button type="submit" [disabled]="loading || teamForm.invalid || teamForm.pristine">Send join team request</button>
+    
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Stats</ion-card-header>
+    <ion-list>
+      <ion-item>Members Count: {{ membersCount }}</ion-item>
+      <ion-item>Pending Members Count: {{ pendingMembersCount }}</ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>
