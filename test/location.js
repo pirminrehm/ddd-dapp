@@ -52,14 +52,14 @@ contract('Location', (accounts) => {
 
   it("should not be possible to add location_1 URI again", async () => {
     try {
-      await contract.addLocation(data.uri1, data.location1);
+      const res = await contract.addLocation(data.uri1, data.location1);
+      expect(res).to.be.null;
     } catch(e) {
       assert.typeOf(e, 'error', "No error was thrown");
     }
   });
 
   it("add a new location (location_2)", async () => {
-    console.log(data.uri2);
     const res = await contract.addLocation(data.uri2, data.location2, {from: accounts[0]});
     
     assert.isString(res.tx,"no transaction hash was returned");
