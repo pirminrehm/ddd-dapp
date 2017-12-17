@@ -10,7 +10,6 @@ let f8 = str => web3.fromUtf8(str);
 let t8 = str => web3.toUtf8(str);
 
 contract('Voting', (accounts) => {
-
   let contract;
   // beforeEach((done) => {
   //   Voting.deployed().then(instance => {
@@ -69,12 +68,16 @@ contract('Voting', (accounts) => {
       const votingName = await contract.getVotingName.call();
       expect(t8(votingName)).to.equal('init_test_voting');
     });
+
+    it('should not be possible to close the voting twice');
+    it('should not be possible to vote in a closed voting');
+    
   });
 
 
   describe('Story 1: Add Votes from different Accounts', () => {
     before(done => {
-      Voting.new(f8('story_voting'))
+      Voting.new(f8('story_1_voting'))
       .then(instance => {
         contract = instance;
         done();
@@ -134,13 +137,132 @@ contract('Voting', (accounts) => {
     });
   })
 
-  describe('Story 2: Simulate voting and close voting by 4 users', () => {
+  describe.only('Story 2: Simulate voting and close voting by 4 users', () => {
+    let winningLocation;
+
     before(done => {
-      Voting.new(f8('story_voting'))
+      Voting.new(f8('story_2_voting'))
       .then(instance => {
         contract = instance;
         done();
       });
+    });
+
+    it("should add many votes different accounts", async () => {
+      await contract.addVote(data.uri1, 10, {from: accounts[0]});
+      await contract.addVote(data.uri2, 10, {from: accounts[0]});
+      await contract.addVote(data.uri3, 5, {from: accounts[0]});
+      await contract.addVote(data.uri4, 5, {from: accounts[0]});
+      await contract.addVote(data.uri5, 70, {from: accounts[0]});
+
+      await contract.addVote(data.uri1, 1, {from: accounts[1]});
+      await contract.addVote(data.uri2, 3, {from: accounts[1]});
+      await contract.addVote(data.uri3, 1, {from: accounts[1]});
+      await contract.addVote(data.uri4, 5, {from: accounts[1]});
+      await contract.addVote(data.uri5, 90, {from: accounts[1]});
+
+      await contract.addVote(data.uri1, 100, {from: accounts[2]});
+      // await contract.addVote(data.uri2, 0, {from: accounts[2]});
+      // await contract.addVote(data.uri3, 0, {from: accounts[2]});
+      // await contract.addVote(data.uri4, 0, {from: accounts[2]});
+      // await contract.addVote(data.uri5, 0, {from: accounts[2]});
+
+      await contract.addVote(data.uri1, 3, {from: accounts[3]});
+      await contract.addVote(data.uri2, 90, {from: accounts[3]});
+      await contract.addVote(data.uri3, 2, {from: accounts[3]});
+      await contract.addVote(data.uri4, 5, {from: accounts[3]});
+      // await contract.addVote(data.uri5, 0, {from: accounts[3]});
+    });
+
+    it("should check account_0 points by address", async () => {
+      const res = await contract.getUserPointsByAddress.call(accounts[0]);
+      expect(res[0]).to.equal(accounts[0]);
+      expect(nr(res[1])).to.equal(100);
+    });
+
+    it("should check account_1 points by address", async () => {
+      const res = await contract.getUserPointsByAddress.call(accounts[1]);
+      expect(res[0]).to.equal(accounts[1]);
+      expect(nr(res[1])).to.equal(100);
+    });
+
+    it("should check account_2 points by address", async () => {
+      const res = await contract.getUserPointsByAddress.call(accounts[2]);
+      expect(res[0]).to.equal(accounts[2]);
+      expect(nr(res[1])).to.equal(100);
+    });
+
+    it("should check account_3 points by address", async () => {
+      const res = await contract.getUserPointsByAddress.call(accounts[3]);
+      expect(res[0]).to.equal(accounts[3]);
+      expect(nr(res[1])).to.equal(100);
+    });
+
+
+    it("should check location_1 points by uri", async () => {
+      const res = await contract.getLocationPointsByURI.call(data.uri1);
+      expect(t8(res[0])).to.equal(data.uri1);
+      expect(nr(res[1])).to.equal(114);
+    });
+
+    it("should check location_2 points by uri", async () => {
+      const res = await contract.getLocationPointsByURI.call(data.uri2);
+      expect(t8(res[0])).to.equal(data.uri2);
+      expect(nr(res[1])).to.equal(103);
+    });
+
+    it("should check location_3 points by uri", async () => {
+      const res = await contract.getLocationPointsByURI.call(data.uri3);
+      expect(t8(res[0])).to.equal(data.uri3);
+      expect(nr(res[1])).to.equal(8);
+    });
+
+    it("should check location_4 points by uri", async () => {
+      const res = await contract.getLocationPointsByURI.call(data.uri4);
+      expect(t8(res[0])).to.equal(data.uri4);
+      expect(nr(res[1])).to.equal(15);
+    });
+
+    it("should check location_5 points by uri", async () => {
+      const res = await contract.getLocationPointsByURI.call(data.uri5);
+      expect(t8(res[0])).to.equal(data.uri5);
+      expect(nr(res[1])).to.equal(160);
+    });
+
+    it("should close the voting and determine the winner", done => {
+      let noLogWasRecieved = true;
+      contract.VotingClosed().watch((error, log) => {
+        if(noLogWasRecieved) {
+          noLogWasRecieved = false;
+          expect(log).to.be.an('object');
+          expect(log.event).to.equal('VotingClosed');        
+          expect(log.args).to.be.an('object');
+          expect(log.args.winningLocation).to.be.a('string');
+          winningLocation = t8(log.args.winningLocation);
+          let random = nr(log.args.random);
+          let sumOfAllPoints = nr(log.args.sumOfAllPoints);
+          console.log('******* Location Points: ');
+          console.log('******* - mcd:  114');
+          console.log('******* - asia: 103');
+          console.log('******* - bc:   8');
+          console.log('******* - kfc:  15');
+          console.log('******* - sbw:  160');
+          console.log('******* Winning Location: ' + winningLocation);
+          console.log('******* Random:           ' + random);
+          console.log('******* SumOfAllPoints:   ' + sumOfAllPoints);
+          contract.VotingClosed().stopWatching();
+          done();
+        }
+      });
+
+      contract.closeVotingStochastic({from: accounts[0]}).then(res=> {
+        expect(res).not.to.be.null;
+      });
+    }).timeout(1000);
+
+    it("should get the winningLocation by getter", async () => {
+      const res = await contract.getWinningLocation.call();
+      expect(t8(res)).to.equal(winningLocation);
     });
   });
 });
