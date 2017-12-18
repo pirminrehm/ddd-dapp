@@ -24,7 +24,11 @@ contract Team {
   address[] private pendingMemberAddresses;
   mapping (address => MemberStruct) private pendingMemberStructs;
 
+  //***************** Events ******************//
+  //-------------------------------------------//
+
   event TokenCreated(bytes32 token);
+  event NewJoinRequest(address user);
 
   //************** Constructor ****************//
   //-------------------------------------------//
@@ -61,18 +65,19 @@ contract Team {
     pendingMemberStructs[msg.sender].invitationToken = token;
     pendingMemberStructs[msg.sender].avatarId = avatarId;
     pendingMemberAddresses.push(msg.sender);
+    NewJoinRequest(msg.sender);
   }
 
-  function acceptPendingMember(address pedingMemberAccount) public 
+  function acceptPendingMember(address pendingMemberAccount) public 
     isAMember(msg.sender)
     isNotAPendingMember(msg.sender)
-    isAPendingMember(pedingMemberAccount)
+    isAPendingMember(pendingMemberAccount)
     returns (bytes32 memberName) 
   {
-    memberAddresses.push(pedingMemberAccount);
-    memberStructs[pedingMemberAccount] = pendingMemberStructs[pedingMemberAccount];
-    removePendingMember(pedingMemberAccount);
-    return memberStructs[pedingMemberAccount].name;
+    memberAddresses.push(pendingMemberAccount);
+    memberStructs[pendingMemberAccount] = pendingMemberStructs[pendingMemberAccount];
+    removePendingMember(pendingMemberAccount);
+    return memberStructs[pendingMemberAccount].name;
   }
 
   //**************** Getter *******************//
@@ -90,25 +95,29 @@ contract Team {
   }
 
   function getMemberByIndex(uint index) public constant
-  returns (address account, bytes32 name, uint avatarId) {
+    returns (address account, bytes32 name, uint avatarId)
+  {
     MemberStruct storage m = memberStructs[memberAddresses[index]];
     return (m.account, m.name, m.avatarId);
   }
 
   function getMemberByAddress(address adr) public constant
-  returns (address account, bytes32 name, uint avatarId) {
+    returns (address account, bytes32 name, uint avatarId)
+  {
     MemberStruct storage m = memberStructs[adr];
     return (m.account, m.name, m.avatarId);
   }
 
   function getPendingMemberByIndex(uint index) public constant
-  returns (address account, bytes32 name, uint avatarId, bytes32 invitationToken) {
+    returns (address account, bytes32 name, uint avatarId, bytes32 invitationToken)
+  {
     MemberStruct storage m = pendingMemberStructs[pendingMemberAddresses[index]];
     return (m.account, m.name, m.avatarId, m.invitationToken);
   }
 
   function getPendingMemberByAddress(address adr) public constant
-  returns (address account, bytes32 name, uint avatarId, bytes32 invitationToken) {
+    returns (address account, bytes32 name, uint avatarId, bytes32 invitationToken)
+  {
     MemberStruct storage m = pendingMemberStructs[adr];
     return (m.account, m.name, m.avatarId, m.invitationToken);
   }

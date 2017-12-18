@@ -5,9 +5,9 @@ const data = require('./data.json');
 const expect = require('chai').expect;
 
 
-let nr = num => Number(num.toString(10));
-let f8 = str => web3.fromUtf8(str);
-let t8 = str => web3.toUtf8(str);
+const nr = num => Number(num.toString(10));
+const f8 = str => web3.fromUtf8(str);
+const t8 = str => web3.toUtf8(str);
 
 contract('Team', (accounts) => {
 
@@ -54,13 +54,24 @@ contract('Team', (accounts) => {
     });
    
     describe('user_0 invites user_1:', () => {
-      it("should create and return an invitation token", async () => {
-        const res = await contract.createInvitationToken({from: users[0].account});
-        expect(res).not.to.be.null;
-        expect(res.logs).to.be.an('array');
-        expect(res.logs[0].args).to.be.an('object');
-        expect(res.logs[0].args.token).to.be.a('string');
-        invitationToken = res.logs[0].args.token;
+      it("should create and return by event an invitation token", done => {
+        let noLogWasRecieved = true;
+        contract.TokenCreated().watch((error, log) => {
+          if(noLogWasRecieved) {
+            noLogWasRecieved = false;
+            expect(log).to.be.an('object');
+            expect(log.event).to.equal('TokenCreated');        
+            expect(log.args).to.be.an('object');
+            expect(log.args.token).to.be.a('string');
+            invitationToken = log.args.token;
+            contract.TokenCreated().stopWatching();
+            done();
+          }
+        });
+
+        contract.createInvitationToken({from: users[0].account}).then(res => { 
+          expect(res).not.to.be.null;
+        });
       });
 
       it("should not be possible to request an invitation token as non-member", async () => {
