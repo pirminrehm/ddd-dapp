@@ -5,7 +5,6 @@
   "scripts": {
     "lint": "ionic-app-scripts lint",
     "build": "ionic-app-scripts build",
-    "dev": "webpack-dev-server",
     "clean": "ionic-app-scripts clean",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve"
