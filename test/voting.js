@@ -9,14 +9,8 @@ let nr = num => Number(num.toString(10));
 let f8 = str => web3.fromUtf8(str);
 let t8 = str => web3.toUtf8(str);
 
-contract('Voting', (accounts) => {
+contract('Voting', accounts => {
   let contract;
-  // beforeEach((done) => {
-  //   Voting.deployed().then(instance => {
-  //     contract = instance;
-  //     done();
-  //   });
-  // });
 
   describe('Init-Tests', () => {
     beforeEach(done => {
@@ -101,7 +95,6 @@ contract('Voting', (accounts) => {
     it("should now have exacly one voted location", async () => {
       const count = await contract.getVotedLocationsCount.call();
       expect(nr(count)).to.equal(1);
-      
     });
   
     it("should get location_1 points by uri", async () => {
@@ -137,7 +130,7 @@ contract('Voting', (accounts) => {
     });
   })
 
-  describe.only('Story 2: Simulate voting and close voting by 4 users', () => {
+  describe('Story 2: Simulate voting and close voting by 4 users', () => {
     let winningLocation;
 
     before(done => {
@@ -241,15 +234,15 @@ contract('Voting', (accounts) => {
           winningLocation = t8(log.args.winningLocation);
           let random = nr(log.args.random);
           let sumOfAllPoints = nr(log.args.sumOfAllPoints);
-          console.log('******* Location Points: ');
-          console.log('******* - mcd:  114');
-          console.log('******* - asia: 103');
-          console.log('******* - bc:   8');
-          console.log('******* - kfc:  15');
-          console.log('******* - sbw:  160');
-          console.log('******* Winning Location: ' + winningLocation);
-          console.log('******* Random:           ' + random);
-          console.log('******* SumOfAllPoints:   ' + sumOfAllPoints);
+          // console.log('******* Location Points: ');
+          // console.log('******* - mcd:  114');
+          // console.log('******* - asia: 103');
+          // console.log('******* - bc:   8');
+          // console.log('******* - kfc:  15');
+          // console.log('******* - sbw:  160');
+          // console.log('******* Winning Location: ' + winningLocation);
+          // console.log('******* Random:           ' + random);
+          // console.log('******* SumOfAllPoints:   ' + sumOfAllPoints);
           contract.VotingClosed().stopWatching();
           done();
         }
