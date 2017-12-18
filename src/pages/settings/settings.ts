@@ -35,8 +35,6 @@ export class SettingsPage {
       account: ['', [Validators.required]],
       name: ['', Validators.required]
     });
-
-    this.settingsProvider.setTeamAddress('LOL');
   }
 
   async ionViewWillEnter() {
