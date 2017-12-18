@@ -5,21 +5,21 @@
   "scripts": {
     "lint": "ionic-app-scripts lint",
     "build": "ionic-app-scripts build",
-    "dev": "webpack-dev-server",
     "clean": "ionic-app-scripts clean",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve"
   },
   "license": "MIT",
   "devDependencies": {
+    "@ionic/app-scripts": "3.1.2",
+    "@types/node": "^8.0.20",
+    "chai": "^4.1.2",
     "css-loader": "^0.26.1",
     "json-loader": "^0.5.4",
     "style-loader": "^0.13.1",
     "truffle-contract": "^1.1.11",
-    "web3": "^0.20.0",
-    "@ionic/app-scripts": "3.1.2",
     "typescript": "2.4.2",
-    "@types/node": "^8.0.20"
+    "web3": "^0.20.0"
   },
   "dependencies": {
     "web3": "^0.20.2",
