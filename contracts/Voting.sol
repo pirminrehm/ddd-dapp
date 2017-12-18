@@ -6,6 +6,13 @@ contract Voting {
   //*************** Public Vars ***************//
   //-------------------------------------------//
   bytes32 public name;
+  bool public votingIsClosed = false;
+  bytes32 public winningLocation;
+
+  //**************/*** Events *****************//
+  //-------------------------------------------//
+
+  event VotingClosed(bytes32 winningLocation, uint random, uint sumOfAllPoints);
 
   //************** Private Vars ***************//
   //-------------------------------------------//  
@@ -25,6 +32,8 @@ contract Voting {
   //-------------------------------------------//
   function addVote (bytes32 locationURI, uint points) public 
     //missing: check for allowed votingUsers
+    //missing: check if location is valide
+    votingIsNotClosed()
     hasValidePoints(points)
     willNotExceed100Points(points) {
 
@@ -41,6 +50,29 @@ contract Voting {
       locationPoints[locationURI] = 0;
     }
     locationPoints[locationURI] += points;
+  }
+
+  function closeVotingStochastic () public 
+    //missing: check for allowed votingUsers
+    votingIsNotClosed() {
+    votingIsClosed = true;
+
+    uint sumOfAllPoints = 0;
+    for (uint i = 0; i < votedLocations.length; i++) {
+      sumOfAllPoints += locationPoints[votedLocations[i]];
+    }
+
+    uint random = uint(block.blockhash(block.number-1))%sumOfAllPoints + 1;
+
+    uint sumOfPointsUntilWinner = 0;
+    for (uint j = 0; j < votedLocations.length; j++) {
+      sumOfPointsUntilWinner += locationPoints[votedLocations[j]];
+      if (sumOfPointsUntilWinner >= random) {
+        winningLocation = votedLocations[j];
+        VotingClosed(winningLocation, random, sumOfAllPoints);
+        break;
+      }
+    }
   }
 
   //********* LocationPoints Getter ***********//
@@ -77,6 +109,10 @@ contract Voting {
     return name;
   }
 
+  function getWinningLocation() public constant returns (bytes32 winningLocationUri) {
+    return winningLocation;
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
   modifier hasValidePoints(uint points) {
@@ -88,6 +124,11 @@ contract Voting {
 
   modifier willNotExceed100Points(uint points) {
     require((userPoints[msg.sender]+points) <= 100);
+    _;
+  }
+
+  modifier votingIsNotClosed() {
+    require(!votingIsClosed);
     _;
   }
 }

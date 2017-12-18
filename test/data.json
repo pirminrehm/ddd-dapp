@@ -2,5 +2,11 @@
   "uri1": "mcd",
   "location1": "McDonalds",
   "uri2": "asia",
-  "location2": "AsiaHung"
+  "location2": "AsiaHung",
+  "uri3": "bc",
+  "location3": "Burger King",
+  "uri4": "kfc",
+  "location4": "Kentucky Fried Chicken",
+  "uri5": "sbw",
+  "location5": "Subway"
 }
