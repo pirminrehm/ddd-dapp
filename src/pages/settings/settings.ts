@@ -22,7 +22,6 @@ export class SettingsPage {
   
   settingsForm: FormGroup;
   accounts: Account[];
-  loaded = false;
   teamAddress: string = 'Not set';
 
   constructor(public navCtrl: NavController, 
@@ -38,8 +37,7 @@ export class SettingsPage {
   }
 
   async ionViewWillEnter() {
-    this.accounts = this.web3Provider
-      .getAccounts()
+    this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => new Account(address, `Account ${index}`));
 
     const name = await this.settingsProvider.getName();

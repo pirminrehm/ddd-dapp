@@ -34,10 +34,11 @@ export class VotingProvider {
 
   async getUserPointsByIndex(index: number): Promise<UserPoint> {
     const v = await this.call('getUserPointsByIndex', index);
+    const accounts = await this.web3Provider.getAccounts();
     return new UserPoint(
       //v[0] returns type 'address' -> do not cast toUtf8!
-      `Account: ${this.web3Provider.getAccounts().indexOf(v[0])}`, 
-      this.web3Provider.fromWeb3Number(v[1])
+      `Account: ${accounts.indexOf(v[0])}`, 
+      await this.web3Provider.fromWeb3Number(v[1])
     );
   }
 
@@ -50,7 +51,7 @@ export class VotingProvider {
     const v = await this.call('getLocationPointsByIndex', index);
     return new LocationPoint(
       `Location: ${this.web3Provider.fromWeb3String(v[0])}`, 
-      this.web3Provider.fromWeb3Number(v[1])
+      await this.web3Provider.fromWeb3Number(v[1])
     );
   }
 
@@ -58,8 +59,8 @@ export class VotingProvider {
   // TRANSACTIONS
 
   async addVote(address: string, uri: string, points: any) {
-    uri = this.web3Provider.toWeb3String(uri);
-    points = this.web3Provider.toWeb3Number(points);
+    uri = await this.web3Provider.toWeb3String(uri);
+    points = await this.web3Provider.toWeb3Number(points);
     
     const contract = await this.getContract()
     contract.addVote(uri, points, { from: address, gas: 3000000 });
@@ -99,7 +100,7 @@ export class VotingProvider {
     }
   }
 
-  private getContract(): any {
+  private async getContract(): Promise<any> {
     return this.web3Provider.getDeployedContract(votingArtifacts);
   }
 
