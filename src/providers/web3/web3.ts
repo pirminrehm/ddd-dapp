@@ -36,7 +36,6 @@ export class Web3Provider {
 
   async getAccounts() {
     await this.ready;
-    console.log(this.accounts);
     return this.accounts;
   }
 
@@ -109,7 +108,6 @@ export class Web3Provider {
         return;
       }
       this.accounts = accs;
-      console.log(2);
       this.account = this.accounts[0];
 
       // Resolve
