@@ -2,8 +2,6 @@
 
 `Developers Dining Dilemma` is a voting app for developers that promises security through Blockchain technology and the Ethereum network.
 
-This project bases on the [webpack-box](https://github.com/truffle-box/webpack-box) of truffle.
-
 ## Getting started
 
 1. Prerequisites: node 8.9.1. You can use nvm to support multiple node versions, run 
