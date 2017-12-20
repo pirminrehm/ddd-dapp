@@ -12,19 +12,14 @@ This project bases on the [webpack-box](https://github.com/truffle-box/webpack-b
   ```
 within this directory to install the supported version.
 
-2. Install truffle: 
+2. Install global packages: 
   ```shell
-  $ npm install -g truffle
+  $ npm install -g truffle cordova ionic
   ```
 
-3. Clone the `ws17-EthereumBlockchain` project:
+3. Clone the `ws17-EthereumBlockchain` project.
 
-  ```shell
-  $ git clone https://gitlab.mi.hdm-stuttgart.de/ma/ws17-EthereumBlockchain/
-  $ cd ws17-EthereumBlockchain
-  ```
-
-4. Install dependencies. We assume that you have already installed `npm` in your system.
+4. Install the project's dependencies.
 
   ```shell
   $ npm install
@@ -32,26 +27,34 @@ within this directory to install the supported version.
 
 ## Workflow
 
-  Open the console and start the development server:
+  Open the terminal and start the TestRPC and truffle development console:
 
   ```shell
   $ truffle develop 
   ```
 
-  Afterwards compile and migrate the contracts inside the development console:
+  Afterwards, migrate the contracts inside the development console:
 
   ```shell 
-  truffle(develop)> compile && migrate
+  truffle(develop)> migrate
   ``` 
+  
+  > Hint: After pulling a new version, delete the ./build folder to avoid issues.
+  
+  If you want to get a better unstanding of the interaction with TestRPC, 
+  open a new tab and run:
+  ```shell 
+  $ truffle develop --log
+   ``` 
 
 
-  Start the server in a second console tab / window:
+  Serve the ionic app in a second console tab / window:
   ```shell
-  $ npm run dev
+  $ ionic serve
   ```
 
-## Tests
-  Tests are written in `Mocha` and stored within the test folder. 
+## Truffle Tests
+  Truffle Tests are written in `Mocha` and stored within `./test`. 
 
   Run the tests with:
 
