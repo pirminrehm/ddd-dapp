@@ -50,7 +50,7 @@ export class VotingProvider {
   async getLocationPointsByIndex(index: number): Promise<LocationPoint> {
     const v = await this.call('getLocationPointsByIndex', index);
     return new LocationPoint(
-      `Location: ${this.web3Provider.fromWeb3String(v[0])}`, 
+      `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
       await this.web3Provider.fromWeb3Number(v[1])
     );
   }
