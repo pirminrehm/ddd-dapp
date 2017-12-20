@@ -1,5 +1,5 @@
+import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 const Web3 = require('web3');
 
@@ -16,15 +16,69 @@ declare var window: any;
 @Injectable()
 export class Web3Provider {
 
-  private loaded = new BehaviorSubject<boolean>(false);
+  private ready: Promise<any>;
 
   private web3: any;
   private account: string;
   private accounts: string[];
 
-  constructor() {}
-r
-  init() {
+  constructor(private platform: Platform) {
+    this.ready = new Promise((resolve,reject) => this.init(resolve,reject));
+  }
+
+
+  // GETTER
+
+  async getAccount() {
+    await this.ready;
+    return this.account;
+  }
+
+  async getAccounts() {
+    await this.ready;
+    return this.accounts;
+  }
+
+
+  // INTERACTORS
+
+  async toWeb3String(value: string) {
+    await this.ready;
+    return this.web3.fromUtf8(value);
+  }
+
+  async fromWeb3String(value: any) {
+    await this.ready;
+    return this.web3.toUtf8(value);
+  }
+
+  async toWeb3Number(value: number) {
+    await this.ready;
+    return this.web3.toBigNumber(value);
+  }
+
+  async fromWeb3Number(value: any) {
+    await this.ready;
+    return Number(value.toString(10));
+  }
+
+
+  // HELPERS
+
+  async getDeployedContract(artifact: any) {
+    await this.ready;
+
+    const location = contract(artifact);
+    location.setProvider(this.web3.currentProvider);
+    return location.deployed();
+  }
+
+
+
+
+  private async init(resolve,reject) {
+    await this.platform.ready();
+
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof window.web3 !== 'undefined') {
       console.warn(
@@ -43,10 +97,6 @@ r
     }
 
     // Query and init accounts
-    this.queryAccounts();
-  }
-
-  private queryAccounts() {
     this.web3.eth.getAccounts((err, accs) => {
       if (err != null) {
         alert('There was an error fetching your accounts.');
@@ -59,56 +109,9 @@ r
       }
       this.accounts = accs;
       this.account = this.accounts[0];
-      this.loaded.next(true);
+
+      // Resolve
+      resolve();
     });
-  }
-
-  isLoaded() {
-    return this.loaded.asObservable();
-  }
-
-
-  // GETTER
-
-  getAccount() {
-    if(!this.account) {
-      throw "Error fetching web3 accounts: Web3 not yet initialized";
-    }
-    return this.account;
-  }
-
-  getAccounts() {
-    if(!this.account) {
-      throw "Error fetching web3 accounts: Web3 not yet initialized";
-    }
-    return this.accounts;
-  }
-
-
-  // INTERACTORS
-
-  toWeb3String(value: string) {
-    return this.web3.fromUtf8(value);
-  }
-
-  fromWeb3String(value: any) {
-    return this.web3.toUtf8(value);
-  }
-
-  toWeb3Number(value: number) {
-    return this.web3.toBigNumber(value);
-  }
-
-  fromWeb3Number(value: any) {
-    return Number(value.toString(10));
-  }
-
-
-  // HELPERS
-
-  getDeployedContract(artifact: any) {
-    const location = contract(artifact);
-    location.setProvider(this.web3.currentProvider);
-    return location.deployed();
   }
 }

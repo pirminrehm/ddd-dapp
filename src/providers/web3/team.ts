@@ -34,7 +34,7 @@ export class TeamProvider {
   // TRANSACTIONS
 
   async sendJoinTeamRequest(account: string, name: string) {
-    name = this.web3Provider.toWeb3String(name);
+    name = await this.web3Provider.toWeb3String(name);
     const contract = await this.getContract();
     return contract.sendJoinTeamRequest(name, { from: account, gas: 3000000 });
   }
@@ -42,7 +42,7 @@ export class TeamProvider {
 
   // INTERNAL
 
-  private getContract(): any {
+  private async getContract(): Promise<any> {
     return this.web3Provider.getDeployedContract(teamArtifacts);
   }
 

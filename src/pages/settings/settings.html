@@ -1,0 +1,47 @@
+<!--
+  Generated template for the SettingsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Settings</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      Team: 
+      
+      <div class="team-address">
+        <span *ngIf="teamAddress; then showTeamAddress else noTeamAddress"></span>
+        <ng-template #showTeamAddress>
+          {{ teamAddress }}
+          <ion-icon name="close-circle" item-end (click)="removeTeamAddress()"></ion-icon>  
+        </ng-template>
+        <ng-template #noTeamAddress>No Team Address specified</ng-template>
+      </div>
+    </ion-item>
+
+    <form [formGroup]="settingsForm" (submit)="save()">
+      <ion-item>
+        <ion-label for="name">Name</ion-label>
+        <ion-input formControlName="name" text-right></ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label for="account">Account</ion-label>
+        <ion-select formControlName="account">    
+          <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
+        </ion-select>
+      </ion-item>
+      
+      <button ion-button block outline type="submit" [disabled]="settingsForm.invalid">Save settings</button>
+    </form>
+  </ion-list>
+</ion-content>

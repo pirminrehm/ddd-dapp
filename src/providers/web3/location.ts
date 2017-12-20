@@ -28,16 +28,16 @@ export class LocationProvider {
 
   async getLocationAtIndex(index: number): Promise<Location> {
     const v = await this.call('getLocationAtIndex', index);
+    const uri = await this.web3Provider.fromWeb3String(v[0]);
+    const name = await this.web3Provider.fromWeb3String(v[1]);
 
-    const uri = this.web3Provider.fromWeb3String(v[0]);
-    const name = this.web3Provider.fromWeb3String(v[1]);
     return new Location(uri, name);
   }
 
   async addLocation(uri, name) {
     const contract = await this.getContract();
     contract.addLocation(uri, name, {
-      from: this.web3Provider.getAccount(), 
+      from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });
   }
@@ -57,7 +57,7 @@ export class LocationProvider {
 
   // INTERNAL
 
-  private getContract(): any {
+  private async getContract(): Promise<any> {
     return this.web3Provider.getDeployedContract(locationArtifacts);
   }
 

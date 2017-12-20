@@ -53,7 +53,7 @@ export class VotingPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.accounts = this.web3Provider.getAccounts()
+    this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => (new Account(address, `Account ${index}`)));
 
     this.locations = await this.locationProvider.getAllLocations();

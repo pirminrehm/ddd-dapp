@@ -35,13 +35,8 @@ export class HomePage implements OnInit {
 
   async ionViewWillEnter() {
     // TODO: Do not mix Obseravbles and Promises this way...
-    this.web3Provider
-      .isLoaded()
-      .filter(loaded => loaded === true)
-      .subscribe(_ => {
-        this.accounts = this.web3Provider.getAccounts()
-          .map((address, index) => (new Account(address, `Account ${index}`)));
-      })
+    this.accounts = (await this.web3Provider.getAccounts())
+      .map((address, index) => (new Account(address, `Account ${index}`)));
     
     this.membersCount = await this.teamProvider.getMembersCount();
     this.pendingMembersCount = await this.teamProvider.getPendingMembersCount();
