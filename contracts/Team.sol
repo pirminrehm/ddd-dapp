@@ -152,7 +152,7 @@ contract Team {
   //***************** INTERNAL ****************//
   //-------------------------------------------//
   function generateToken() private view returns (bytes32 token) {
-    return keccak256(block.blockhash(0));
+    return keccak256(block.blockhash(block.number-1));
   }
   
   function removePendingMember(address addressToRemove) private {
