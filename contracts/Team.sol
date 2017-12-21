@@ -122,6 +122,10 @@ contract Team {
     return (m.account, m.name, m.avatarId, m.invitationToken);
   }
 
+  function checkMemberByAddress(address addr) public constant returns (bool isMember) {
+    return memberStructs[addr].account == addr;
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
   modifier isAPendingMember(address account) {

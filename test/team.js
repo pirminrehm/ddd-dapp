@@ -29,6 +29,11 @@ contract('Team', (accounts) => {
       const count = await contract.getMembersCount.call();
       expect(nr(count)).to.equal(1);
     });
+
+    it("should check if the creator-member exists", async () => {
+      const isMember = await contract.checkMemberByAddress.call(accounts[0]);
+      expect(isMember).to.be.true;
+    });
   });
   
   describe('Story 1:', () => {
