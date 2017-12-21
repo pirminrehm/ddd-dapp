@@ -234,15 +234,15 @@ contract('Voting', accounts => {
           winningLocation = t8(log.args.winningLocation);
           let random = nr(log.args.random);
           let sumOfAllPoints = nr(log.args.sumOfAllPoints);
-          // console.log('******* Location Points: ');
-          // console.log('******* - mcd:  114');
-          // console.log('******* - asia: 103');
-          // console.log('******* - bc:   8');
-          // console.log('******* - kfc:  15');
-          // console.log('******* - sbw:  160');
-          // console.log('******* Winning Location: ' + winningLocation);
-          // console.log('******* Random:           ' + random);
-          // console.log('******* SumOfAllPoints:   ' + sumOfAllPoints);
+          console.log('******* Location Points: ');
+          console.log('******* - mcd:  114');
+          console.log('******* - asia: 103');
+          console.log('******* - bc:   8');
+          console.log('******* - kfc:  15');
+          console.log('******* - sbw:  160');
+          console.log('******* Winning Location: ' + winningLocation);
+          console.log('******* Random:           ' + random);
+          console.log('******* SumOfAllPoints:   ' + sumOfAllPoints);
           contract.VotingClosed().stopWatching();
           done();
         }
