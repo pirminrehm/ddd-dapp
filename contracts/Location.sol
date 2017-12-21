@@ -12,7 +12,6 @@ contract Location {
 
   //************** Private Vars ***************//
   //-------------------------------------------//
-  address private teamAddress;
   Team private team;
 
   bytes32[] private uriList;
@@ -21,13 +20,16 @@ contract Location {
   //************** Constructor ****************//
   //-------------------------------------------//
   function Location(address teamAdr) public {
-    teamAddress = teamAdr;
-    team = Team(teamAddress);
+    team = Team(teamAdr);
   }
 
   //************** Transactions ***************//
   //-------------------------------------------//
-  function addLocation(bytes32 uri, bytes32 name) public uniqueUri(uri) returns(uint index) {
+  function addLocation(bytes32 uri, bytes32 name) public
+    isMember()
+    uniqueUri(uri)
+    returns(uint index)
+  {
     locationStructs[uri].uri = uri;
     locationStructs[uri].name = name;
     return uriList.push(uri) - 1;
@@ -50,8 +52,13 @@ contract Location {
 
   //***************** Modifier ****************//
   //-------------------------------------------//
-  modifier uniqueUri(bytes32 uri) { // Modifier
+  modifier uniqueUri(bytes32 uri) {
     require(locationStructs[uri].uri != uri);
+    _;
+  }
+
+  modifier isMember() { 
+    require(team.checkMemberByAddress(msg.sender));
     _;
   }
 }

@@ -16,9 +16,9 @@ contract('Location', (accounts) => {
   describe('Init-Test', () => {
     let contract;
     before(done => {
-      testHelper.createTeamWithAllAccounts(accounts)
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
       .then(teamContract => {
-        return Location.new() ///teamContract
+        return Location.new(teamContract)
       }).then(instance => {
         contract = instance;
         done();
@@ -38,14 +38,23 @@ contract('Location', (accounts) => {
       expect(res.receipt.gasUsed).to.be.gt(0);
       expect(res.receipt.transactionHash).to.be.a('string');
     });
+
+    it('should not add a new location from a non member account', async () => {
+      try {
+        const res = await contract.addLocation(data.uri2, data.location2, {from: accounts[5]});
+        expect(res).to.be.null;
+      } catch(e) {
+        expect(e).to.be.an('error');
+      }
+    });
   });
   
-  describe('Story 1: Add a two locations', () => {
+  describe('Story 1: Add two locations', () => {
     let contract;
     before(done => {
       testHelper.createTeamWithAllAccounts(accounts)
       .then(teamContract => {
-        return Location.new() ///teamContract
+        return Location.new(teamContract)
       }).then(instance => {
         contract = instance;
         done();
@@ -66,8 +75,8 @@ contract('Location', (accounts) => {
       expect(nr(count)).to.be.equal(1);
     });
 
-    it.skip('TODO: should be possible to get location_1 by index', async () => {
-      const res = await contract.getLocationAtIndex.call(0);
+    it('should be possible to get location_1 by index', async () => {
+      const res = await contract.getLocationByIndex.call(0);
       expect(t8(res[0])).to.equal(data.uri1);
       expect(t8(res[1])).to.equal(data.location1);
     });
@@ -84,7 +93,6 @@ contract('Location', (accounts) => {
         expect(res).to.be.null;
       } catch(e) {
         expect(e).to.be.an('error');
-
       }
     });
 
