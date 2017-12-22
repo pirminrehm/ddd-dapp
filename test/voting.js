@@ -2,12 +2,12 @@ const Voting = artifacts.require("./Voting.sol");
 Web3 = require("web3");
 const web3 = new Web3();
 const expect = require('chai').expect;
-const data = require('./data.json');
+const testHelper = require('./helper/testHelper')
+const data = require('./helper/data.json');
 
-
-let nr = num => Number(num.toString(10));
-let f8 = str => web3.fromUtf8(str);
-let t8 = str => web3.toUtf8(str);
+const nr = testHelper.nr;
+const f8 = testHelper.f8;
+const t8 = testHelper.t8;
 
 contract('Voting', accounts => {
   let contract;
@@ -234,6 +234,8 @@ contract('Voting', accounts => {
           winningLocation = t8(log.args.winningLocation);
           let random = nr(log.args.random);
           let sumOfAllPoints = nr(log.args.sumOfAllPoints);
+          // stochastic voting can not get tested automatically satisfying
+          // -> log voting and check manually
           console.log('******* Location Points: ');
           console.log('******* - mcd:  114');
           console.log('******* - asia: 103');

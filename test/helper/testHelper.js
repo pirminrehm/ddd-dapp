@@ -8,6 +8,10 @@ const nr = num => Number(num.toString(10));
 const f8 = str => web3.fromUtf8(str);
 const t8 = str => web3.toUtf8(str);
 
+module.exports.nr = nr;
+module.exports.f8 = f8;
+module.exports.t8 = t8;
+
 
 module.exports.createTeamWithAllAccounts =  async accounts => {
   let contract = await Team.new(f8('init_test_team'), f8('user_0'), 0, {from: accounts[0]});

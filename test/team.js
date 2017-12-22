@@ -1,13 +1,13 @@
 const Team = artifacts.require("./Team.sol");
 Web3 = require("web3");
 const web3 = new Web3();
-const data = require('./data.json');
+const data = require('./helper/data.json');
+const testHelper = require('./helper/testHelper');
 const expect = require('chai').expect;
 
-
-const nr = num => Number(num.toString(10));
-const f8 = str => web3.fromUtf8(str);
-const t8 = str => web3.toUtf8(str);
+const nr = testHelper.nr;
+const f8 = testHelper.f8;
+const t8 = testHelper.t8;
 
 contract('Team', (accounts) => {
 
