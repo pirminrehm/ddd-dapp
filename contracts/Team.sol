@@ -1,5 +1,7 @@
 pragma solidity 0.4.18;
 
+import "./Location.sol";
+
 
 contract Team {
 
@@ -16,6 +18,8 @@ contract Team {
 
   //************** Private Vars ***************//
   //-------------------------------------------//
+  address private locationAddress;
+
   mapping (bytes32 => bool) private invitationTokens;
 
   address[] private memberAddresses;
@@ -38,6 +42,7 @@ contract Team {
     memberStructs[msg.sender].name = creatorName;
     memberStructs[msg.sender].avatarId = creatorAvatarId;
     memberAddresses.push(msg.sender);
+    locationAddress = new Location(address(this));
   }
 
   //************** Transactions ***************//
@@ -124,6 +129,10 @@ contract Team {
 
   function checkMemberByAddress(address addr) public constant returns (bool isMember) {
     return memberStructs[addr].account == addr;
+  }
+
+  function getLocationAddress() public constant returns (address locationAddr) {
+    return locationAddress;
   }
 
   //***************** Modifier ****************//
