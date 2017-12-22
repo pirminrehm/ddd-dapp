@@ -1,6 +1,7 @@
 pragma solidity 0.4.18;
 
 import "./Location.sol";
+import "./Voting.sol";
 
 
 contract Team {
@@ -19,7 +20,8 @@ contract Team {
   //************** Private Vars ***************//
   //-------------------------------------------//
   address private locationAddress;
-
+  address[] private votingAddresses;
+ 
   mapping (bytes32 => bool) private invitationTokens;
 
   address[] private memberAddresses;
@@ -33,6 +35,7 @@ contract Team {
 
   event TokenCreated(bytes32 token);
   event NewJoinRequest(address user);
+  event VotingCreated(address votingAddress);
 
   //************** Constructor ****************//
   //-------------------------------------------//
@@ -85,6 +88,21 @@ contract Team {
     return memberStructs[pendingMemberAccount].name;
   }
 
+  function addVoting(bytes32 votingName) public 
+    isAMember(msg.sender)
+  {
+    address votingAddress = new Voting(votingName);
+    votingAddresses.push(votingAddress);
+    VotingCreated(votingAddress);
+  }
+
+  function closeVotingStochastic(address votingAddress) public
+    isAMember(msg.sender)
+  {
+    Voting voting = Voting(votingAddress);
+    voting.closeVotingStochastic();
+    removeVoting(votingAddress);
+  }
   //**************** Getter *******************//
   //-------------------------------------------//
   function getTeamName() public constant returns (bytes32 votingName) {
@@ -135,6 +153,14 @@ contract Team {
     return locationAddress;
   }
 
+  function getVotingsCount() public constant returns (uint memberCount) {
+    return votingAddresses.length;
+  }  
+  
+  function getVotingByIndex(uint index) public constant returns (address votingAddress) {
+    return votingAddresses[index];
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
   modifier isAPendingMember(address account) {
@@ -168,6 +194,7 @@ contract Team {
     return keccak256(block.blockhash(block.number-1));
   }
   
+  //TODO: Refactor and add check for success
   function removePendingMember(address addressToRemove) private {
     uint index = 0;
     bool success = false;
@@ -187,5 +214,25 @@ contract Team {
 
     //delte struct
     delete pendingMemberStructs[addressToRemove];
+  }
+
+  function removeVoting(address addressToRemove) private {
+    uint index = 0;
+    bool success = false;
+
+    for (uint j = index; j < votingAddresses.length-1; j++) {
+      if (votingAddresses[j] == addressToRemove) {
+        success = true;
+        index = i;
+      }
+    }
+    if (success) {
+      //move elements to the gap and delete the last (void) element
+      for (uint i = index; i < votingAddresses.length-1; i++) {
+        votingAddresses[i] = votingAddresses[i+1];
+      }
+      delete votingAddresses[votingAddresses.length-1];
+      votingAddresses.length--;
+    }
   }
 }

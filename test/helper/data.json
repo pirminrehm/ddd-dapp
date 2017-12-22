@@ -9,10 +9,8 @@
   "location4": "Kentucky Fried Chicken",
   "uri5": "sbw",
   "location5": "Subway",
-  "addressLocation0" : "0xa3a3112b6c00225f1aa331c2ebcd691d1de3f2bd",
-  "addressLocation1" : "0xc431b75250f84769294a1e0e665133336c71c0a0",
-  "addressVoting0" : "0x201d77d242924cf92b935f888b4816de64c14a16",
-  "addressVoting1" : "0xffa8ba8735365461f709852b66fd33c4a4246238",
-  "addressVoting2" : "0x9f624f4c68b6f7b0b7fd13f5850c11aed17187a3"
+  "votingName1" : "Test Voting 1",
+  "votingName2" : "Test Voting 2",
+  "fakeAddress":  "0x86106e3157f9908d9779196bfc018b09aa3b165a"
 
 }
