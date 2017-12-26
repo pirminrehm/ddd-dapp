@@ -7,57 +7,72 @@
 <ion-content padding>
 
 
-  <!-- CREATE TEAM -->
+  <!-- USER DOES NOT HAVE A TEAM -->
+  <div *ngIf="!(teamAddress | async)">
+    <p class="hint">
+      Before you start voting, please join a team. You can create your own team 
+      or join an existing team by using a qr code.
+    </p>
 
-  <ion-card *ngIf="!(teamAddress | async)">
-    <ion-card-header>Create a team</ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="createTeamForm" (submit)="createTeam()">
-        
-        <ion-item>
-          <ion-label for="name">Team name</ion-label>
-          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
-        </ion-item>
+    <!-- CREATE A NEW TEAM -->
+    <ion-card>
+      <ion-card-header>Create a team</ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="createTeamForm" (submit)="createTeam()">
+          
+          <ion-item>
+            <ion-label for="name">Team name:</ion-label>
+            <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+          </ion-item>
 
-        <ion-item>
-          <ion-label for="creatorName">Your name</ion-label>
-          <ion-input class="form-control" type="text" formControlName="creatorName"></ion-input>
-        </ion-item>
-        
-        <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
-    
-      </form>
-    </ion-card-content>
-  </ion-card>
+          <ion-item>
+            <ion-label for="creatorName">Your name:</ion-label>
+            <ion-input class="form-control" type="text" formControlName="creatorName"></ion-input>
+          </ion-item>
+          
+          <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
+      
+        </form>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card>
-    <ion-card-header>Join the team</ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="teamForm" (submit)="sendJoinTeamRequest()">
-        
-        <ion-item>
-          <ion-label for="address">Account</ion-label>
-          <ion-select formControlName="address">    
-            <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
-          </ion-select>
-        </ion-item>
+    <!-- JOIN AN EXISTING TEAM -->
+    <ion-card>
+      <ion-card-header>Join an existing team</ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="teamForm" (submit)="sendJoinTeamRequest()">
+          
+          <ion-item>
+            <ion-label for="address">Account</ion-label>
+            <ion-select formControlName="address">    
+              <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
+            </ion-select>
+          </ion-item>
 
-        <ion-item>
-          <ion-label for="name">Name:</ion-label>
-          <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
-        </ion-item>
-        
-        <button ion-button type="submit" [disabled]="loading || teamForm.invalid || teamForm.pristine">Send join team request</button>
-    
-      </form>
-    </ion-card-content>
-  </ion-card>
+          <ion-item>
+            <ion-label for="name">Name:</ion-label>
+            <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
+          </ion-item>
+          
+          <button ion-button type="submit" [disabled]="loading || teamForm.invalid || teamForm.pristine">Send join team request</button>
+      
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
-  <ion-card>
-    <ion-card-header>Stats</ion-card-header>
-    <ion-list>
-      <ion-item>Members Count: {{ membersCount }}</ion-item>
-      <ion-item>Pending Members Count: {{ pendingMembersCount }}</ion-item>
-    </ion-list>
-  </ion-card>
+  <!-- USER HAS A TEAM -->
+  <div *ngIf="(teamAddress | async)">
+    <p class="hint">
+      Glad to see that you're a team member. Invite your friends and start votings now.
+    </p>
+
+    <ion-card>
+      <ion-card-header>Stats</ion-card-header>
+      <ion-list>
+        <ion-item>Members Count: {{ membersCount }}</ion-item>
+        <ion-item>Pending Members Count: {{ pendingMembersCount }}</ion-item>
+      </ion-list>
+    </ion-card>
+  </div>
 </ion-content>
