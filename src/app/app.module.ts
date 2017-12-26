@@ -21,11 +21,13 @@ import { VotingProvider } from '../providers/web3/voting';
 import { TeamProvider } from './../providers/web3/team';
 import { SettingsProvider } from './../providers/storage/settings';
 import { SettingsPageModule } from '../pages/settings/settings.module';
+import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 
 @NgModule({
   declarations: [
     MyApp,
     TeamPage,
+    TeamJoinRequestPage,
     LocationPage,
     VotingPage,
     TabsPage
@@ -41,6 +43,7 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
   entryComponents: [
     MyApp,
     TeamPage,
+    TeamJoinRequestPage,
     LocationPage,
     VotingPage,
     TabsPage

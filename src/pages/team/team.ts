@@ -1,11 +1,13 @@
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from 'ionic-angular';
+import { NavController, ModalController } from 'ionic-angular';
 
 import { Web3Provider } from './../../providers/web3/web3';
 import { TeamProvider } from './../../providers/web3/team';
 import { Account } from './../../models/account';
+import { TeamJoinRequestPage } from '../team-join-request/team-join-request';
 
 
 import 'rxjs/add/operator/filter';
@@ -21,17 +23,18 @@ export class TeamPage implements OnInit {
 
   invitationTokenIsLoading = false;
   invitationToken: string;
-
-  teamForm: FormGroup;  
+  
   accounts: Account[];
   // membersCount: number;
   // pendingMembersCount: number;
 
   constructor(public navCtrl: NavController, 
+              private modalCtrl: ModalController,
               private web3Provider: Web3Provider,
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private barcodeScanner: BarcodeScanner) {
   }
 
   ngOnInit() {
@@ -39,11 +42,6 @@ export class TeamPage implements OnInit {
       name: ['', Validators.required],
       creatorName: ['', Validators.required]
       // TODO: Add Avatar ID
-    });
-
-    this.teamForm = this.fb.group({
-      address: ['', [Validators.required]],
-      name: ['', [Validators.required]]
     });
   }
 
@@ -84,14 +82,17 @@ export class TeamPage implements OnInit {
     this.invitationToken = null;
   }
 
-  async sendJoinTeamRequest() {
-    try {
-      const address = this.teamForm.value.address;
-      const name = this.teamForm.value.name;
-      await this.teamProvider.sendJoinTeamRequest(address, name);
-    } catch(e) {
-      alert('An error occurred, maybe already a pending user?');
-    }
+
+  async scanInvitationToken() {
+    // const data = await this.barcodeScanner.scan();
+    const token = await Promise.resolve('TEST_CODE');
+    let modal = this.modalCtrl.create(TeamJoinRequestPage, {token: token})
+
+    modal.onDidDismiss(data => {
+      // this.user = data.userName;
+    });
+
+    modal.present();
   }
 }
  

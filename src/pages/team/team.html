@@ -37,30 +37,13 @@
     </ion-card>
 
     <!-- JOIN AN EXISTING TEAM -->
-    <!-- <button ion-button full icon-left (click)="scanInvitationToken()" color="secondary">
-      <ion-icon name="qr-scanner"></ion-icon>Scan an invitation token
-    </button> -->
     
     <ion-card>
       <ion-card-header>Join an existing team</ion-card-header>
       <ion-card-content>
-        <form [formGroup]="teamForm" (submit)="sendJoinTeamRequest()">
-          
-          <ion-item>
-            <ion-label for="address">Account</ion-label>
-            <ion-select formControlName="address">    
-              <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label for="name">Name:</ion-label>
-            <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
-          </ion-item>
-          
-          <button ion-button type="submit" [disabled]="loading || teamForm.invalid || teamForm.pristine">Send join team request</button>
-      
-        </form>
+        <button ion-button outline block icon-left (click)="scanInvitationToken()">
+          <ion-icon name="qr-scanner"></ion-icon>Scan an invitation token
+        </button>
       </ion-card-content>
     </ion-card>
   </div>
