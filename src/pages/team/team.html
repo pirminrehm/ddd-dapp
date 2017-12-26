@@ -5,7 +5,30 @@
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Dining Developers Dilemma!</h2>
+
+
+  <!-- CREATE TEAM -->
+
+  <ion-card *ngIf="!(teamAddress | async)">
+    <ion-card-header>Create a team</ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="createTeamForm" (submit)="createTeam()">
+        
+        <ion-item>
+          <ion-label for="name">Team name</ion-label>
+          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label for="creatorName">Your name</ion-label>
+          <ion-input class="form-control" type="text" formControlName="creatorName"></ion-input>
+        </ion-item>
+        
+        <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
+    
+      </form>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card>
     <ion-card-header>Join the team</ion-card-header>

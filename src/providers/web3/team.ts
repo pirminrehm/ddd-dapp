@@ -1,3 +1,4 @@
+import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
 
 import { Web3Provider } from './web3';
@@ -14,7 +15,8 @@ const teamArtifacts = require('../../../build/contracts/Team.json');
 @Injectable()
 export class TeamProvider {
 
-  constructor(private web3Provider: Web3Provider) {
+  constructor(private web3Provider: Web3Provider,
+              private settingsProvider: SettingsProvider) {
   }
 
 
@@ -32,6 +34,18 @@ export class TeamProvider {
 
 
   // TRANSACTIONS
+
+  async createTeam(name: string, creatorName: string) {
+    name = await this.web3Provider.toWeb3String(name);
+    creatorName = await this.web3Provider.toWeb3String(creatorName);
+    
+    const contract = await this.web3Provider.getRawContract(teamArtifacts);
+    const account = await this.web3Provider.getAccount();
+    
+    const team = await contract.new(name, creatorName, {from: account, gas: 3000000});
+    await this.settingsProvider.setTeamAddress(team.address);
+    return team;
+  }
 
   async sendJoinTeamRequest(account: string, name: string) {
     name = await this.web3Provider.toWeb3String(name);

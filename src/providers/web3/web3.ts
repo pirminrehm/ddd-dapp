@@ -64,13 +64,16 @@ export class Web3Provider {
 
 
   // HELPERS
-
-  async getDeployedContract(artifact: any) {
+  async getRawContract(artifact: any) {
     await this.ready;
 
     const location = contract(artifact);
     location.setProvider(this.web3.currentProvider);
-    return location.deployed();
+    return location;
+  }
+
+  async getDeployedContract(artifact: any) {
+    return (await this.getRawContract(artifact)).deployed();
   }
 
 
