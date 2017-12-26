@@ -55,18 +55,18 @@
     </p>
 
     <!-- CREATE INVITATION TOKEN -->
-    <button ion-button outline block icon-left *ngIf="!invitationToken && !invitationTokenIsLoading" (click)="createInvitationToken()">
+    <button ion-button outline block icon-left *ngIf="!teamInvitation && !invitationTokenIsLoading" (click)="createInvitationToken()">
       <ion-icon name="barcode"></ion-icon>Create invitation token
     </button>
     
     <ion-card>
       <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
       
-      <ngx-qrcode *ngIf="!invitationTokenIsLoading && invitationToken" [qrc-value]="invitationToken"></ngx-qrcode>
+      <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
       
-      <ion-navbar *ngIf="invitationToken">
+      <ion-navbar *ngIf="teamInvitation">
         <ion-buttons start>
-          <button ion-button (click)="killInvitationToken()">Kill token</button>
+          <button ion-button (click)="deleteInvitationToken()">Delete token</button>
         </ion-buttons>
         <ion-buttons end>
           <button ion-button (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">Refresh token</button>

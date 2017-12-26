@@ -7,6 +7,7 @@ import { NavController, ModalController } from 'ionic-angular';
 import { Web3Provider } from './../../providers/web3/web3';
 import { TeamProvider } from './../../providers/web3/team';
 import { Account } from './../../models/account';
+import { TeamInvitation } from './../../models/team-invitation';
 import { TeamJoinRequestPage } from '../team-join-request/team-join-request';
 
 
@@ -22,8 +23,8 @@ export class TeamPage implements OnInit {
   teamAddress: Promise<Boolean>;
 
   invitationTokenIsLoading = false;
-  invitationToken: string;
-  
+  teamInvitation: TeamInvitation;
+
   accounts: Account[];
   // membersCount: number;
   // pendingMembersCount: number;
@@ -70,16 +71,16 @@ export class TeamPage implements OnInit {
 
   createInvitationToken() {
     this.invitationTokenIsLoading = true;
-    this.teamProvider.onTokenCreated().then(token => {
-      this.invitationToken = token;
+    this.teamProvider.onTokenCreated().then((teamInvitation: TeamInvitation) => {
+      this.teamInvitation = teamInvitation;
       this.invitationTokenIsLoading = false;
     });
 
     this.teamProvider.createInvitationToken();
   }
 
-  killInvitationToken() {
-    this.invitationToken = null;
+  deleteInvitationToken() {
+    this.teamInvitation = null;
   }
 
 
