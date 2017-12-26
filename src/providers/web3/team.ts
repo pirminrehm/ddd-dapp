@@ -47,6 +47,12 @@ export class TeamProvider {
     return team;
   }
 
+  async createInvitationToken() {
+    const contract = await this.getContract();
+    const account = await this.web3Provider.getAccount();
+    return contract.createInvitationToken({from: account});
+  }
+
   async sendJoinTeamRequest(account: string, name: string) {
     name = await this.web3Provider.toWeb3String(name);
     const contract = await this.getContract();
@@ -54,10 +60,18 @@ export class TeamProvider {
   }
 
 
+  // EVENTS
+
+  async onTokenCreated(callback: any) {
+    const TokenCreated = (await this.getContract()).TokenCreated(); 
+    this.listenTo(TokenCreated, args => callback(args.token));
+  }
+
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    return this.web3Provider.getDeployedContract(teamArtifacts);
+    const address = await this.settingsProvider.getTeamAddress();
+    return this.web3Provider.getContractAt(teamArtifacts, address);
   }
 
   private async call(name: string, ...params): Promise<any> {
@@ -67,6 +81,17 @@ export class TeamProvider {
     } catch(e) {
       e => this.handleError(e);
     }
+  }
+
+  private listenTo(Event: any, callback: any) {
+    Event.watch((err, result) => {
+      if(err) {
+        throw err;
+      }
+      
+      callback(result.args);
+      Event.stopWatching();
+    });
   }
 
   private handleError(e: Error) {
