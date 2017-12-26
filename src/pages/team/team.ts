@@ -10,10 +10,10 @@ import { Account } from './../../models/account';
 import 'rxjs/add/operator/filter';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-team',
+  templateUrl: 'team.html'
 })
-export class HomePage implements OnInit {
+export class TeamPage implements OnInit {
 
   teamForm: FormGroup;  
   accounts: Account[];
