@@ -1,4 +1,4 @@
-page-home {
+page-team {
   h2 {
     margin-bottom: 40px;
   }
@@ -8,6 +8,11 @@ page-home {
   }
 
   ion-card-header {
+    color: #32db64 !important;
     font-weight: bold;
+  }
+
+  .hint {
+    padding: 12px 0;
   }
 }

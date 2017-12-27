@@ -6,7 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MyApp } from './app.component';
 
-import { HomePage } from '../pages/home/home';
+import { TeamPage } from '../pages/team/team';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LocationPage } from './../pages/location/location';
 import { VotingPage } from './../pages/voting/voting';
@@ -21,7 +21,7 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
+    TeamPage,
     LocationPage,
     VotingPage,
     TabsPage
@@ -35,7 +35,7 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
+    TeamPage,
     LocationPage,
     VotingPage,
     TabsPage
