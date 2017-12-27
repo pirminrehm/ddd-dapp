@@ -72,7 +72,7 @@ export class TeamPage implements OnInit {
 
   createInvitationToken() {
     this.invitationTokenIsLoading = true;
-    this.teamProvider.onTokenCreated(token => {
+    this.teamProvider.onTokenCreated().then(token => {
       this.invitationToken = token;
       this.invitationTokenIsLoading = false;
     });

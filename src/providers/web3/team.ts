@@ -62,9 +62,9 @@ export class TeamProvider {
 
   // EVENTS
 
-  async onTokenCreated(callback: any) {
+  async onTokenCreated(): Promise<string> {
     const TokenCreated = (await this.getContract()).TokenCreated(); 
-    this.listenTo(TokenCreated, args => callback(args.token));
+    return this.listenOnce(TokenCreated).then(args => args.token);
   }
 
   // INTERNAL
@@ -83,14 +83,17 @@ export class TeamProvider {
     }
   }
 
-  private listenTo(Event: any, callback: any) {
-    Event.watch((err, result) => {
-      if(err) {
-        throw err;
-      }
-      
-      callback(result.args);
-      Event.stopWatching();
+  private listenOnce(Event: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Event.watch((err, result) => {
+        if(err) {
+          reject(err);
+          throw err;
+        }
+        
+        resolve(result.args);
+        Event.stopWatching();
+      });
     });
   }
 
