@@ -19,10 +19,13 @@ export class TeamPage implements OnInit {
   createTeamForm: FormGroup;
   teamAddress: Promise<Boolean>;
 
+  invitationTokenIsLoading = false;
+  invitationToken: string;
+
   teamForm: FormGroup;  
   accounts: Account[];
-  membersCount: number;
-  pendingMembersCount: number;
+  // membersCount: number;
+  // pendingMembersCount: number;
 
   constructor(public navCtrl: NavController, 
               private web3Provider: Web3Provider,
@@ -52,8 +55,8 @@ export class TeamPage implements OnInit {
     this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => (new Account(address, `Account ${index}`)));
     
-    this.membersCount = await this.teamProvider.getMembersCount();
-    this.pendingMembersCount = await this.teamProvider.getPendingMembersCount();
+    // this.membersCount = await this.teamProvider.getMembersCount();
+    // this.pendingMembersCount = await this.teamProvider.getPendingMembersCount();
   }
 
   async createTeam() {
@@ -65,6 +68,20 @@ export class TeamPage implements OnInit {
       alert('An error occured while creating the team');
       console.log(e);
     }
+  }
+
+  createInvitationToken() {
+    this.invitationTokenIsLoading = true;
+    this.teamProvider.onTokenCreated().then(token => {
+      this.invitationToken = token;
+      this.invitationTokenIsLoading = false;
+    });
+
+    this.teamProvider.createInvitationToken();
+  }
+
+  killInvitationToken() {
+    this.invitationToken = null;
   }
 
   async sendJoinTeamRequest() {

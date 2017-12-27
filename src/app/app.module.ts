@@ -4,6 +4,10 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+
 import { MyApp } from './app.component';
 
 import { TeamPage } from '../pages/team/team';
@@ -30,7 +34,8 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
-    SettingsPageModule
+    SettingsPageModule,
+    NgxQRCodeModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -48,7 +53,8 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
     SettingsProvider,
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BarcodeScanner
   ]
 })
 export class AppModule {}

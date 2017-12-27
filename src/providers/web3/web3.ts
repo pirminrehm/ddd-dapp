@@ -76,6 +76,10 @@ export class Web3Provider {
     return (await this.getRawContract(artifact)).deployed();
   }
 
+  async getContractAt(artifact: any, address:string) {
+    return (await this.getRawContract(artifact)).at(address);
+  }
+
 
 
 

@@ -15,4 +15,12 @@ page-team {
   .hint {
     padding: 12px 0;
   }
+
+
+  .qrcode-placeholder {
+    /* TODO: Should be improved */
+    background: white;
+    min-width: 180px;
+    min-height: 180px;
+  }
 }
