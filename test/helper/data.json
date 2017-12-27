@@ -8,5 +8,9 @@
   "uri4": "kfc",
   "location4": "Kentucky Fried Chicken",
   "uri5": "sbw",
-  "location5": "Subway"
+  "location5": "Subway",
+  "votingName1" : "Test Voting 1",
+  "votingName2" : "Test Voting 2",
+  "fakeAddress":  "0x86106e3157f9908d9779196bfc018b09aa3b165a"
+
 }
