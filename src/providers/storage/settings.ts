@@ -26,6 +26,12 @@ export class SettingsProvider {
     return await this.get('team-address');
   }
 
+  async getAvatarId() {
+    return 0;
+    // TODO: return await this.get('avatar-id');
+  }
+  
+
   async setName(value: string) {
     return await this.set('name', value);
   }

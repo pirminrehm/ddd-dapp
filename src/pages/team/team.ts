@@ -71,7 +71,7 @@ export class TeamPage implements OnInit {
 
   createInvitationToken() {
     this.invitationTokenIsLoading = true;
-    this.teamProvider.onTokenCreated().then((teamInvitation: TeamInvitation) => {
+    this.teamProvider.onTokenCreated().then(teamInvitation => {
       this.teamInvitation = teamInvitation;
       this.invitationTokenIsLoading = false;
     });
@@ -86,8 +86,17 @@ export class TeamPage implements OnInit {
 
   async scanInvitationToken() {
     // const data = await this.barcodeScanner.scan();
-    const token = await Promise.resolve('TEST_CODE');
-    let modal = this.modalCtrl.create(TeamJoinRequestPage, {token: token})
+        
+    // TODO: More tokens...
+    // "0xc70e3c8a277a23c7c5b16a9ac991714062dd3fc383eb3b1b80419d9c318e7232"
+    // 
+    const qrData = await Promise.resolve({
+      address: '0xd6b61cad80dbe2fe26fa672b8ec2fdaf002cebbc', 
+      token: '0xc70e3c8a277a23c7c5b16a9ac991714062dd3fc383eb3b1b80419d9c318e7232'
+    });
+    
+    console.log(qrData)
+    let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
 
     modal.onDidDismiss(data => {
       // this.user = data.userName;

@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>TeamJoinRequestPage</ion-title>
+    <ion-title>Join a team</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -21,6 +21,6 @@
         <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
       </ion-item>
       
-      <button ion-button outline block type="submit" [disabled]="joinRequestForm.invalid || joinRequestForm.pristine">Send join team request</button>
+      <button ion-button outline block type="submit" [disabled]="joinRequestForm.invalid">Send join team request</button>
   </form>
 </ion-content>

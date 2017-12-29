@@ -54,11 +54,13 @@ export class TeamProvider {
     return contract.createInvitationToken({from: account});
   }
 
-  async sendJoinTeamRequest(teamAddress: string, token: string, name: string) {
+  async sendJoinTeamRequest(teamAddress: string, token: string, name: string, avatarId: number) {
     name = await this.web3Provider.toWeb3String(name);
+    // TODO: avatarId = await this.web3Provider.toWeb3Number(avatarId);
     const contract = await this.web3Provider.getContractAt(teamArtifacts, teamAddress);
     const account = await this.web3Provider.getAccount();
-    return contract.sendJoinTeamRequest(token, name, {from: account, gas: 3000000});
+    
+    return contract.sendJoinTeamRequest(token, name, avatarId, {from: account, gas: 3000000});
   }
 
 
@@ -66,8 +68,8 @@ export class TeamProvider {
 
   async onTokenCreated(): Promise<any> {
     const TokenCreated = (await this.getContract()).TokenCreated(); 
-    return this.listenOnce(TokenCreated)
-      .then(res => new TeamInvitation(res.address, res.args.token));
+    const res = await this.listenOnce(TokenCreated);
+    return new TeamInvitation(res.address, res.args.token);
   }
 
   // INTERNAL

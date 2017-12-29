@@ -1,6 +1,6 @@
 export class TeamInvitation {
-  private address: string;
-  private token: string;
+  public address: string;
+  public token: string;
 
   constructor(address: string, token: string) {
     this.address = address;
