@@ -20,6 +20,7 @@ export class TeamJoinRequestPage {
   private teamAddress: string = this.navParams.get('address');
 
   joinRequestForm: FormGroup;
+  requestFailed: boolean;
 
   constructor(public navParams: NavParams,
               private fb: FormBuilder,
@@ -39,6 +40,8 @@ export class TeamJoinRequestPage {
       name: await this.settingsProvider.getName(),
       avatarId: await this.settingsProvider.getAvatarId()
     });
+
+    this.requestFailed = false;
   }
 
   async sendJoinTeamRequest() {
@@ -47,9 +50,12 @@ export class TeamJoinRequestPage {
       await this.teamProvider.sendJoinTeamRequest(this.teamAddress, this.token, name, 0 /* TODO: AVATAR VAL */);
       this.viewCtrl.dismiss();
     } catch(e) {
-      alert('An error occurred, maybe already a pending user?');
+      this.requestFailed = true;
       console.log(e);
     }
   }
 
+  dismiss() {
+    this.viewCtrl.dismiss();
+  }
 }

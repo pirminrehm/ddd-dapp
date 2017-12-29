@@ -23,4 +23,9 @@
       
       <button ion-button outline block type="submit" [disabled]="joinRequestForm.invalid">Send join team request</button>
   </form>
+
+  <ion-card class="request-failed" *ngIf="requestFailed">
+    The join team request failed. Maybe your invitation token is invalid or may be expired.
+  </ion-card>
+  <button ion-button outline block color="danger" (click)="dismiss()">Close modal</button>
 </ion-content>
