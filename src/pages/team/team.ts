@@ -85,23 +85,15 @@ export class TeamPage implements OnInit {
 
 
   async scanInvitationToken() {
+    // TODO: Implement native QR Code Functionality
     // const data = await this.barcodeScanner.scan();
-        
-    // TODO: More tokens...
-    // "0xc70e3c8a277a23c7c5b16a9ac991714062dd3fc383eb3b1b80419d9c318e7232"
-    // 
+
     const qrData = await Promise.resolve({
       address: '0xd6b61cad80dbe2fe26fa672b8ec2fdaf002cebbc', 
       token: '0xc70e3c8a277a23c7c5b16a9ac991714062dd3fc383eb3b1b80419d9c318e7232'
     });
-    
-    console.log(qrData)
+
     let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
-
-    modal.onDidDismiss(data => {
-      // this.user = data.userName;
-    });
-
     modal.present();
   }
 }
