@@ -6,6 +6,7 @@ import { Web3Provider } from './web3';
 const locationArtifacts = require('../../../build/contracts/Location.json');
 
 import { Location } from './../../models/location';
+import { TeamProvider } from './team';
 
 /*
   Generated class for the Locations provider.
@@ -16,7 +17,8 @@ import { Location } from './../../models/location';
 @Injectable()
 export class LocationProvider {
 
-  constructor(private web3Provider: Web3Provider) {
+  constructor(private web3Provider: Web3Provider,
+              private teamProvider: TeamProvider) {
   }
 
   // CONTRACT ACCESSORS
@@ -58,7 +60,8 @@ export class LocationProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    return this.web3Provider.getDeployedContract(locationArtifacts);
+    const address = await this.teamProvider.getLocationAddress();
+    return this.web3Provider.getContractAt(locationArtifacts, address);
   }
 
   private async call(name: string, ...params): Promise<any> {
