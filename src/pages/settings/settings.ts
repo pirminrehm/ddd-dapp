@@ -52,6 +52,8 @@ export class SettingsPage {
     });
 
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
+    
+    this.teamName$ = null;
     if(await this.teamAddress$) {
       this.teamName$ = this.teamProvider.getTeamName();
     }

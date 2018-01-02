@@ -23,6 +23,7 @@ import { SettingsProvider } from './../providers/storage/settings';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 import { NotificationProvider } from '../providers/notification/notification';
+import { CacheProvider } from '../providers/storage/cache';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { NotificationProvider } from '../providers/notification/notification';
     VotingProvider,
     TeamProvider,
     SettingsProvider,
+    CacheProvider,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
