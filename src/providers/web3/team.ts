@@ -3,6 +3,7 @@ import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
 
 import { Web3Provider } from './web3';
+import { PendingMember } from '../../models/pending-member';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
@@ -37,6 +38,14 @@ export class TeamProvider {
     return this.call('getLocationAddress');
   }
 
+  async getPendingMemberByIndex(index: number): Promise<PendingMember> {
+    const v = await this.call('getPendingMemberByIndex', index);
+    const name = await this.web3Provider.fromWeb3String(v[1]);
+    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+
+    return new PendingMember(v[0], name, avatarId, v[3]);
+  }
+
   // TRANSACTIONS
 
   async createTeam(name: string, creatorName: string) {
@@ -66,6 +75,11 @@ export class TeamProvider {
     return contract.sendJoinTeamRequest(token, name, avatarId, {from: account, gas: 3000000});
   }
 
+  async acceptPendingMember(address: string) {
+    const contract = await this.getContract();
+    const account = await this.web3Provider.getAccount();
+    return contract.acceptPendingMember(address, {from: account, gas: 3000000});
+  }
 
   // EVENTS
 
@@ -74,6 +88,20 @@ export class TeamProvider {
     const res = await this.listenOnce(TokenCreated);
     return new TeamInvitation(res.address, res.args.token);
   }
+
+
+  // HELPERS
+
+  async getPendingMembers(): Promise<PendingMember[]> {
+    const count = await this.getPendingMembersCount();
+    const pendingMembers = [];
+    for(let i = 0; i < count; i++) {
+      pendingMembers.push(await this.getPendingMemberByIndex(i));
+    }
+    return pendingMembers;
+  }
+
+
 
   // INTERNAL
 

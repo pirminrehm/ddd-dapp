@@ -74,6 +74,35 @@
       </ion-navbar>
     </ion-card>
 
+    <!-- APPROVE PENDING MEMBERS -->
+
+    <ion-card>
+      <ion-card-header>Approve pending members</ion-card-header>
+      <ion-card-content *ngIf="(pendingMembers | async)?.length == 0">No pending invitations</ion-card-content>
+      <ion-list *ngIf="pendingMembers">
+        <ion-item-sliding *ngFor="let pendingMember of pendingMembers | async">
+          <ion-item>
+            <ion-avatar item-start>
+              <img src="img/avatar-{pendingMember.avatarId}.png">
+            </ion-avatar>
+            <h2>{{ pendingMember.name }}</h2>
+            <h3>{{ pendingMember.account }}</h3>
+            <p>Token: {{ pendingMember.invitationToken }}</p>
+          </ion-item>
+          <ion-item-options side="right">
+            <button ion-button color="primary" (click)="acceptPendingMember(pendingMember)">
+              <ion-icon name="checkmark"></ion-icon>
+              Accept
+            </button>
+            <button ion-button color="danger">
+              <ion-icon name="close"></ion-icon>
+              Reject
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card>
+
     <page-location></page-location>
 
 
