@@ -29,9 +29,9 @@
 <ion-card>
   <ion-card-header>Existing Locations</ion-card-header>
   <ion-list>
-    <ion-item *ngFor="let location of locations">{{location.uri}}: {{location.name}}</ion-item>
+    <ion-item *ngFor="let location of locations | async">{{location.uri}}: {{location.name}}</ion-item>
   </ion-list>
-  <ion-card-content *ngIf="!locations || locations.length < 1">
+  <ion-card-content *ngIf="!(locations | async)?.length < 1">
     No locations specified.
   </ion-card-content>
 </ion-card>

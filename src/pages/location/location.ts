@@ -20,7 +20,7 @@ import { Location } from '../../models/location';
 })
 export class LocationPage implements OnInit {
 
-  locations: Location[];
+  locations$: Promise<Location[]>;
   locationForm: FormGroup;
 
   constructor(public navCtrl: NavController,
@@ -39,7 +39,7 @@ export class LocationPage implements OnInit {
   }
 
   async refreshLocations() {
-    this.locations = await this.locationProvider.getAllLocations();
+    this.locations$ = this.locationProvider.getAllLocations();
   }
 
   async addLocation() {
@@ -50,7 +50,6 @@ export class LocationPage implements OnInit {
       await this.locationProvider.addLocation(uri, name)
       this.notificationProvider.success(`Location: ${name} added.`);
       this.refreshLocations();
-      this.notificationProvider.success('Locations reloaded.');
     } catch(e) {
       this.notificationProvider.error(`Location ${name} could not be added. Maybe a duplicated uri?`);
     }

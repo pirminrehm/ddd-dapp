@@ -5,9 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, ModalController } from 'ionic-angular';
 
-import { Web3Provider } from './../../providers/web3/web3';
 import { TeamProvider } from './../../providers/web3/team';
-import { Account } from './../../models/account';
 import { PendingMember } from './../../models/pending-member';
 import { Member } from './../../models/member';
 
@@ -24,17 +22,16 @@ import 'rxjs/add/operator/filter';
 export class TeamPage implements OnInit {
 
   createTeamForm: FormGroup;
-  teamAddress: Promise<Boolean>;
+  teamAddress$: Promise<Boolean>;
 
   invitationTokenIsLoading = false;
   teamInvitation: TeamInvitation;
 
-  pendingMembers: Promise<PendingMember[]>;
-  members: Promise<Member[]>;
+  pendingMembers$: Promise<PendingMember[]>;
+  members$: Promise<Member[]>;
 
   constructor(public navCtrl: NavController, 
               private modalCtrl: ModalController,
-              private web3Provider: Web3Provider,
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
               private fb: FormBuilder,
@@ -107,10 +104,10 @@ export class TeamPage implements OnInit {
 
 
   private async stateChanged() {
-    this.teamAddress = this.settingsProvider.getTeamAddress();
-    if(await this.teamAddress) {
-      this.members = this.teamProvider.getMembers();
-      this.pendingMembers = this.teamProvider.getPendingMembers();
+    this.teamAddress$ = this.settingsProvider.getTeamAddress();
+    if(await this.teamAddress$) {
+      this.members$ = this.teamProvider.getMembers();
+      this.pendingMembers$ = this.teamProvider.getPendingMembers();
     }
   }
 }

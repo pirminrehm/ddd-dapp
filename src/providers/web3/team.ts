@@ -1,3 +1,4 @@
+import { CacheProvider } from './../storage/cache';
 import { TeamInvitation } from './../../models/team-invitation';
 import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
@@ -19,7 +20,8 @@ const teamArtifacts = require('../../../build/contracts/Team.json');
 export class TeamProvider {
 
   constructor(private web3Provider: Web3Provider,
-              private settingsProvider: SettingsProvider) {
+              private settingsProvider: SettingsProvider,
+              private cacheProvider: CacheProvider) {
   }
 
 
@@ -129,8 +131,13 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    const address = await this.settingsProvider.getTeamAddress();
-    return this.web3Provider.getContractAt(teamArtifacts, address);
+    if(!this.cacheProvider.getTeamContract()) {
+      const address = await this.settingsProvider.getTeamAddress();
+
+      const contract = this.web3Provider.getContractAt(teamArtifacts, address)
+      this.cacheProvider.setTeamContract(contract);
+    }
+    return this.cacheProvider.getTeamContract();
   }
 
   private async call(name: string, ...params): Promise<any> {
