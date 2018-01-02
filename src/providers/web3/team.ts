@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 
 import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
+import { Member } from './../../models/member';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
@@ -36,6 +37,14 @@ export class TeamProvider {
 
   async getLocationAddress(): Promise<string> {
     return this.call('getLocationAddress');
+  }
+
+  async getMemberByIndex(index: number): Promise<Member> {
+    const v = await this.call('getMemberByIndex', index);
+    const name = await this.web3Provider.fromWeb3String(v[1]);
+    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+
+    return new Member(v[0], name, avatarId);
   }
 
   async getPendingMemberByIndex(index: number): Promise<PendingMember> {
@@ -91,6 +100,16 @@ export class TeamProvider {
 
 
   // HELPERS
+
+  async getMembers(): Promise<Member[]> {
+    const count = await this.getMembersCount();
+    const members = [];
+    for(let i = 0; i < count; i++) {
+      members.push(await this.getMemberByIndex(i));
+    }
+    return members;
+  }
+
 
   async getPendingMembers(): Promise<PendingMember[]> {
     const count = await this.getPendingMembersCount();

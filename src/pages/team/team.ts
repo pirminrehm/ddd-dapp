@@ -9,6 +9,8 @@ import { Web3Provider } from './../../providers/web3/web3';
 import { TeamProvider } from './../../providers/web3/team';
 import { Account } from './../../models/account';
 import { PendingMember } from './../../models/pending-member';
+import { Member } from './../../models/member';
+
 import { TeamInvitation } from './../../models/team-invitation';
 import { TeamJoinRequestPage } from '../team-join-request/team-join-request';
 
@@ -27,10 +29,8 @@ export class TeamPage implements OnInit {
   invitationTokenIsLoading = false;
   teamInvitation: TeamInvitation;
 
-  accounts: Account[];
-  // membersCount: number;
-
   pendingMembers: Promise<PendingMember[]>;
+  members: Promise<Member[]>;
 
   constructor(public navCtrl: NavController, 
               private modalCtrl: ModalController,
@@ -51,13 +51,7 @@ export class TeamPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.accounts = (await this.web3Provider.getAccounts())
-      .map((address, index) => (new Account(address, `Account ${index}`)));
-    
     this.stateChanged();
-
-    // this.membersCount = await this.teamProvider.getMembersCount();
-
   }
 
   async createTeam() {
@@ -115,6 +109,7 @@ export class TeamPage implements OnInit {
   private async stateChanged() {
     this.teamAddress = this.settingsProvider.getTeamAddress();
     if(await this.teamAddress) {
+      this.members = this.teamProvider.getMembers();
       this.pendingMembers = this.teamProvider.getPendingMembers();
     }
   }
