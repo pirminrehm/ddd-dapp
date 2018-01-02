@@ -49,7 +49,6 @@ export class LocationProvider {
 
   async getAllLocations(): Promise<Location[]> {
     const count = await this.getCount();
-    console.log(count, 'COUNT');
     const locations = [];
     for(let i = 0; i < count; i++) {
       locations.push(await this.getLocationByIndex(i));
