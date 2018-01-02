@@ -5,8 +5,8 @@
   Ionic pages and navigation.
 -->
 
-  <ion-card>
-  <ion-card-header>Add new locations</ion-card-header>
+<ion-card>
+  <ion-card-header>Add a new location</ion-card-header>
   <ion-card-content>
     <form [formGroup]="locationForm" (submit)="addLocation()">
       
@@ -35,11 +35,3 @@
     No locations specified.
   </ion-card-content>
 </ion-card>
-  
-<br><br>
-
-<span>{{ status }}</span>
-
-<br>
-
-<span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>

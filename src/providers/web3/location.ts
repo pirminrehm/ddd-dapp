@@ -38,7 +38,7 @@ export class LocationProvider {
 
   async addLocation(uri, name) {
     const contract = await this.getContract();
-    contract.addLocation(uri, name, {
+    return contract.addLocation(uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });

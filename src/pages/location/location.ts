@@ -1,3 +1,4 @@
+import { NotificationProvider } from './../../providers/notification/notification';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
@@ -18,14 +19,14 @@ import { Location } from '../../models/location';
   templateUrl: 'location.html',
 })
 export class LocationPage implements OnInit {
-  status = "";
+
   locations: Location[];
   locationForm: FormGroup;
-  
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private locationProvider: LocationProvider,
+              private notificationProvider: NotificationProvider,
               private fb: FormBuilder) {
   }
 
@@ -34,30 +35,24 @@ export class LocationPage implements OnInit {
       name: ['', [Validators.required]],
       uri: ['', Validators.required],
     });
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LocationPage');
     this.refreshLocations();
   }
 
   async refreshLocations() {
     this.locations = await this.locationProvider.getAllLocations();
+    this.notificationProvider.success('Locations reloaded.');
   }
 
   async addLocation() {
-    this.status = "Initiating transaction... (please wait)";  
-    
+    const uri = this.locationForm.value.uri;
+    const name = this.locationForm.value.name;
+
     try { 
-      const uri = this.locationForm.value.uri;
-      const name = this.locationForm.value.name;
       await this.locationProvider.addLocation(uri, name)
-      
-      this.status = "Transaction complete!";
+      this.notificationProvider.success(`Location: ${name} added.`);
       this.refreshLocations();
     } catch(e) {
-      this.status = "Error, maybe duplicated uri?";
-      console.log(e)
+      this.notificationProvider.error(`Location ${name} could not be added. Maybe a duplicated uri?`);
     }
   }
 }
