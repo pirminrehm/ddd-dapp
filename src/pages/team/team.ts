@@ -51,17 +51,11 @@ export class TeamPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.teamAddress = this.settingsProvider.getTeamAddress();
-
-
-    // TODO: Do not mix Obseravbles and Promises this way...
     this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => (new Account(address, `Account ${index}`)));
-
-    if(await this.teamAddress) {
-      this.pendingMembers = this.teamProvider.getPendingMembers();
-    }
     
+    this.stateChanged();
+
     // this.membersCount = await this.teamProvider.getMembersCount();
 
   }
@@ -71,6 +65,8 @@ export class TeamPage implements OnInit {
       const name = this.createTeamForm.value.name;
       const creatorName = this.createTeamForm.value.creatorName;
       await this.teamProvider.createTeam(name, creatorName);
+      this.notificationProvider.success(`Congrats! You're now part of the new team ${name}`)
+      await this.stateChanged();
     } catch(e) {
       this.notificationProvider.error('An error occured while creating the team.');
       console.log(e);
@@ -113,6 +109,14 @@ export class TeamPage implements OnInit {
 
     let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
     modal.present();
+  }
+
+
+  private async stateChanged() {
+    this.teamAddress = this.settingsProvider.getTeamAddress();
+    if(await this.teamAddress) {
+      this.pendingMembers = this.teamProvider.getPendingMembers();
+    }
   }
 }
  
