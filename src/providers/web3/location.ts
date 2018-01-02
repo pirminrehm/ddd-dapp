@@ -47,7 +47,7 @@ export class LocationProvider {
 
   // HELPERS
 
-  async getAllLocations(): Promise<Location[]> {
+  async getLocations(): Promise<Location[]> {
     const count = await this.getCount();
     const locations = [];
     for(let i = 0; i < count; i++) {

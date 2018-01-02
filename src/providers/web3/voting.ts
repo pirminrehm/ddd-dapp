@@ -22,18 +22,18 @@ export class VotingProvider {
 
   // CONTRACT ACCESSORS
 
-  async getVotingName() {
-    const name = await this.call('getVotingName');
+  async getVotingName(address: string) {
+    const name = await this.call(address, 'getVotingName');
     return this.web3Provider.fromWeb3String(name);
   }
 
-  async getVotingUsersCount(): Promise<number> {
-    const count = await this.call('getVotingUsersCount');
+  async getVotingUsersCount(address: string): Promise<number> {
+    const count = await this.call(address, 'getVotingUsersCount');
     return this.web3Provider.fromWeb3Number(count);
   }
 
-  async getUserPointsByIndex(index: number): Promise<UserPoint> {
-    const v = await this.call('getUserPointsByIndex', index);
+  async getUserPointsByIndex(address: string, index: number): Promise<UserPoint> {
+    const v = await this.call(address, 'getUserPointsByIndex', index);
     const accounts = await this.web3Provider.getAccounts();
     return new UserPoint(
       //v[0] returns type 'address' -> do not cast toUtf8!
@@ -42,13 +42,13 @@ export class VotingProvider {
     );
   }
 
-  async getVotedLocationsCount(): Promise<number> {
-    const count = await this.call('getVotedLocationsCount');
+  async getVotedLocationsCount(address: string): Promise<number> {
+    const count = await this.call(address, 'getVotedLocationsCount');
     return this.web3Provider.fromWeb3Number(count);
   }
 
-  async getLocationPointsByIndex(index: number): Promise<LocationPoint> {
-    const v = await this.call('getLocationPointsByIndex', index);
+  async getLocationPointsByIndex(address: string, index: number): Promise<LocationPoint> {
+    const v = await this.call(address, 'getLocationPointsByIndex', index);
     return new LocationPoint(
       `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
       await this.web3Provider.fromWeb3Number(v[1])
@@ -61,38 +61,39 @@ export class VotingProvider {
   async addVote(address: string, uri: string, points: any) {
     uri = await this.web3Provider.toWeb3String(uri);
     points = await this.web3Provider.toWeb3Number(points);
-    
-    const contract = await this.getContract()
-    contract.addVote(uri, points, { from: address, gas: 3000000 });
+
+    const account = await this.web3Provider.getAccount();
+    const contract = await this.getContract(address);
+
+    contract.addVote(uri, points, { from: account, gas: 3000000 });
   }
 
   // HELPERS
 
-  async getAllUserPoints(): Promise<UserPoint[]> {
-    const count = await this.getVotingUsersCount();
+  async getAllUserPoints(address: string): Promise<UserPoint[]> {
+    const count = await this.getVotingUsersCount(address);
     
     const userPoints = [];
     for(let i = 0; i < count; i++) {
-      userPoints.push(await this.getUserPointsByIndex(i));
+      userPoints.push(await this.getUserPointsByIndex(address, i));
     }
     return userPoints;
   }
 
-  async getAllLocationPoints(): Promise<LocationPoint[]> {
-    const count = await this.getVotedLocationsCount();
+  async getAllLocationPoints(address: string): Promise<LocationPoint[]> {
+    const count = await this.getVotedLocationsCount(address);
 
     const locationPoints = [];
     for(let i = 0; i < count; i++) {
-      locationPoints.push(await this.getLocationPointsByIndex(i));
+      locationPoints.push(await this.getLocationPointsByIndex(address, i));
     }
     return locationPoints;
   }
 
 
   // INTERNAL
-
-  private async call(name: string, ...params): Promise<any> {
-    const contract =  await this.getContract();
+  private async call(address: string,name: string, ...params): Promise<any> {
+    const contract =  await this.getContract(address);
     try {
       return contract[name].call(...params);
     } catch(e) {
@@ -100,8 +101,8 @@ export class VotingProvider {
     }
   }
 
-  private async getContract(): Promise<any> {
-    return this.web3Provider.getDeployedContract(votingArtifacts);
+  private async getContract(address: string): Promise<any> {
+    return this.web3Provider.getContractAt(votingArtifacts, address);
   }
 
   private handleError(e: Error) {

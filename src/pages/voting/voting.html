@@ -28,7 +28,7 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>Select an active Votings</ion-card-header>
+    <ion-card-header>Select an active voting</ion-card-header>
     <ion-list radio-group [(ngModel)]="selectedVoting">
       <ion-item *ngFor="let voting of votings$ | async">
         <ion-label>{{ voting }}</ion-label>

@@ -1,3 +1,5 @@
+import { NotificationProvider } from './../../providers/notification/notification';
+import { LocationProvider } from './../../providers/web3/location';
 import { VotingProvider } from './../../providers/web3/voting';
 import { Component, OnInit, Input } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
@@ -22,68 +24,59 @@ import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 export class VotingDetailsPage implements OnInit, OnChanges {
   @Input() address: string;
 
-  accounts: Account[];
-  locations: Location[];
+  locations$: Promise<Location[]>;
   userPoints: UserPoint[];
   locationPoints: LocationPoint[];
 
-  votingName: string;
+  votingName$: Promise<string>;
   votingForm: FormGroup;
 
   constructor(private fb: FormBuilder, 
-              private votingProvider: VotingProvider) {
+              private votingProvider: VotingProvider,
+              private locationProvider: LocationProvider,
+              private notificationProvider: NotificationProvider) {
   }
 
   ngOnInit() {
     this.votingForm = this.fb.group({
-      address: ['', [Validators.required]],
       location: ['', Validators.required],
       points: ['', Validators.required]
     });
   }
 
   ngOnChanges() {
-    console.log(this.address);
-  }
+    if(this.address) {
+      this.votingForm.reset();
+      
+      this.locations$ = this.locationProvider.getLocations();
+      this.votingName$ = this.votingProvider.getVotingName(this.address);
 
-  ionViewDidLoad() {
-    // this.accounts = (await this.web3Provider.getAccounts())
-    //   .map((address, index) => (new Account(address, `Account ${index}`)));
-
-    // this.locations = await this.locationProvider.getAllLocations();
-    // this.refreshUserPoints();
-    // this.refreshLocationPoints();
-    console.log('ionViewDidLoad VotingDetailsPage');
+      this.refreshUserPoints();
+      this.refreshLocationPoints();
+    }
   }
 
   async addVote() {
     const uri = this.votingForm.value.location;
-    const address = this.votingForm.value.address;
     const points = this.votingForm.value.points;
 
     console.log('send points:', points);
-    console.log('send address:', address);
     console.log('send uri:', uri);
 
-    // this.status = "Initiating transaction... (please wait)";
-
-    await this.votingProvider.addVote(address, uri, points);
-    // self.setStatus("Transaction complete!");
+    await this.votingProvider.addVote(this.address, uri, points);
+    this.notificationProvider.success(`Voting added`);
+    
     this.refreshLocationPoints()
     this.refreshUserPoints()
   }
 
-  async fetchVotingName() {
-    this.votingName = await this.votingProvider.getVotingName();
-  }
-
 
   private async refreshLocationPoints() {
-    this.locationPoints = await this.votingProvider.getAllLocationPoints();
+    this.locationPoints = await this.votingProvider.getAllLocationPoints(this.address);
   }
 
   private async refreshUserPoints() {
-    this.userPoints = await this.votingProvider.getAllUserPoints();
+    this.userPoints = await this.votingProvider.getAllUserPoints(this.address);
   }
 
 }

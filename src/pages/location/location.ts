@@ -39,7 +39,7 @@ export class LocationPage implements OnInit {
   }
 
   async refreshLocations() {
-    this.locations$ = this.locationProvider.getAllLocations();
+    this.locations$ = this.locationProvider.getLocations();
   }
 
   async addLocation() {
