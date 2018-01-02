@@ -28,8 +28,8 @@ export class LocationProvider {
     return this.web3Provider.fromWeb3Number(count);
   }
 
-  async getLocationAtIndex(index: number): Promise<Location> {
-    const v = await this.call('getLocationAtIndex', index);
+  async getLocationByIndex(index: number): Promise<Location> {
+    const v = await this.call('getLocationByIndex', index);
     const uri = await this.web3Provider.fromWeb3String(v[0]);
     const name = await this.web3Provider.fromWeb3String(v[1]);
 
@@ -49,9 +49,10 @@ export class LocationProvider {
 
   async getAllLocations(): Promise<Location[]> {
     const count = await this.getCount();
+    console.log(count, 'COUNT');
     const locations = [];
     for(let i = 0; i < count; i++) {
-      locations.push(await this.getLocationAtIndex(i));
+      locations.push(await this.getLocationByIndex(i));
     }
     return locations;
   }
