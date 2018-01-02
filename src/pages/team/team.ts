@@ -1,3 +1,4 @@
+import { NotificationProvider } from './../../providers/notification/notification';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Component, OnInit } from '@angular/core';
@@ -37,7 +38,8 @@ export class TeamPage implements OnInit {
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
               private fb: FormBuilder,
-              private barcodeScanner: BarcodeScanner) {
+              private barcodeScanner: BarcodeScanner,
+              private notificationProvider: NotificationProvider) {
   }
 
   ngOnInit() {
@@ -70,7 +72,7 @@ export class TeamPage implements OnInit {
       const creatorName = this.createTeamForm.value.creatorName;
       await this.teamProvider.createTeam(name, creatorName);
     } catch(e) {
-      alert('An error occured while creating the team');
+      this.notificationProvider.error('An error occured while creating the team.');
       console.log(e);
     }
   }
@@ -93,9 +95,9 @@ export class TeamPage implements OnInit {
   async acceptPendingMember(pendingMember: PendingMember) {
     try {
       await this.teamProvider.acceptPendingMember(pendingMember.account);
-      console.log(pendingMember, 'pending member added');
+      this.notificationProvider.success(`Pending user ${pendingMember.name} added`);
     } catch(e) {
-      alert('An error occured while creating the team');
+      this.notificationProvider.error(`An error occured while approving the member. ${pendingMember.name} remains unapproved`);
       console.log(e);
     }
   }
