@@ -14,17 +14,8 @@
 
 
 <ion-content padding>
-  <ion-card>
-    <ion-card-header>Active Votings</ion-card-header>
-    <ion-list>
-      <ion-item *ngFor="let voting of votings$ | async">
-        {{ voting }}
-      </ion-item>
-    </ion-list>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>Create a new voting</ion-card-header>
+<ion-card>
+    <ion-card-header>Create voting</ion-card-header>
     <ion-card-content>
       <form [formGroup]="createVotingForm" (submit)="addVoting()">
         <ion-item>
@@ -35,57 +26,16 @@
       </form>
     </ion-card-content>
   </ion-card>
-  <ion-card>
-    <ion-card-header>Add a vote</ion-card-header>
-
-    <ion-card-content>
-      <form [formGroup]="votingForm" (submit)="addVoting()">
-        <ion-item>
-          <ion-label>Location</ion-label>
-          <ion-select formControlName="location">
-            <ion-option *ngFor="let location of locations" [value]="location.uri">{{ location.uri }} {{ location.name }}</ion-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label for="address">Account</ion-label>
-          <ion-select formControlName="address">    
-            <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label for="points">Points:</ion-label>
-          <ion-input type="number" id="points" formControlName="points"></ion-input>
-        </ion-item>
-        
-        <button ion-button type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Add a vote</button>
-      </form>
-    </ion-card-content>
-  </ion-card>
 
   <ion-card>
-    <ion-card-header>Get Voting Name</ion-card-header>
-    <ion-card-content>
-      <div>Voting Name: {{ votingName }}</div>
-      <button ion-button (click)="fetchVotingName()">Get Voting Name</button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>Location Points</ion-card-header>
-    <ion-list>
-      <ion-item *ngFor="let locationPoint of locationPoints">{{locationPoint.uri}}: {{ locationPoint.points }}</ion-item>
+    <ion-card-header>Select an active Votings</ion-card-header>
+    <ion-list radio-group [(ngModel)]="selectedVoting">
+      <ion-item *ngFor="let voting of votings$ | async">
+        <ion-label>{{ voting }}</ion-label>
+        <ion-radio [value]="voting"></ion-radio>
+      </ion-item>
     </ion-list>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>User Points</ion-card-header>
-    <ion-list>
-      <ion-item *ngFor="let userPoint of userPoints">{{userPoint.account}}: {{ userPoint.points }}</ion-item>
-    </ion-list>
-  </ion-card>
+  <page-voting-details [address]="selectedVoting"></page-voting-details>
 </ion-content>
-
-
-<!-- <ion-option>Please select</ion-option> -->

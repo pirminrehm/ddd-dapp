@@ -18,6 +18,7 @@ import { VotingPage } from './../pages/voting/voting';
 import { Web3Provider } from '../providers/web3/web3';
 import { LocationProvider } from './../providers/web3/location';
 import { VotingProvider } from '../providers/web3/voting';
+import { VotingDetailsPage } from './../pages/voting-details/voting-details';
 import { TeamProvider } from './../providers/web3/team';
 import { SettingsProvider } from './../providers/storage/settings';
 import { SettingsPageModule } from '../pages/settings/settings.module';
@@ -32,6 +33,7 @@ import { CacheProvider } from '../providers/storage/cache';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingDetailsPage,
     TabsPage
   ],
   imports: [
@@ -48,6 +50,7 @@ import { CacheProvider } from '../providers/storage/cache';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingDetailsPage,
     TabsPage
   ],
   providers: [
