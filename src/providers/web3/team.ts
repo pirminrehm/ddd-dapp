@@ -24,6 +24,10 @@ export class TeamProvider {
 
 
   // CONTRACT ACCESSORS
+  async getTeamName(): Promise<string> {
+    const name = await this.call('getTeamName');
+    return this.web3Provider.fromWeb3String(name);
+  }
 
   async getPendingMembersCount(): Promise<number> {
     const count = await this.call('getPendingMembersCount');

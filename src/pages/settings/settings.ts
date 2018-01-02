@@ -6,6 +6,7 @@ import { Web3Provider } from './../../providers/web3/web3';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Account } from '../../models/account';
 import { NotificationProvider } from '../../providers/notification/notification';
+import { TeamProvider } from '../../providers/web3/team';
 
 /**
  * Generated class for the SettingsPage page.
@@ -23,12 +24,15 @@ export class SettingsPage {
   
   settingsForm: FormGroup;
   accounts: Account[];
-  teamAddress: string = 'Not set';
+
+  teamAddress$: Promise<string>;
+  teamName$: Promise<string>
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private fb: FormBuilder,
               private web3Provider: Web3Provider,
+              private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
               private notificationProvier: NotificationProvider) {
 
@@ -42,21 +46,22 @@ export class SettingsPage {
     this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => new Account(address, `Account ${index}`));
 
-    const name = await this.settingsProvider.getName();
-    const account = await this.settingsProvider.getAccount();
     this.settingsForm.setValue({
-      name: name,
-      account: account
+      name: await this.settingsProvider.getName(),
+      account: await this.settingsProvider.getAccount()
     });
 
-    this.teamAddress = await this.settingsProvider.getTeamAddress();
+    this.teamAddress$ = this.settingsProvider.getTeamAddress();
+    if(await this.teamAddress$) {
+      this.teamName$ = this.teamProvider.getTeamName();
+    }
   }
 
   async save() {
     try {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
-      await this.settingsProvider.setTeamAddress(this.teamAddress);
+      await this.settingsProvider.setTeamAddress(await this.teamAddress$);
       this.notificationProvier.success('Settings saved');
     } catch(e) {
       this.notificationProvier.error('An error occured while saving the settings.');
@@ -65,10 +70,6 @@ export class SettingsPage {
   }
 
   async removeTeamAddress() {
-    try {
-      this.teamAddress = null;
-    } catch(e) {
-      console.log(e);
-    }
+    this.teamAddress$ = null;
   }
 }

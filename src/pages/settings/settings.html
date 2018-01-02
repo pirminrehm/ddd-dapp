@@ -19,12 +19,12 @@
       Team: 
       
       <div class="team-address">
-        <span *ngIf="teamAddress; then showTeamAddress else noTeamAddress"></span>
+        <span *ngIf="teamAddress$ | async; then showTeamAddress else noTeamAddress"></span>
         <ng-template #showTeamAddress>
-          {{ teamAddress }}
+          {{ teamName$ | async }}
           <ion-icon name="close-circle" item-end (click)="removeTeamAddress()"></ion-icon>  
         </ng-template>
-        <ng-template #noTeamAddress>No Team Address specified</ng-template>
+        <ng-template #noTeamAddress>You're not part of a team</ng-template>
       </div>
     </ion-item>
 
