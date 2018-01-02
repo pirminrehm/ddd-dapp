@@ -1,3 +1,4 @@
+import { TeamProvider } from './../../providers/web3/team';
 import { LocationProvider } from './../../providers/web3/location';
 import { VotingProvider } from './../../providers/web3/voting';
 import { Web3Provider } from './../../providers/web3/web3';
@@ -29,14 +30,19 @@ export class VotingPage implements OnInit {
   userPoints: UserPoint[];
   locationPoints: LocationPoint[];
 
+  createVotingForm: FormGroup;
+
   votingForm: FormGroup;
   votingName: string;
+
+  votings$: Promise<any[]>;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private web3Provider: Web3Provider,
               private votingProvider: VotingProvider,
               private locationProvider: LocationProvider,
+              private teamProvider: TeamProvider,
               private fb: FormBuilder) {
   }
 
@@ -50,19 +56,38 @@ export class VotingPage implements OnInit {
       location: ['', Validators.required],
       points: ['', Validators.required]
     });
+
+    this.createVotingForm = this.fb.group({
+      name: ['', [Validators.required]],
+    });
   }
+
 
   async ionViewWillEnter() {
-    this.accounts = (await this.web3Provider.getAccounts())
-      .map((address, index) => (new Account(address, `Account ${index}`)));
+    // this.accounts = (await this.web3Provider.getAccounts())
+    //   .map((address, index) => (new Account(address, `Account ${index}`)));
 
-    this.locations = await this.locationProvider.getAllLocations();
-    this.refreshUserPoints();
-    this.refreshLocationPoints();
+    // this.locations = await this.locationProvider.getAllLocations();
+    // this.refreshUserPoints();
+    // this.refreshLocationPoints();
+
+    this.refreshVotings();
+  }
+
+  async addVoting() {
+    const name = this.createVotingForm.value.name;
+    this.teamProvider.onVotingCreated().then(votingAddress => {
+      this.refreshVotings();
+    });
+    await this.teamProvider.addVoting(name);
+  }
+
+  private refreshVotings() {
+    this.votings$ = this.teamProvider.getVotingAddresses();
   }
 
 
-  async createVoting() {
+  async addVote() {
     const uri = this.votingForm.value.location;
     const address = this.votingForm.value.address;
     const points = this.votingForm.value.points;

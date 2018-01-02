@@ -15,10 +15,31 @@
 
 <ion-content padding>
   <ion-card>
+    <ion-card-header>Active Votings</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let voting of votings$ | async">
+        {{ voting }}
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Create a new voting</ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="createVotingForm" (submit)="addVoting()">
+        <ion-item>
+          <ion-label for="name">Name:</ion-label>
+          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+        </ion-item>
+        <button ion-button outline block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Create voting</button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
     <ion-card-header>Add a vote</ion-card-header>
 
     <ion-card-content>
-      <form [formGroup]="votingForm" (submit)="createVoting()">
+      <form [formGroup]="votingForm" (submit)="addVoting()">
         <ion-item>
           <ion-label>Location</ion-label>
           <ion-select formControlName="location">

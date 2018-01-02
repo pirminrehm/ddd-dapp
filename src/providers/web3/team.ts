@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
+import { VotingProvider } from './voting';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
@@ -21,6 +22,7 @@ export class TeamProvider {
 
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
+              private votingProvider: VotingProvider,
               private cacheProvider: CacheProvider) {
   }
 
@@ -38,6 +40,11 @@ export class TeamProvider {
 
   async getMembersCount(): Promise<number> {
     const count = await this.call('getMembersCount');
+    return this.web3Provider.fromWeb3Number(count);
+  }
+
+  async getVotingsCount(): Promise<number> {
+    const count = await this.call('getVotingsCount');
     return this.web3Provider.fromWeb3Number(count);
   }
 
@@ -59,6 +66,10 @@ export class TeamProvider {
     const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
 
     return new PendingMember(v[0], name, avatarId, v[3]);
+  }
+
+  async getVotingAddressByIndex(index: number): Promise<PendingMember> {
+    return this.call('getVotingByIndex', index);
   }
 
   // TRANSACTIONS
@@ -96,6 +107,14 @@ export class TeamProvider {
     return contract.acceptPendingMember(address, {from: account, gas: 3000000});
   }
 
+  async addVoting(name: string) {
+    name = await this.web3Provider.toWeb3String(name);
+
+    const contract = await this.getContract();
+    const account = await this.web3Provider.getAccount();
+    return contract.addVoting(name, {from: account, gas: 3000000});
+  }
+
   // EVENTS
 
   async onTokenCreated(): Promise<any> {
@@ -104,6 +123,11 @@ export class TeamProvider {
     return new TeamInvitation(res.address, res.args.token);
   }
 
+  async onVotingCreated(): Promise<any> {
+    const VotingCreated = (await this.getContract()).VotingCreated(); 
+    const res = await this.listenOnce(VotingCreated);
+    return res.args.votingAddress;
+  }
 
   // HELPERS
 
@@ -126,6 +150,14 @@ export class TeamProvider {
     return pendingMembers;
   }
 
+  async getVotingAddresses(): Promise<PendingMember[]> {
+    const count = await this.getVotingsCount();
+    const votings = [];
+    for(let i = 0; i < count; i++) {
+      votings.push(await this.getVotingAddressByIndex(i));
+    }
+    return votings;
+  }
 
 
   // INTERNAL
