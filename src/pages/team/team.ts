@@ -55,9 +55,13 @@ export class TeamPage implements OnInit {
     // TODO: Do not mix Obseravbles and Promises this way...
     this.accounts = (await this.web3Provider.getAccounts())
       .map((address, index) => (new Account(address, `Account ${index}`)));
+
+    if(await this.teamAddress) {
+      this.pendingMembers = this.teamProvider.getPendingMembers();
+    }
     
     // this.membersCount = await this.teamProvider.getMembersCount();
-    this.pendingMembers = this.teamProvider.getPendingMembers();
+
   }
 
   async createTeam() {
