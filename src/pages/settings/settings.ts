@@ -55,7 +55,6 @@ export class SettingsPage {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
       await this.settingsProvider.setTeamAddress(this.teamAddress);
-      console.log('SAVED');
     } catch(e) {
       console.log(e);
     }

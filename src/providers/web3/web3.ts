@@ -1,4 +1,5 @@
 import { Platform } from 'ionic-angular';
+import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
 
 const Web3 = require('web3');
@@ -22,7 +23,8 @@ export class Web3Provider {
   private account: string;
   private accounts: string[];
 
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform,
+              private settingsProvider: SettingsProvider) {
     this.ready = new Promise((resolve,reject) => this.init(resolve,reject));
   }
 
@@ -30,8 +32,11 @@ export class Web3Provider {
   // GETTER
 
   async getAccount() {
+    // TODO: Maybe remove this function completly from web3 provider and 
+    // call settings provider directly instead.
     await this.ready;
-    return this.account;
+    const account = await this.settingsProvider.getAccount();
+    return account ? account : this.accounts[0];
   }
 
   async getAccounts() {
@@ -115,10 +120,9 @@ export class Web3Provider {
         return;
       }
       this.accounts = accs;
-      this.account = this.accounts[0];
-
-      // Resolve
       resolve();
+
+
     });
   }
 }

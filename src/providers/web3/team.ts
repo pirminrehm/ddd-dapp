@@ -1,3 +1,4 @@
+import { TeamInvitation } from './../../models/team-invitation';
 import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
 
@@ -53,18 +54,22 @@ export class TeamProvider {
     return contract.createInvitationToken({from: account});
   }
 
-  async sendJoinTeamRequest(account: string, name: string) {
+  async sendJoinTeamRequest(teamAddress: string, token: string, name: string, avatarId: number) {
     name = await this.web3Provider.toWeb3String(name);
-    const contract = await this.getContract();
-    return contract.sendJoinTeamRequest(name, { from: account, gas: 3000000 });
+    // TODO: avatarId = await this.web3Provider.toWeb3Number(avatarId);
+    const contract = await this.web3Provider.getContractAt(teamArtifacts, teamAddress);
+    const account = await this.web3Provider.getAccount();
+    
+    return contract.sendJoinTeamRequest(token, name, avatarId, {from: account, gas: 3000000});
   }
 
 
   // EVENTS
 
-  async onTokenCreated(): Promise<string> {
+  async onTokenCreated(): Promise<any> {
     const TokenCreated = (await this.getContract()).TokenCreated(); 
-    return this.listenOnce(TokenCreated).then(args => args.token);
+    const res = await this.listenOnce(TokenCreated);
+    return new TeamInvitation(res.address, res.args.token);
   }
 
   // INTERNAL
@@ -91,7 +96,7 @@ export class TeamProvider {
           throw err;
         }
         
-        resolve(result.args);
+        resolve(result);
         Event.stopWatching();
       });
     });
