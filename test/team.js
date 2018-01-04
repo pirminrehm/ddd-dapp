@@ -38,6 +38,18 @@ contract('Team', (accounts) => {
       expect(isMember).to.be.true;
     });
 
+    it('should get the address, name and avatarId of the creator by index 0', async () => {
+      const creator = await contract.getMemberByIndex.call(0);
+      expect(creator[0]).to.equal(accounts[0]);
+      expect(t8(creator[1])).to.equal('user_0_name');
+      expect(nr(creator[2])).to.equal(0);
+    });
+    
+    it('should have a team-name', async () => {
+      const name = await contract.getTeamName.call();
+      expect(t8(name)).to.be.equal('init_test_team');
+    });
+
     it('should not have inital any votings', async () => {
       const count = await contract.getVotingsCount.call();
       expect(nr(count)).to.be.equal(0);
