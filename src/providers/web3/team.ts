@@ -33,6 +33,9 @@ export class TeamProvider {
     return this.web3Provider.fromWeb3Number(count);
   }
 
+  async getLocationAddress(): Promise<string> {
+    return this.call('getLocationAddress');
+  }
 
   // TRANSACTIONS
 
@@ -43,7 +46,7 @@ export class TeamProvider {
     const contract = await this.web3Provider.getRawContract(teamArtifacts);
     const account = await this.web3Provider.getAccount();
     
-    const team = await contract.new(name, creatorName, {from: account, gas: 3000000});
+    const team = await contract.new(name, creatorName, {from: account, gas: 5000000});
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }

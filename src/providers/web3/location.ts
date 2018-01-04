@@ -6,6 +6,7 @@ import { Web3Provider } from './web3';
 const locationArtifacts = require('../../../build/contracts/Location.json');
 
 import { Location } from './../../models/location';
+import { TeamProvider } from './team';
 
 /*
   Generated class for the Locations provider.
@@ -16,7 +17,8 @@ import { Location } from './../../models/location';
 @Injectable()
 export class LocationProvider {
 
-  constructor(private web3Provider: Web3Provider) {
+  constructor(private web3Provider: Web3Provider,
+              private teamProvider: TeamProvider) {
   }
 
   // CONTRACT ACCESSORS
@@ -26,8 +28,8 @@ export class LocationProvider {
     return this.web3Provider.fromWeb3Number(count);
   }
 
-  async getLocationAtIndex(index: number): Promise<Location> {
-    const v = await this.call('getLocationAtIndex', index);
+  async getLocationByIndex(index: number): Promise<Location> {
+    const v = await this.call('getLocationByIndex', index);
     const uri = await this.web3Provider.fromWeb3String(v[0]);
     const name = await this.web3Provider.fromWeb3String(v[1]);
 
@@ -36,7 +38,7 @@ export class LocationProvider {
 
   async addLocation(uri, name) {
     const contract = await this.getContract();
-    contract.addLocation(uri, name, {
+    return contract.addLocation(uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });
@@ -49,7 +51,7 @@ export class LocationProvider {
     const count = await this.getCount();
     const locations = [];
     for(let i = 0; i < count; i++) {
-      locations.push(await this.getLocationAtIndex(i));
+      locations.push(await this.getLocationByIndex(i));
     }
     return locations;
   }
@@ -58,7 +60,8 @@ export class LocationProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    return this.web3Provider.getDeployedContract(locationArtifacts);
+    const address = await this.teamProvider.getLocationAddress();
+    return this.web3Provider.getContractAt(locationArtifacts, address);
   }
 
   private async call(name: string, ...params): Promise<any> {

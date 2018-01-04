@@ -22,6 +22,7 @@ import { TeamProvider } from './../providers/web3/team';
 import { SettingsProvider } from './../providers/storage/settings';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
+import { NotificationProvider } from '../providers/notification/notification';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-reques
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    BarcodeScanner
+    BarcodeScanner,
+    NotificationProvider
   ]
 })
 export class AppModule {}
