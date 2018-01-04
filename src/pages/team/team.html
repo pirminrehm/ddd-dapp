@@ -79,7 +79,7 @@
     <ion-card>
       <ion-card-header>Approve pending members</ion-card-header>
       <ion-card-content *ngIf="(pendingMembers$ | async)?.length == 0">No pending invitations</ion-card-content>
-      <ion-list *ngIf="pendingMembers">
+      <ion-list *ngIf="(pendingMembers$ | async)?.length > 0">
         <ion-item-sliding *ngFor="let pendingMember of pendingMembers$ | async">
           <ion-item>
             <ion-avatar item-start>
@@ -106,7 +106,7 @@
     <ion-card>
       <ion-card-header>Members</ion-card-header>
       <ion-card-content *ngIf="(members$ | async)?.length == 0">No team members</ion-card-content>
-      <ion-list *ngIf="members">
+      <ion-list *ngIf="(members$ | async)?.length > 0">
         <ion-item *ngFor="let member of members$ | async">
           <ion-avatar item-start>
             <img src="img/avatar-{member.avatarId}.png">
