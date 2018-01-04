@@ -1,3 +1,4 @@
+import { NotificationProvider } from './../../providers/notification/notification';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Component, OnInit } from '@angular/core';
@@ -7,6 +8,9 @@ import { NavController, ModalController } from 'ionic-angular';
 import { Web3Provider } from './../../providers/web3/web3';
 import { TeamProvider } from './../../providers/web3/team';
 import { Account } from './../../models/account';
+import { PendingMember } from './../../models/pending-member';
+import { Member } from './../../models/member';
+
 import { TeamInvitation } from './../../models/team-invitation';
 import { TeamJoinRequestPage } from '../team-join-request/team-join-request';
 
@@ -25,9 +29,8 @@ export class TeamPage implements OnInit {
   invitationTokenIsLoading = false;
   teamInvitation: TeamInvitation;
 
-  accounts: Account[];
-  // membersCount: number;
-  // pendingMembersCount: number;
+  pendingMembers: Promise<PendingMember[]>;
+  members: Promise<Member[]>;
 
   constructor(public navCtrl: NavController, 
               private modalCtrl: ModalController,
@@ -35,7 +38,8 @@ export class TeamPage implements OnInit {
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
               private fb: FormBuilder,
-              private barcodeScanner: BarcodeScanner) {
+              private barcodeScanner: BarcodeScanner,
+              private notificationProvider: NotificationProvider) {
   }
 
   ngOnInit() {
@@ -47,15 +51,7 @@ export class TeamPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.teamAddress = this.settingsProvider.getTeamAddress();
-
-
-    // TODO: Do not mix Obseravbles and Promises this way...
-    this.accounts = (await this.web3Provider.getAccounts())
-      .map((address, index) => (new Account(address, `Account ${index}`)));
-    
-    // this.membersCount = await this.teamProvider.getMembersCount();
-    // this.pendingMembersCount = await this.teamProvider.getPendingMembersCount();
+    this.stateChanged();
   }
 
   async createTeam() {
@@ -63,8 +59,10 @@ export class TeamPage implements OnInit {
       const name = this.createTeamForm.value.name;
       const creatorName = this.createTeamForm.value.creatorName;
       await this.teamProvider.createTeam(name, creatorName);
+      this.notificationProvider.success(`Congrats! You're now part of the new team ${name}`)
+      await this.stateChanged();
     } catch(e) {
-      alert('An error occured while creating the team');
+      this.notificationProvider.error('An error occured while creating the team.');
       console.log(e);
     }
   }
@@ -84,17 +82,36 @@ export class TeamPage implements OnInit {
   }
 
 
+  async acceptPendingMember(pendingMember: PendingMember) {
+    try {
+      await this.teamProvider.acceptPendingMember(pendingMember.account);
+      this.notificationProvider.success(`Pending user ${pendingMember.name} added`);
+    } catch(e) {
+      this.notificationProvider.error(`An error occured while approving the member. ${pendingMember.name} remains unapproved`);
+      console.log(e);
+    }
+  }
+
   async scanInvitationToken() {
     // TODO: Implement native QR Code Functionality
     // const data = await this.barcodeScanner.scan();
 
     const qrData = await Promise.resolve({
-      address: '0xd6b61cad80dbe2fe26fa672b8ec2fdaf002cebbc', 
-      token: '0xc70e3c8a277a23c7c5b16a9ac991714062dd3fc383eb3b1b80419d9c318e7232'
+      address: '0xd4907def4d374d0a07910159a8e7d4fc8a5983df', 
+      token: '0x3f7066bdf030b073203da95cf07b0d2ba7291014bd9f9c0f3cecbfee2a8e8a5a'
     });
 
     let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
     modal.present();
+  }
+
+
+  private async stateChanged() {
+    this.teamAddress = this.settingsProvider.getTeamAddress();
+    if(await this.teamAddress) {
+      this.members = this.teamProvider.getMembers();
+      this.pendingMembers = this.teamProvider.getPendingMembers();
+    }
   }
 }
  

@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Web3Provider } from './../../providers/web3/web3';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Account } from '../../models/account';
+import { NotificationProvider } from '../../providers/notification/notification';
 
 /**
  * Generated class for the SettingsPage page.
@@ -28,7 +29,8 @@ export class SettingsPage {
               public navParams: NavParams,
               private fb: FormBuilder,
               private web3Provider: Web3Provider,
-              private settingsProvider: SettingsProvider) {
+              private settingsProvider: SettingsProvider,
+              private notificationProvier: NotificationProvider) {
 
     this.settingsForm = this.fb.group({
       account: ['', [Validators.required]],
@@ -55,7 +57,9 @@ export class SettingsPage {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
       await this.settingsProvider.setTeamAddress(this.teamAddress);
+      this.notificationProvier.success('Settings saved');
     } catch(e) {
+      this.notificationProvier.error('An error occured while saving the settings.');
       console.log(e);
     }
   }
