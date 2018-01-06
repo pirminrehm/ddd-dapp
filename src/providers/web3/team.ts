@@ -1,4 +1,5 @@
-import { CacheProvider } from './../storage/cache';
+import { TeamState } from './../../states/team';
+import { AppStateTypes } from './../../states/types';
 import { TeamInvitation } from './../../models/team-invitation';
 import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
@@ -7,6 +8,7 @@ import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
 import { VotingProvider } from './voting';
+import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
@@ -20,17 +22,22 @@ const teamArtifacts = require('../../../build/contracts/Team.json');
 @Injectable()
 export class TeamProvider {
 
+  private state: TeamState;
+
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
-              private cacheProvider: CacheProvider) {
+              private votingProvider: VotingProvider) {
+    this.state = AppStateProvider.getInstance(AppStateTypes.TEAM);
   }
 
 
   // CONTRACT ACCESSORS
   async getTeamName(): Promise<string> {
-    const name = await this.call('getTeamName');
-    return this.web3Provider.fromWeb3String(name);
+    if(!this.state.name) {
+      let name = await this.call('getTeamName');
+      this.state.name = await this.web3Provider.fromWeb3String(name);
+    }
+    return this.state.name;
   }
 
   async getPendingMembersCount(): Promise<number> {
@@ -163,13 +170,11 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    if(!this.cacheProvider.getTeamContract()) {
+    if(!this.state.address) {
       const address = await this.settingsProvider.getTeamAddress();
-
-      const contract = this.web3Provider.getContractAt(teamArtifacts, address)
-      this.cacheProvider.setTeamContract(contract);
+      this.state.address = await this.web3Provider.getContractAt(teamArtifacts, address);
     }
-    return this.cacheProvider.getTeamContract();
+    return this.state.address;
   }
 
   private async call(name: string, ...params): Promise<any> {
