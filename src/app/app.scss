@@ -27,3 +27,13 @@
     background-color: color($colors, danger) !important;
   }
 }
+
+ion-card {
+  ion-card-header {
+    ion-spinner {
+      margin-bottom: -9px;
+      margin-left: 5px;
+      margin-top: -5px;
+    }
+  }
+}

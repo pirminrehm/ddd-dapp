@@ -10,6 +10,7 @@ import { PendingMember } from './../../models/pending-member';
 import { Member } from './../../models/member';
 
 import { TeamInvitation } from './../../models/team-invitation';
+import { Loader } from './../../models/loader';
 import { TeamJoinRequestPage } from '../team-join-request/team-join-request';
 
 
@@ -22,13 +23,14 @@ import 'rxjs/add/operator/filter';
 export class TeamPage implements OnInit {
 
   createTeamForm: FormGroup;
-  teamAddress$: Promise<Boolean>;
+  teamAddress: Boolean;
 
-  invitationTokenIsLoading = false;
   teamInvitation: TeamInvitation;
 
-  pendingMembers$: Promise<PendingMember[]>;
-  members$: Promise<Member[]>;
+  pendingMembers: PendingMember[];
+  members: Member[];
+
+  loader: Loader;
 
   constructor(public navCtrl: NavController, 
               private modalCtrl: ModalController,
@@ -36,7 +38,7 @@ export class TeamPage implements OnInit {
               private settingsProvider: SettingsProvider,
               private fb: FormBuilder,
               private barcodeScanner: BarcodeScanner,
-              private notificationProvider: NotificationProvider) {
+              private notificationProvider: NotificationProvider) {                                
   }
 
   ngOnInit() {
@@ -45,6 +47,10 @@ export class TeamPage implements OnInit {
       creatorName: ['', Validators.required]
       // TODO: Add Avatar ID
     });
+    this.pendingMembers = [];
+    this.members = [];
+    this.teamAddress = false;
+    this.loader = new Loader(['members', 'pendingMembers', 'createInvitationToken']);    
   }
 
   async ionViewWillEnter() {
@@ -65,10 +71,10 @@ export class TeamPage implements OnInit {
   }
 
   createInvitationToken() {
-    this.invitationTokenIsLoading = true;
+    this.loader.activate('createInvitationToken');
     this.teamProvider.onTokenCreated().then(teamInvitation => {
       this.teamInvitation = teamInvitation;
-      this.invitationTokenIsLoading = false;
+      this.loader.deactivate('createInvitationToken');
     });
 
     this.teamProvider.createInvitationToken();
@@ -102,12 +108,20 @@ export class TeamPage implements OnInit {
     modal.present();
   }
 
-
   private async stateChanged() {
-    this.teamAddress$ = this.settingsProvider.getTeamAddress();
-    if(await this.teamAddress$) {
-      this.members$ = this.teamProvider.getMembers();
-      this.pendingMembers$ = this.teamProvider.getPendingMembers();
+    this.loader.activateAll();
+    this.loader.deactivate('createInvitationToken');    
+    let teamAddress = await this.settingsProvider.getTeamAddress();
+    this.teamAddress = teamAddress;
+    if(this.teamAddress) {
+      this.teamProvider.getMembers().then(members => {
+        this.members = members;       
+        this.loader.deactivate('members');
+      });
+      this.teamProvider.getPendingMembers().then(pendingMembers =>  {
+        this.pendingMembers = pendingMembers;
+        this.loader.deactivate('pendingMembers');
+      });
     }
   }
 }
