@@ -8,7 +8,7 @@
 
 
   <!-- USER DOES NOT HAVE A TEAM -->
-  <div *ngIf="!(teamAddress | async)">
+  <div *ngIf="!(teamAddress$ | async)">
     <p class="hint">
       Before you start voting, please join a team. You can create your own team 
       or join an existing team by using a qr code.
@@ -49,7 +49,7 @@
   </div>
 
   <!-- USER HAS A TEAM -->
-  <div *ngIf="(teamAddress | async)">
+  <div *ngIf="(teamAddress$ | async)">
     <p class="hint">
       Glad to see that you're a team member. Invite your friends and start votings now.
     </p>
@@ -78,9 +78,9 @@
 
     <ion-card>
       <ion-card-header>Approve pending members</ion-card-header>
-      <ion-card-content *ngIf="(pendingMembers | async)?.length == 0">No pending invitations</ion-card-content>
-      <ion-list *ngIf="pendingMembers">
-        <ion-item-sliding *ngFor="let pendingMember of pendingMembers | async">
+      <ion-card-content *ngIf="(pendingMembers$ | async)?.length == 0">No pending invitations</ion-card-content>
+      <ion-list *ngIf="(pendingMembers$ | async)?.length > 0">
+        <ion-item-sliding *ngFor="let pendingMember of pendingMembers$ | async">
           <ion-item>
             <ion-avatar item-start>
               <img src="img/avatar-{pendingMember.avatarId}.png">
@@ -105,9 +105,9 @@
 
     <ion-card>
       <ion-card-header>Members</ion-card-header>
-      <ion-card-content *ngIf="(members | async)?.length == 0">No team members</ion-card-content>
-      <ion-list *ngIf="members">
-        <ion-item *ngFor="let member of members | async">
+      <ion-card-content *ngIf="(members$ | async)?.length == 0">No team members</ion-card-content>
+      <ion-list *ngIf="(members$ | async)?.length > 0">
+        <ion-item *ngFor="let member of members$ | async">
           <ion-avatar item-start>
             <img src="img/avatar-{member.avatarId}.png">
           </ion-avatar>

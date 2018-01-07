@@ -18,11 +18,13 @@ import { VotingPage } from './../pages/voting/voting';
 import { Web3Provider } from '../providers/web3/web3';
 import { LocationProvider } from './../providers/web3/location';
 import { VotingProvider } from '../providers/web3/voting';
+import { VotingDetailsPage } from './../pages/voting-details/voting-details';
 import { TeamProvider } from './../providers/web3/team';
 import { SettingsProvider } from './../providers/storage/settings';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 import { NotificationProvider } from '../providers/notification/notification';
+import { CacheProvider } from '../providers/storage/cache';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { NotificationProvider } from '../providers/notification/notification';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingDetailsPage,
     TabsPage
   ],
   imports: [
@@ -47,6 +50,7 @@ import { NotificationProvider } from '../providers/notification/notification';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingDetailsPage,
     TabsPage
   ],
   providers: [
@@ -55,6 +59,7 @@ import { NotificationProvider } from '../providers/notification/notification';
     VotingProvider,
     TeamProvider,
     SettingsProvider,
+    CacheProvider,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},

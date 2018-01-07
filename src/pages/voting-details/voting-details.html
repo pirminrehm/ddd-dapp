@@ -1,0 +1,40 @@
+<div *ngIf="address">
+
+  <h3>Voting: {{votingName$ | async}}</h3>
+
+  <ion-card>
+    <ion-card-header>Add a vote</ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="votingForm" (submit)="addVote()">
+        <ion-item>
+          <ion-label>Location</ion-label>
+          <ion-select formControlName="location">
+            <ion-option *ngFor="let location of locations$ | async" [value]="location.uri">{{ location.uri }} {{ location.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label for="points">Points:</ion-label>
+          <ion-input type="number" id="points" formControlName="points"></ion-input>
+        </ion-item>
+        
+        <button ion-button outline block type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Add a vote</button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Location Points</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let locationPoint of locationPoints">{{locationPoint.uri}}: {{ locationPoint.points }}</ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>User Points</ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let userPoint of userPoints">{{userPoint.account}}: {{ userPoint.points }}</ion-item>
+    </ion-list>
+  </ion-card>
+</div>

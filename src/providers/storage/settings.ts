@@ -1,3 +1,4 @@
+import { CacheProvider } from './cache';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
@@ -10,7 +11,8 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class SettingsProvider {
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage,
+              private cacheProvider: CacheProvider) {
   }
 
 
@@ -41,7 +43,8 @@ export class SettingsProvider {
   }
 
   async setTeamAddress(value: string) {
-    return await this.set('team-address', value);
+    await this.set('team-address', value);
+    this.cacheProvider.resetTeamContract();
   }
 
 
