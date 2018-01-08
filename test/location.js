@@ -87,6 +87,11 @@ contract('Location', (accounts) => {
       expect(t8(res[1])).to.equal(data.location1);
     });
 
+    it('should check if the URI exists', async () => {
+      const res = await contract.checkIfUriExists.call(f8(data.uri1));
+      expect(res).to.be.true;
+    });
+
     it('should not be possible to add location_1 URI again', async () => {
       try {
         const res = await contract.addLocation(data.uri1, data.location1);
