@@ -475,6 +475,17 @@ contract('Team', (accounts) => {
         expect(votingAddress).to.equal(votingInstance2.address);
       });
 
+      it('should get the closed votings count', async () => {
+        const count = await contract.getVotingsCount.call();
+        expect(nr(count)).to.be.equal(1);
+      });
+
+      it('should get the closed voting by index', async () => {
+        const votingAddress = await contract.getClosedVotingByIndex.call(0);
+        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
+        expect(votingAddress).to.equal(votingInstance1.address);
+      });
+
       it("should not close a voting due to non-member", done => {
         let noLogWasRecieved = true;
         votingInstance2.VotingClosed().watch((error, log) => {
@@ -503,8 +514,6 @@ contract('Team', (accounts) => {
           expect(e).to.be.an('error');
         }
       });
-
-
     });
   });
 });

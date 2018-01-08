@@ -21,6 +21,7 @@ contract Team {
   //-------------------------------------------//
   address private locationAddress;
   address[] private votingAddresses;
+  address[] private closedVotingAddresses;
  
   mapping (bytes32 => bool) private invitationTokens;
 
@@ -162,6 +163,14 @@ contract Team {
     return votingAddresses[index];
   }
 
+  function getClosedVotingsCount() public constant returns (uint memberCount) {
+    return closedVotingAddresses.length;
+  }  
+  
+  function getClosedVotingByIndex(uint index) public constant returns (address votingAddress) {
+    return closedVotingAddresses[index];
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
   modifier isAPendingMember(address account) {
@@ -234,6 +243,7 @@ contract Team {
       }
       delete votingAddresses[votingAddresses.length-1];
       votingAddresses.length--;
+      closedVotingAddresses.push(addressToRemove);
     }
   }
 }
