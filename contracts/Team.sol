@@ -91,7 +91,7 @@ contract Team {
   function addVoting(bytes32 votingName) public 
     isAMember(msg.sender)
   {
-    address votingAddress = new Voting(votingName);
+    address votingAddress = new Voting(votingName, locationAddress);
     votingAddresses.push(votingAddress);
     VotingCreated(votingAddress);
   }
@@ -103,6 +103,7 @@ contract Team {
     voting.closeVotingStochastic();
     removeVoting(votingAddress);
   }
+
   //**************** Getter *******************//
   //-------------------------------------------//
   function getTeamName() public constant returns (bytes32 votingName) {

@@ -1,5 +1,8 @@
 pragma solidity 0.4.18;
 
+import "./Team.sol";
+import "./Location.sol";
+
 
 contract Voting {
 
@@ -22,17 +25,24 @@ contract Voting {
   bytes32[] private votedLocations;
   mapping (bytes32 => uint) private locationPoints;
 
+  Location private location;
+  Team private team;
+  address private teamAddress;
+
   //************** Constructor ****************//
   //-------------------------------------------//
-  function Voting (bytes32 _name) public {
+  function Voting (bytes32 _name, address locationAddress) public {
+    teamAddress = msg.sender;
+    team = Team(teamAddress);
+    location = Location(locationAddress);
     name = _name;
   }
 
   //************** Transactions ***************//
   //-------------------------------------------//
   function addVote (bytes32 locationURI, uint points) public 
-    //missing: check for allowed votingUsers
-    //missing: check if location is valide
+    isMember()
+    isValidLocation(locationURI)
     votingIsNotClosed()
     hasValidePoints(points)
     willNotExceed100Points(points) {
@@ -53,7 +63,7 @@ contract Voting {
   }
 
   function closeVotingStochastic () public 
-    //missing: check for allowed votingUsers
+    senderIsTeamContract()
     votingIsNotClosed() {
     votingIsClosed = true;
 
@@ -61,6 +71,8 @@ contract Voting {
     for (uint i = 0; i < votedLocations.length; i++) {
       sumOfAllPoints += locationPoints[votedLocations[i]];
     }
+
+    require(sumOfAllPoints > 0);
 
     uint random = uint(block.blockhash(block.number-1))%sumOfAllPoints + 1;
 
@@ -129,6 +141,21 @@ contract Voting {
 
   modifier votingIsNotClosed() {
     require(!votingIsClosed);
+    _;
+  }
+
+  modifier isMember() { 
+    require(team.checkMemberByAddress(msg.sender));
+    _;
+  }
+
+  modifier senderIsTeamContract() {
+    require(teamAddress == msg.sender);
+    _;
+  }
+
+  modifier isValidLocation(bytes32 locationURI) {
+    require(location.checkIfUriExists(locationURI));
     _;
   }
 }
