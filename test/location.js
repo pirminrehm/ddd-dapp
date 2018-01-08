@@ -15,12 +15,12 @@ contract('Location', (accounts) => {
 
   describe('Init-Test', () => {
     let contract;
-    before(done => {
+    beforeEach(done => {
       testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
       .then(teamContract => {
-        return Location.new(teamContract)
-      }).then(instance => {
-        contract = instance;
+        return teamContract.getLocationAddress.call();
+      }).then(locationAddress => {
+        contract = Location.at(locationAddress);
         done();
       });     
     });
@@ -54,9 +54,9 @@ contract('Location', (accounts) => {
     before(done => {
       testHelper.createTeamWithAllAccounts(accounts)
       .then(teamContract => {
-        return Location.new(teamContract)
-      }).then(instance => {
-        contract = instance;
+        return teamContract.getLocationAddress.call();
+      }).then(locationAddress => {
+        contract = Location.at(locationAddress);
         done();
       });     
     });
