@@ -124,11 +124,11 @@ export class TeamPage implements OnInit {
         this.pendingMembers = pendingMembers;
         this.loader.deactivate('pendingMembers');
       });
+    }
 
-      if(!this.createTeamForm.value.creatorName) {
-        const creatorName = await this.settingsProvider.getName();
-        this.createTeamForm.controls['creatorName'].patchValue(creatorName);
-      }
+    if(!this.createTeamForm.value.creatorName) {
+      const creatorName = await this.settingsProvider.getName();
+      this.createTeamForm.controls['creatorName'].patchValue(creatorName);
     }
   }
 }
