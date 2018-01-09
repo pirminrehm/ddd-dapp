@@ -53,8 +53,10 @@ export class VotingDetailsPage implements OnInit, OnChanges {
     if(this.address) {
       this.isLoading = true;
 
-      this.votingForm.reset();
-      
+      if(this.votingForm) {
+        this.votingForm.reset();
+      }
+
       this.locations$ = this.locationProvider.getLocations();
       this.votingName$ = this.votingProvider.getVotingName(this.address);
 
