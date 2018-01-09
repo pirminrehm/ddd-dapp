@@ -154,6 +154,8 @@ export class TeamProvider {
   async onVotingCreated(): Promise<any> {
     const VotingCreated = (await this.getContract()).VotingCreated(); 
     const res = await this.listenOnce(VotingCreated);
+    
+    this.state.votingsCount += 1;
     return res.args.votingAddress;
   }
 
@@ -178,7 +180,7 @@ export class TeamProvider {
     return pendingMembers;
   }
 
-  async getVotingAddresses(): Promise<PendingMember[]> {
+  async getVotingAddresses(): Promise<string[]> {
     const count = await this.getVotingsCount();
     const votings = [];
     for(let i = 0; i < count; i++) {

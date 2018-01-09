@@ -17,8 +17,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class VotingPage implements OnInit {
   createVotingForm: FormGroup;
-  votings$: Promise<any[]>;
+  votings: string[];
   selectedVoting: string;
+
+  areVotingsLoading: boolean;
 
   constructor(private teamProvider: TeamProvider,
               private fb: FormBuilder) {
@@ -43,6 +45,10 @@ export class VotingPage implements OnInit {
   }
 
   private refreshVotings() {
-    this.votings$ = this.teamProvider.getVotingAddresses();
+    this.areVotingsLoading = true;
+    this.teamProvider.getVotingAddresses().then(votings => {
+      this.votings = votings;
+      this.areVotingsLoading = false;
+    });
   }
 }

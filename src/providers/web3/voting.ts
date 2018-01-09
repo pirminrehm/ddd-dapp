@@ -45,16 +45,15 @@ export class VotingProvider {
    }
 
   async getUserPointsByIndex(address: string, index: number): Promise<UserPoint> {
-    if(!this.state.userPointsByIndex[address][index]) {
+    if(!this.state.getUserPointsByIndex(address, index)) {
       const v = await this.call(address, 'getUserPointsByIndex', index);
       const accounts = await this.web3Provider.getAccounts();
-      this.state.userPointsByIndex[address][index] = new UserPoint(
-        //v[0] returns type 'address' -> do not cast toUtf8!
+      this.state.setUserPointsByIndex(address, index, new UserPoint(
         `Account: ${accounts.indexOf(v[0])}`, 
         await this.web3Provider.fromWeb3Number(v[1])
-      );
+      ));
     }
-    return this.state.userPointsByIndex[address][index];
+    return this.state.getUserPointsByIndex(address, index);
   }
 
   async getVotedLocationsCount(address: string): Promise<number> {
@@ -66,14 +65,14 @@ export class VotingProvider {
   }
 
   async getLocationPointsByIndex(address: string, index: number): Promise<LocationPoint> {
-    if(!this.state.locationPointsByIndex[address][index]) {
+    if(!this.state.getLocationPointsByIndex(address, index)) {
       const v = await this.call(address, 'getLocationPointsByIndex', index);
-      this.state.locationPointsByIndex[address][index] = new LocationPoint(
+      this.state.setLocationPointsByIndex(address, index, new LocationPoint(
         `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
         await this.web3Provider.fromWeb3Number(v[1])
-      );
+      ));
     }
-    return this.state.locationPointsByIndex[address][index];
+    return this.state.getLocationPointsByIndex(address, index);
   }
 
 
@@ -86,7 +85,10 @@ export class VotingProvider {
     const account = await this.web3Provider.getAccount();
     const contract = await this.getContract(address);
 
-    contract.addVote(uri, points, { from: account, gas: 3000000 });
+    await contract.addVote(uri, points, { from: account, gas: 3000000 });
+
+    this.state.resetLocationPoints(address);
+    this.state.resetUserPoints(address);
   }
 
   // HELPERS

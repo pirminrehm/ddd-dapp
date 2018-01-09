@@ -1,4 +1,6 @@
-<div *ngIf="address">
+<ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+
+<div *ngIf="address && !isLoading">
 
   <h3>Voting: {{votingName$ | async}}</h3>
 
@@ -25,14 +27,14 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>Location Points</ion-card-header>
+    <ion-card-header>Location Points <ion-spinner name="dots" *ngIf="areLocationPointsLoading"></ion-spinner></ion-card-header>
     <ion-list>
       <ion-item *ngFor="let locationPoint of locationPoints">{{locationPoint.uri}}: {{ locationPoint.points }}</ion-item>
     </ion-list>
   </ion-card>
 
   <ion-card>
-    <ion-card-header>User Points</ion-card-header>
+    <ion-card-header>User Points <ion-spinner name="dots" *ngIf="areUserPointsLoading"></ion-spinner></ion-card-header>
     <ion-list>
       <ion-item *ngFor="let userPoint of userPoints">{{userPoint.account}}: {{ userPoint.points }}</ion-item>
     </ion-list>

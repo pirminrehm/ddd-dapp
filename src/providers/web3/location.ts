@@ -50,10 +50,13 @@ export class LocationProvider {
 
   async addLocation(uri, name) {
     const contract = await this.getContract();
-    return contract.addLocation(uri, name, {
+    const trans = await contract.addLocation(uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });
+
+    this.state.count = null
+    return trans;
   }
 
 
