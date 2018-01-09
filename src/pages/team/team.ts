@@ -111,8 +111,10 @@ export class TeamPage implements OnInit {
   private async stateChanged() {
     this.loader.activateAll();
     this.loader.deactivate('createInvitationToken');    
+    
     let teamAddress = await this.settingsProvider.getTeamAddress();
     this.teamAddress = teamAddress;
+    
     if(this.teamAddress) {
       this.teamProvider.getMembers().then(members => {
         this.members = members;       
@@ -122,6 +124,11 @@ export class TeamPage implements OnInit {
         this.pendingMembers = pendingMembers;
         this.loader.deactivate('pendingMembers');
       });
+
+      if(!this.createTeamForm.value.creatorName) {
+        const creatorName = await this.settingsProvider.getName();
+        this.createTeamForm.controls['creatorName'].patchValue(creatorName);
+      }
     }
   }
 }
