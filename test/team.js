@@ -349,6 +349,8 @@ contract('Team', (accounts) => {
         Team.new(f8('init_test_team'), f8('user_0_name'), 0, {from: accounts[0]})
         .then(instance => {
           contract = instance;
+          return testHelper.addLocationsToTeam(contract, accounts[0]);
+        }).then(loactionContract => {          
           done();
         });     
       });
@@ -428,7 +430,7 @@ contract('Team', (accounts) => {
         expect(res.receipt.transactionHash).to.be.a('string');
       });
 
-      it.skip("should not add a new voting by recieved address due to non-member", async () => {
+      it("should not add a new voting by recieved address due to non-member", async () => {
         try {
           const res = await votingInstance1.addVote(data.uri1, 100 ,{from: accounts[1]});
           expect(res).to.be.null;
@@ -473,6 +475,17 @@ contract('Team', (accounts) => {
         expect(votingAddress).to.equal(votingInstance2.address);
       });
 
+      it('should get the closed votings count', async () => {
+        const count = await contract.getVotingsCount.call();
+        expect(nr(count)).to.be.equal(1);
+      });
+
+      it('should get the closed voting by index', async () => {
+        const votingAddress = await contract.getClosedVotingByIndex.call(0);
+        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
+        expect(votingAddress).to.equal(votingInstance1.address);
+      });
+
       it("should not close a voting due to non-member", done => {
         let noLogWasRecieved = true;
         votingInstance2.VotingClosed().watch((error, log) => {
@@ -501,8 +514,6 @@ contract('Team', (accounts) => {
           expect(e).to.be.an('error');
         }
       });
-
-
     });
   });
 });

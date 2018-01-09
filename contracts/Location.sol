@@ -50,6 +50,10 @@ contract Location {
     return uriList.length;
   }
 
+  function checkIfUriExists(bytes32 uri) public constant returns (bool exists) {
+    return locationStructs[uri].uri == uri;
+  }
+
   //***************** Modifier ****************//
   //-------------------------------------------//
   modifier uniqueUri(bytes32 uri) {

@@ -15,12 +15,12 @@ contract('Location', (accounts) => {
 
   describe('Init-Test', () => {
     let contract;
-    before(done => {
+    beforeEach(done => {
       testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
       .then(teamContract => {
-        return Location.new(teamContract)
-      }).then(instance => {
-        contract = instance;
+        return teamContract.getLocationAddress.call();
+      }).then(locationAddress => {
+        contract = Location.at(locationAddress);
         done();
       });     
     });
@@ -54,9 +54,9 @@ contract('Location', (accounts) => {
     before(done => {
       testHelper.createTeamWithAllAccounts(accounts)
       .then(teamContract => {
-        return Location.new(teamContract)
-      }).then(instance => {
-        contract = instance;
+        return teamContract.getLocationAddress.call();
+      }).then(locationAddress => {
+        contract = Location.at(locationAddress);
         done();
       });     
     });
@@ -85,6 +85,11 @@ contract('Location', (accounts) => {
       const res = await contract.getLocationByURI.call(f8(data.uri1));
       expect(t8(res[0])).to.equal(data.uri1);
       expect(t8(res[1])).to.equal(data.location1);
+    });
+
+    it('should check if the URI exists', async () => {
+      const res = await contract.checkIfUriExists.call(f8(data.uri1));
+      expect(res).to.be.true;
     });
 
     it('should not be possible to add location_1 URI again', async () => {

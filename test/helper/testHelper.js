@@ -1,4 +1,8 @@
 const Team = artifacts.require("./Team.sol");
+const Location = artifacts.require('./Location.sol');
+const data = require('./data.json');
+
+
 Web3 = require("web3");
 const web3 = new Web3();
 const expect = require('chai').expect;
@@ -41,5 +45,16 @@ module.exports.createTeamWithAllAccounts =  async accounts => {
     );
   }
   // console.log(nr(await contract.getMembersCount.call()));
-  return (contract.address);
+  return (contract);
 } 
+
+module.exports.addLocationsToTeam =  async (teamContract, account) => {
+  let locationAddress = await teamContract.getLocationAddress.call()
+  let locationContract = Location.at(locationAddress);
+  await locationContract.addLocation(data.uri1, data.location1, {from: account});
+  await locationContract.addLocation(data.uri2, data.location2, {from: account});
+  await locationContract.addLocation(data.uri3, data.location3, {from: account});
+  await locationContract.addLocation(data.uri4, data.location4, {from: account});
+  await locationContract.addLocation(data.uri5, data.location5, {from: account});
+  return locationContract;
+};

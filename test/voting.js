@@ -14,9 +14,17 @@ contract('Voting', accounts => {
 
   describe('Init-Tests', () => {
     beforeEach(done => {
-      Voting.new(f8('init_test_voting'))
-      .then(instance => {
-        contract = instance;
+      let teamContract;
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
+      .then(_teamContract => {
+        teamContract = _teamContract;
+        return testHelper.addLocationsToTeam(teamContract, accounts[0]);
+      }).then(loactionContract => {
+        return teamContract.addVoting(data.votingName1, {from: accounts[0]});
+      }).then(() => {
+        return teamContract.getVotingByIndex.call(0);
+      }).then(votingAddress => {
+        contract = Voting.at(votingAddress);
         done();
       });
     });
@@ -30,6 +38,7 @@ contract('Voting', accounts => {
       const count = await contract.getVotedLocationsCount.call();
       assert.strictEqual(nr(count), 0, "VotedLocations count is not 0");
     });
+
     it("should not be possilbe to add negative points", async () => {
       try {
         const res = await contract.addVote(data.uri1, -1 ,{from: accounts[0]});
@@ -60,20 +69,116 @@ contract('Voting', accounts => {
   
     it("should get the name of the vote", async () => {
       const votingName = await contract.getVotingName.call();
-      expect(t8(votingName)).to.equal('init_test_voting');
+      expect(t8(votingName)).to.equal(data.votingName1);
     });
 
-    it('should not be possible to close the voting twice');
-    it('should not be possible to vote in a closed voting');
-    
+    it("should not be possilbe to add a vote by a non team member", async () => {
+      try {
+        const res = await contract.addVote(data.uri1, 50 ,{from: accounts[4]});
+        expect(res).to.be.null;
+      } catch(e) {
+        expect(e).to.be.an('error');
+      }
+    });
   });
 
+  describe('Init-Tests with a closed Voting', () => {
+    let teamContract;
+
+    before(done => {
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
+      .then(_teamContract => {
+        teamContract = _teamContract;
+        return testHelper.addLocationsToTeam(teamContract, accounts[0]);
+      }).then(loactionContract => {
+        return teamContract.addVoting(data.votingName1, {from: accounts[0]});
+      }).then(() => {
+        return teamContract.getVotingByIndex.call(0);
+      }).then(votingAddress => {
+        contract = Voting.at(votingAddress);
+        return contract.addVote(data.uri1, 50 ,{from: accounts[0]});
+      }).then(() => {
+        return teamContract.closeVotingStochastic(contract.address, {from: accounts[0]})
+      }).then(res=> {
+        done();
+      });
+    });
+
+    it("should get the winningLocation by getter", async () => {
+      const res = await contract.getWinningLocation.call();
+      expect(t8(res)).to.equal(data.uri1);
+    });
+
+    it('should not be possible to close the voting twice', async () => {
+      try {
+        const res = await teamContract.closeVotingStochastic(contract.address, {from: accounts[0]})
+        expect(res).to.be.null;
+      } catch(e) {
+        expect(e).to.be.an('error');
+      }
+    });
+    
+    it('should not be possible to vote in a closed voting', async () => {
+      try {
+        const res = await contract.addVote(data.uri1, 50 ,{from: accounts[0]});
+        expect(res).to.be.null;
+      } catch(e) {
+        expect(e).to.be.an('error');
+      }
+    });    
+  });
+
+  describe('Close Voting', () => {
+    let teamContract;
+
+    before(done => {
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
+      .then(_teamContract => {
+        teamContract = _teamContract;
+        return testHelper.addLocationsToTeam(teamContract, accounts[0]);
+      }).then(loactionContract => {
+        return teamContract.addVoting(data.votingName1, {from: accounts[0]});
+      }).then(() => {
+        return teamContract.getVotingByIndex.call(0);
+      }).then(votingAddress => {
+        contract = Voting.at(votingAddress);
+        done();
+      });
+    });
+
+    it('should not be possible to close a voting without users', async () => {
+      try {
+        const res = await teamContract.closeVotingStochastic(contract.address, {from: accounts[0]})
+        expect(res).to.be.null;
+      } catch(e) {
+        expect(e).to.be.an('error');
+      }
+    });
+
+    it('should be possible to close a voting after adding a vote', async () => {
+      const resVote = await contract.addVote(data.uri1, 50 ,{from: accounts[0]});
+      expect(resVote).not.to.be.null;  
+      const resClose = await teamContract.closeVotingStochastic(contract.address, {from: accounts[0]})
+      expect(resClose).not.to.be.null;
+      const res = await contract.getWinningLocation.call();
+      expect(t8(res)).to.equal(data.uri1);
+    });
+  });
+    
 
   describe('Story 1: Add Votes from different Accounts', () => {
     before(done => {
-      Voting.new(f8('story_1_voting'))
-      .then(instance => {
-        contract = instance;
+      let teamContract;
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,5)) //account 0,1,2,3,5
+      .then(_teamContract => {
+        teamContract = _teamContract;
+        return testHelper.addLocationsToTeam(teamContract, accounts[0]);
+      }).then(loactionContract => {
+        return teamContract.addVoting(data.votingName1, {from: accounts[0]});
+      }).then(() => {
+        return teamContract.getVotingByIndex.call(0);
+      }).then(votingAddress => {
+        contract = Voting.at(votingAddress);
         done();
       });
     });
@@ -132,11 +237,19 @@ contract('Voting', accounts => {
 
   describe('Story 2: Simulate voting and close voting by 4 users', () => {
     let winningLocation;
+    let teamContract;
 
     before(done => {
-      Voting.new(f8('story_2_voting'))
-      .then(instance => {
-        contract = instance;
+      testHelper.createTeamWithAllAccounts(accounts.slice(0,4)) //account 0,1,2,3
+      .then(_teamContract => {
+        teamContract = _teamContract;
+        return testHelper.addLocationsToTeam(teamContract, accounts[0]);
+      }).then(loactionContract => {
+        return teamContract.addVoting(data.votingName2, {from: accounts[0]});
+      }).then(() => {
+        return teamContract.getVotingByIndex.call(0);
+      }).then(votingAddress => {
+        contract = Voting.at(votingAddress);
         done();
       });
     });
@@ -250,7 +363,7 @@ contract('Voting', accounts => {
         }
       });
 
-      contract.closeVotingStochastic({from: accounts[0]}).then(res=> {
+      teamContract.closeVotingStochastic(contract.address, {from: accounts[0]}).then(res=> {
         expect(res).not.to.be.null;
       });
     }).timeout(1000);

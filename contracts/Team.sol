@@ -21,6 +21,7 @@ contract Team {
   //-------------------------------------------//
   address private locationAddress;
   address[] private votingAddresses;
+  address[] private closedVotingAddresses;
  
   mapping (bytes32 => bool) private invitationTokens;
 
@@ -91,7 +92,7 @@ contract Team {
   function addVoting(bytes32 votingName) public 
     isAMember(msg.sender)
   {
-    address votingAddress = new Voting(votingName);
+    address votingAddress = new Voting(votingName, locationAddress);
     votingAddresses.push(votingAddress);
     VotingCreated(votingAddress);
   }
@@ -103,6 +104,7 @@ contract Team {
     voting.closeVotingStochastic();
     removeVoting(votingAddress);
   }
+
   //**************** Getter *******************//
   //-------------------------------------------//
   function getTeamName() public constant returns (bytes32 votingName) {
@@ -159,6 +161,14 @@ contract Team {
   
   function getVotingByIndex(uint index) public constant returns (address votingAddress) {
     return votingAddresses[index];
+  }
+
+  function getClosedVotingsCount() public constant returns (uint memberCount) {
+    return closedVotingAddresses.length;
+  }  
+  
+  function getClosedVotingByIndex(uint index) public constant returns (address votingAddress) {
+    return closedVotingAddresses[index];
   }
 
   //***************** Modifier ****************//
@@ -233,6 +243,7 @@ contract Team {
       }
       delete votingAddresses[votingAddresses.length-1];
       votingAddresses.length--;
+      closedVotingAddresses.push(addressToRemove);
     }
   }
 }
