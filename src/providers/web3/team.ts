@@ -1,4 +1,5 @@
-import { CacheProvider } from './../storage/cache';
+import { TeamState } from './../../states/team';
+import { AppStateTypes } from './../../states/types';
 import { TeamInvitation } from './../../models/team-invitation';
 import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
@@ -7,6 +8,7 @@ import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
 import { VotingProvider } from './voting';
+import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
@@ -20,56 +22,82 @@ const teamArtifacts = require('../../../build/contracts/Team.json');
 @Injectable()
 export class TeamProvider {
 
+  private state: TeamState;
+
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
-              private cacheProvider: CacheProvider) {
+              private votingProvider: VotingProvider) {
+                
+    this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
   }
 
 
   // CONTRACT ACCESSORS
   async getTeamName(): Promise<string> {
-    const name = await this.call('getTeamName');
-    return this.web3Provider.fromWeb3String(name);
+    if(!this.state.name) {
+      let name = await this.call('getTeamName');
+      this.state.name = await this.web3Provider.fromWeb3String(name);
+    }
+    return this.state.name;
   }
 
   async getPendingMembersCount(): Promise<number> {
-    const count = await this.call('getPendingMembersCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.pendingMembersCount) {
+      const count = await this.call('getPendingMembersCount');
+      this.state.pendingMembersCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.pendingMembersCount;
   }
 
   async getMembersCount(): Promise<number> {
-    const count = await this.call('getMembersCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.membersCount) {
+      const count = await this.call('getMembersCount');
+      this.state.membersCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.membersCount;
   }
 
   async getVotingsCount(): Promise<number> {
-    const count = await this.call('getVotingsCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.votingsCount) {
+      const count = await this.call('getVotingsCount');
+      this.state.votingsCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.votingsCount;
   }
 
   async getLocationAddress(): Promise<string> {
-    return this.call('getLocationAddress');
+    if(!this.state.locationAddress) {
+      this.state.locationAddress = await this.call('getLocationAddress');
+    }
+    return this.state.locationAddress;
   }
 
   async getMemberByIndex(index: number): Promise<Member> {
-    const v = await this.call('getMemberByIndex', index);
-    const name = await this.web3Provider.fromWeb3String(v[1]);
-    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
-
-    return new Member(v[0], name, avatarId);
+    if(!this.state.memberByIndex[index]) {
+      const v = await this.call('getMemberByIndex', index);
+      const name = await this.web3Provider.fromWeb3String(v[1]);
+      const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+      this.state.memberByIndex[index] = new Member(v[0], name, avatarId);
+    }
+    return this.state.memberByIndex[index];
   }
 
   async getPendingMemberByIndex(index: number): Promise<PendingMember> {
-    const v = await this.call('getPendingMemberByIndex', index);
-    const name = await this.web3Provider.fromWeb3String(v[1]);
-    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
-
-    return new PendingMember(v[0], name, avatarId, v[3]);
+    if(!this.state.pendingMemberByIndex[index]) {
+      const v = await this.call('getPendingMemberByIndex', index);
+      const name = await this.web3Provider.fromWeb3String(v[1]);
+      const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+  
+      this.state.pendingMemberByIndex[index] = new PendingMember(v[0], name, avatarId, v[3]);
+    }
+    return this.state.pendingMemberByIndex[index]
   }
 
   async getVotingAddressByIndex(index: number): Promise<PendingMember> {
-    return this.call('getVotingByIndex', index);
+    if(!this.state.votingAddressByIndex[index]) {
+      this.state.votingAddressByIndex[index] = await this.call('getVotingByIndex', index);
+    }
+    return this.state.votingAddressByIndex[index];
   }
 
   // TRANSACTIONS
@@ -81,7 +109,7 @@ export class TeamProvider {
     const contract = await this.web3Provider.getRawContract(teamArtifacts);
     const account = await this.web3Provider.getAccount();
     
-    const team = await contract.new(name, creatorName, {from: account, gas: 5000000});
+    const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }
@@ -126,6 +154,8 @@ export class TeamProvider {
   async onVotingCreated(): Promise<any> {
     const VotingCreated = (await this.getContract()).VotingCreated(); 
     const res = await this.listenOnce(VotingCreated);
+    
+    this.state.votingsCount += 1;
     return res.args.votingAddress;
   }
 
@@ -150,7 +180,7 @@ export class TeamProvider {
     return pendingMembers;
   }
 
-  async getVotingAddresses(): Promise<PendingMember[]> {
+  async getVotingAddresses(): Promise<string[]> {
     const count = await this.getVotingsCount();
     const votings = [];
     for(let i = 0; i < count; i++) {
@@ -163,13 +193,11 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    if(!this.cacheProvider.getTeamContract()) {
+    if(!this.state.contract) {
       const address = await this.settingsProvider.getTeamAddress();
-
-      const contract = this.web3Provider.getContractAt(teamArtifacts, address)
-      this.cacheProvider.setTeamContract(contract);
+      this.state.contract = await this.web3Provider.getContractAt(teamArtifacts, address);
     }
-    return this.cacheProvider.getTeamContract();
+    return this.state.contract;
   }
 
   private async call(name: string, ...params): Promise<any> {

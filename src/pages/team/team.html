@@ -8,7 +8,7 @@
 
 
   <!-- USER DOES NOT HAVE A TEAM -->
-  <div *ngIf="!(teamAddress$ | async)">
+  <div *ngIf="!teamAddress">
     <p class="hint">
       Before you start voting, please join a team. You can create your own team 
       or join an existing team by using a qr code.
@@ -49,14 +49,15 @@
   </div>
 
   <!-- USER HAS A TEAM -->
-  <div *ngIf="(teamAddress$ | async)">
+  <div *ngIf="teamAddress">
     <p class="hint">
       Glad to see that you're a team member. Invite your friends and start votings now.
     </p>
 
     <!-- CREATE INVITATION TOKEN -->
     <button ion-button outline block icon-left *ngIf="!teamInvitation && !invitationTokenIsLoading" (click)="createInvitationToken()">
-      <ion-icon name="barcode"></ion-icon>Create invitation token
+      <ion-icon name="barcode"></ion-icon>Create invitation token 
+      <ion-spinner name="dots" *ngIf="loader.createInvitationToken"></ion-spinner>
     </button>
     
     <ion-card>
@@ -77,10 +78,10 @@
     <!-- APPROVE PENDING MEMBERS -->
 
     <ion-card>
-      <ion-card-header>Approve pending members</ion-card-header>
-      <ion-card-content *ngIf="(pendingMembers$ | async)?.length == 0">No pending invitations</ion-card-content>
-      <ion-list *ngIf="(pendingMembers$ | async)?.length > 0">
-        <ion-item-sliding *ngFor="let pendingMember of pendingMembers$ | async">
+      <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>
+      <ion-card-content *ngIf="(pendingMembers.length == 0) && !(loader.pendingMembers === -1)">No pending invitations</ion-card-content>
+      <ion-list *ngIf="(pendingMembers.length > 0) && !(loader.pendingMembers === -1)">
+        <ion-item-sliding *ngFor="let pendingMember of pendingMembers">
           <ion-item>
             <ion-avatar item-start>
               <img src="img/avatar-{pendingMember.avatarId}.png">
@@ -104,10 +105,10 @@
     </ion-card>
 
     <ion-card>
-      <ion-card-header>Members</ion-card-header>
-      <ion-card-content *ngIf="(members$ | async)?.length == 0">No team members</ion-card-content>
-      <ion-list *ngIf="(members$ | async)?.length > 0">
-        <ion-item *ngFor="let member of members$ | async">
+      <ion-card-header>Members <ion-spinner name="dots" *ngIf="loader.members"></ion-spinner></ion-card-header>
+      <ion-card-content *ngIf="(members.length == 0) && !(loader.members === -1)">No team members</ion-card-content>
+      <ion-list *ngIf="(members.length) > 0 && !(loader.members === -1)">
+        <ion-item *ngFor="let member of members">
           <ion-avatar item-start>
             <img src="img/avatar-{member.avatarId}.png">
           </ion-avatar>

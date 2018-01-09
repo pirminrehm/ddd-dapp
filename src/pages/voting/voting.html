@@ -14,28 +14,34 @@
 
 
 <ion-content padding>
-<ion-card>
-    <ion-card-header>Create voting</ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="createVotingForm" (submit)="addVoting()">
-        <ion-item>
-          <ion-label for="name">Name:</ion-label>
-          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+  <div class="no-member" *ngIf="!(teamAddress$ | async)">
+    You're not part of a team. Join a team to create and participate at votings.
+  </div>
+  
+  <div *ngIf="!!(teamAddress$ | async)">
+    <ion-card>
+      <ion-card-header>Create voting</ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="createVotingForm" (submit)="addVoting()">
+          <ion-item>
+            <ion-label for="name">Name:</ion-label>
+            <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+          </ion-item>
+          <button ion-button outline block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Create voting</button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>Select an active voting <ion-spinner name="dots" *ngIf="areVotingsLoading"></ion-spinner></ion-card-header>
+      <ion-list radio-group [(ngModel)]="selectedVoting">
+        <ion-item *ngFor="let voting of votings">
+          <ion-label>{{ voting }}</ion-label>
+          <ion-radio [value]="voting"></ion-radio>
         </ion-item>
-        <button ion-button outline block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Create voting</button>
-      </form>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>Select an active voting</ion-card-header>
-    <ion-list radio-group [(ngModel)]="selectedVoting">
-      <ion-item *ngFor="let voting of votings$ | async">
-        <ion-label>{{ voting }}</ion-label>
-        <ion-radio [value]="voting"></ion-radio>
-      </ion-item>
-    </ion-list>
-  </ion-card>
-
-  <page-voting-details [address]="selectedVoting"></page-voting-details>
+      </ion-list>
+    </ion-card>
+  
+    <page-voting-details [address]="selectedVoting"></page-voting-details>
+  </div>
 </ion-content>

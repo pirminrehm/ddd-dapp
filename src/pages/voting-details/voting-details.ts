@@ -1,15 +1,15 @@
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
 import { VotingProvider } from './../../providers/web3/voting';
-import { Component, OnInit, Input } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { LocationPoint } from './../../models/location-point';
 import { UserPoint } from './../../models/user-point';
 import { Account } from './../../models/account';
 import { Location } from './../../models/location';
-import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 
 /**
  * Generated class for the VotingDetailsPage page.
@@ -24,9 +24,14 @@ import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 export class VotingDetailsPage implements OnInit, OnChanges {
   @Input() address: string;
 
+  isLoading: boolean;
+
   locations$: Promise<Location[]>;
   userPoints: UserPoint[];
   locationPoints: LocationPoint[];
+
+  areLocationPointsLoading: Boolean;
+  areUserPointsLoading: Boolean;
 
   votingName$: Promise<string>;
   votingForm: FormGroup;
@@ -40,19 +45,28 @@ export class VotingDetailsPage implements OnInit, OnChanges {
   ngOnInit() {
     this.votingForm = this.fb.group({
       location: ['', Validators.required],
-      points: ['', Validators.required]
+      points: ['', [Validators.required, Validators.min(1), Validators.max(100)]]
     });
   }
 
-  ngOnChanges() {
+  async ngOnChanges() {
     if(this.address) {
-      this.votingForm.reset();
-      
+      this.isLoading = true;
+
+      if(this.votingForm) {
+        this.votingForm.reset();
+      }
+
       this.locations$ = this.locationProvider.getLocations();
       this.votingName$ = this.votingProvider.getVotingName(this.address);
 
-      this.refreshUserPoints();
-      this.refreshLocationPoints();
+      await this.locations$;
+      await this.votingName$;
+
+      await this.refreshUserPoints();
+      await this.refreshLocationPoints();
+
+      this.isLoading = false;
     }
   }
 
@@ -60,23 +74,34 @@ export class VotingDetailsPage implements OnInit, OnChanges {
     const uri = this.votingForm.value.location;
     const points = this.votingForm.value.points;
 
-    console.log('send points:', points);
-    console.log('send uri:', uri);
-
-    await this.votingProvider.addVote(this.address, uri, points);
-    this.notificationProvider.success(`Voting added`);
+    try {
+      await this.votingProvider.addVote(this.address, uri, points);
+      this.notificationProvider.success(`You successfully voted for the location.`);
+    } catch(e) {
+      this.notificationProvider.error(`The vote could not be submitted.`
+        + `Maybe you exceeded your maximum limit of 100 points?`
+      );
+    }
     
-    this.refreshLocationPoints()
-    this.refreshUserPoints()
+    this.refreshLocationPoints();
+    this.refreshUserPoints();
   }
 
 
-  private async refreshLocationPoints() {
-    this.locationPoints = await this.votingProvider.getAllLocationPoints(this.address);
+  private refreshLocationPoints() {
+    this.areLocationPointsLoading = true;
+    this.votingProvider.getAllLocationPoints(this.address).then(locationPoints => {
+      this.locationPoints = locationPoints;
+      this.areLocationPointsLoading = false;
+    });
   }
 
   private async refreshUserPoints() {
-    this.userPoints = await this.votingProvider.getAllUserPoints(this.address);
+    this.areUserPointsLoading = true;
+    this.votingProvider.getAllUserPoints(this.address).then(userPoints => {
+      this.userPoints = userPoints;
+      this.areUserPointsLoading = false;
+    })
   }
 
 }

@@ -20,8 +20,9 @@ import { Location } from '../../models/location';
 })
 export class LocationPage implements OnInit {
 
-  locations$: Promise<Location[]>;
+  locations: Location[];
   locationForm: FormGroup;
+  areLocationsLoading: boolean;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -38,8 +39,12 @@ export class LocationPage implements OnInit {
     this.refreshLocations();
   }
 
-  async refreshLocations() {
-    this.locations$ = this.locationProvider.getLocations();
+  refreshLocations() {
+    this.areLocationsLoading = true;
+    this.locationProvider.getLocations().then(locations => {
+      this.locations = locations;
+      this.areLocationsLoading = false;
+    });
   }
 
   async addLocation() {

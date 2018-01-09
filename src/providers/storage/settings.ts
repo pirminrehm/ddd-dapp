@@ -1,6 +1,6 @@
-import { CacheProvider } from './cache';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { AppStateProvider } from './app-state';
 
 /*
   Generated class for the SettingsProvider.
@@ -12,7 +12,7 @@ import { Storage } from '@ionic/storage';
 export class SettingsProvider {
 
   constructor(private storage: Storage,
-              private cacheProvider: CacheProvider) {
+              private appStateProvider: AppStateProvider) {
   }
 
 
@@ -44,7 +44,7 @@ export class SettingsProvider {
 
   async setTeamAddress(value: string) {
     await this.set('team-address', value);
-    this.cacheProvider.resetTeamContract();
+    this.appStateProvider.resetStates();
   }
 
 
