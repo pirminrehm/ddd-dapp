@@ -27,7 +27,8 @@ export class TeamProvider {
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
               private votingProvider: VotingProvider) {
-    this.state = AppStateProvider.getInstance(AppStateTypes.TEAM);
+                
+    this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
   }
 
 
@@ -41,42 +42,62 @@ export class TeamProvider {
   }
 
   async getPendingMembersCount(): Promise<number> {
-    const count = await this.call('getPendingMembersCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.pendingMembersCount) {
+      const count = await this.call('getPendingMembersCount');
+      this.state.pendingMembersCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.pendingMembersCount;
   }
 
   async getMembersCount(): Promise<number> {
-    const count = await this.call('getMembersCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.membersCount) {
+      const count = await this.call('getMembersCount');
+      this.state.membersCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.membersCount;
   }
 
   async getVotingsCount(): Promise<number> {
-    const count = await this.call('getVotingsCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.votingsCount) {
+      const count = await this.call('getVotingsCount');
+      this.state.votingsCount = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.votingsCount;
   }
 
   async getLocationAddress(): Promise<string> {
-    return this.call('getLocationAddress');
+    if(!this.state.locationAddress) {
+      this.state.locationAddress = await this.call('getLocationAddress');
+    }
+    return this.state.locationAddress;
   }
 
   async getMemberByIndex(index: number): Promise<Member> {
-    const v = await this.call('getMemberByIndex', index);
-    const name = await this.web3Provider.fromWeb3String(v[1]);
-    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
-
-    return new Member(v[0], name, avatarId);
+    if(!this.state.memberByIndex[index]) {
+      const v = await this.call('getMemberByIndex', index);
+      const name = await this.web3Provider.fromWeb3String(v[1]);
+      const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+      this.state.memberByIndex[index] = new Member(v[0], name, avatarId);
+    }
+    return this.state.memberByIndex[index];
   }
 
   async getPendingMemberByIndex(index: number): Promise<PendingMember> {
-    const v = await this.call('getPendingMemberByIndex', index);
-    const name = await this.web3Provider.fromWeb3String(v[1]);
-    const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
-
-    return new PendingMember(v[0], name, avatarId, v[3]);
+    if(!this.state.pendingMemberByIndex[index]) {
+      const v = await this.call('getPendingMemberByIndex', index);
+      const name = await this.web3Provider.fromWeb3String(v[1]);
+      const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
+  
+      this.state.pendingMemberByIndex[index] = new PendingMember(v[0], name, avatarId, v[3]);
+    }
+    return this.state.pendingMemberByIndex[index]
   }
 
   async getVotingAddressByIndex(index: number): Promise<PendingMember> {
-    return this.call('getVotingByIndex', index);
+    if(!this.state.votingAddressByIndex[index]) {
+      this.state.votingAddressByIndex[index] = await this.call('getVotingByIndex', index);
+    }
+    return this.state.votingAddressByIndex[index];
   }
 
   // TRANSACTIONS

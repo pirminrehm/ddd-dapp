@@ -1,8 +1,11 @@
+import { AppStateTypes } from './../../states/types';
 import { Injectable } from '@angular/core';
 
 import { Web3Provider } from './web3';
 import { UserPoint } from '../../models/user-point';
 import { LocationPoint } from '../../models/location-point';
+import { AppStateProvider } from '../storage/app-state';
+import { VotingState } from '../../states/voting';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const votingArtifacts = require('../../../build/contracts/Voting.json');
@@ -16,43 +19,61 @@ const votingArtifacts = require('../../../build/contracts/Voting.json');
 @Injectable()
 export class VotingProvider {
 
+  private state: VotingState;
+
   constructor(private web3Provider: Web3Provider) {
+    this.state = AppStateProvider.getInstance(AppStateTypes.VOTING) as VotingState;
   }
 
 
   // CONTRACT ACCESSORS
 
   async getVotingName(address: string) {
-    const name = await this.call(address, 'getVotingName');
-    return this.web3Provider.fromWeb3String(name);
+    if(!this.state.name[address]) {
+      const name = await this.call(address, 'getVotingName');
+      this.state.name[address] = await this.web3Provider.fromWeb3String(name);
+    }
+    return this.state.name[address];
   }
 
   async getVotingUsersCount(address: string): Promise<number> {
-    const count = await this.call(address, 'getVotingUsersCount');
-    return this.web3Provider.fromWeb3Number(count);
-  }
+    if(!this.state.usersCount[address]) {
+      const count = await this.call(address, 'getVotingUsersCount');
+      this.state.usersCount[address] = this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.usersCount[address];
+   }
 
   async getUserPointsByIndex(address: string, index: number): Promise<UserPoint> {
-    const v = await this.call(address, 'getUserPointsByIndex', index);
-    const accounts = await this.web3Provider.getAccounts();
-    return new UserPoint(
-      //v[0] returns type 'address' -> do not cast toUtf8!
-      `Account: ${accounts.indexOf(v[0])}`, 
-      await this.web3Provider.fromWeb3Number(v[1])
-    );
+    if(!this.state.userPointsByIndex[address][index]) {
+      const v = await this.call(address, 'getUserPointsByIndex', index);
+      const accounts = await this.web3Provider.getAccounts();
+      this.state.userPointsByIndex[address][index] = new UserPoint(
+        //v[0] returns type 'address' -> do not cast toUtf8!
+        `Account: ${accounts.indexOf(v[0])}`, 
+        await this.web3Provider.fromWeb3Number(v[1])
+      );
+    }
+    return this.state.userPointsByIndex[address][index];
   }
 
   async getVotedLocationsCount(address: string): Promise<number> {
-    const count = await this.call(address, 'getVotedLocationsCount');
-    return this.web3Provider.fromWeb3Number(count);
+    if(!this.state.locationsCount[address]) {
+      const count = await this.call(address, 'getVotedLocationsCount');
+      this.state.locationsCount[address] = await this.web3Provider.fromWeb3Number(count);
+    }
+    return this.state.locationsCount[address];
   }
 
   async getLocationPointsByIndex(address: string, index: number): Promise<LocationPoint> {
-    const v = await this.call(address, 'getLocationPointsByIndex', index);
-    return new LocationPoint(
-      `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
-      await this.web3Provider.fromWeb3Number(v[1])
-    );
+    if(!this.state.locationPointsByIndex[address][index]) {
+      const v = await this.call(address, 'getLocationPointsByIndex', index);
+      this.state.locationPointsByIndex[address][index] = new LocationPoint(
+        `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
+        await this.web3Provider.fromWeb3Number(v[1])
+      );
+    }
+    return this.state.locationPointsByIndex[address][index];
   }
 
 
@@ -102,7 +123,10 @@ export class VotingProvider {
   }
 
   private async getContract(address: string): Promise<any> {
-    return this.web3Provider.getContractAt(votingArtifacts, address);
+    if(!this.state.contract[address]) {
+      this.state.contract[address] = await this.web3Provider.getContractAt(votingArtifacts, address);
+    }
+    return this.state.contract[address];
   }
 
   private handleError(e: Error) {
