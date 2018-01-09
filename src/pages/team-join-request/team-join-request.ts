@@ -17,10 +17,10 @@ import { TeamProvider } from './../../providers/web3/team';
 })
 export class TeamJoinRequestPage {
   private token: string = this.navParams.get('token');
-  private teamAddress: string = this.navParams.get('address');
+  private address: string = this.navParams.get('address');
 
   joinRequestForm: FormGroup;
-  requestFailed: boolean;
+  requestFailed: boolean; 
 
   constructor(public navParams: NavParams,
               private fb: FormBuilder,
@@ -47,7 +47,7 @@ export class TeamJoinRequestPage {
   async sendJoinTeamRequest() {
     try {
       const name = this.joinRequestForm.value.name;
-      await this.teamProvider.sendJoinTeamRequest(this.teamAddress, this.token, name, 0 /* TODO: AVATAR VAL */);
+      await this.teamProvider.sendJoinTeamRequest(this.address, this.token, name, 0 /* TODO: AVATAR VAL */);
       this.viewCtrl.dismiss();
     } catch(e) {
       this.requestFailed = true;

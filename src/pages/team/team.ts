@@ -74,6 +74,7 @@ export class TeamPage implements OnInit {
     this.loader.activate('createInvitationToken');
     this.teamProvider.onTokenCreated().then(teamInvitation => {
       this.teamInvitation = teamInvitation;
+      console.log(this.teamInvitation);
       this.loader.deactivate('createInvitationToken');
     });
 
@@ -96,16 +97,27 @@ export class TeamPage implements OnInit {
   }
 
   async scanInvitationToken() {
-    // TODO: Implement native QR Code Functionality
-    // const data = await this.barcodeScanner.scan();
+    let data = await this.barcodeScanner.scan();
+    if(data.cancelled) {
+      this.notificationProvider.error('QR Code scan cancelled.');
+      return;
+    }
 
-    const qrData = await Promise.resolve({
-      address: '0xd4907def4d374d0a07910159a8e7d4fc8a5983df', 
-      token: '0x3f7066bdf030b073203da95cf07b0d2ba7291014bd9f9c0f3cecbfee2a8e8a5a'
-    });
+    try {
+      const qrData = JSON.parse(data.text);
+      
+      const tokenRegExp = new RegExp('^([a-z0-9]){66}$');
+      if(!tokenRegExp.test(qrData.token)) {
+        this.notificationProvider.error('Invalid token format.');
+        return;
+      }
 
-    let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
-    modal.present();
+      let modal = this.modalCtrl.create(TeamJoinRequestPage, data);
+      modal.present();
+
+    } catch(e) {
+      this.notificationProvider.error('Invalid QR code.');
+    }
   }
 
   private async stateChanged() {
