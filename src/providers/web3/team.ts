@@ -109,7 +109,7 @@ export class TeamProvider {
     const contract = await this.web3Provider.getRawContract(teamArtifacts);
     const account = await this.web3Provider.getAccount();
     
-    const team = await contract.new(name, creatorName, {from: account, gas: 5000000});
+    const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }
