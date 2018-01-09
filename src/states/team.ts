@@ -2,7 +2,7 @@ import { IState } from './istate';
 
 export class TeamState implements IState {
 
-  public address: string;
+  public contract: any;
   public name: string;
   public creatorName: string;
   public pendingMembersCount: number;
@@ -15,7 +15,7 @@ export class TeamState implements IState {
   public votingAddressByIndex = [];
 
   reset() {
-    this.address = null;
+    this.contract = null;
     this.name = null;
     this.creatorName = null;
     this.pendingMembersCount = null;

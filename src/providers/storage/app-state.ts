@@ -13,22 +13,26 @@ import { LocationState } from './../../states/location';
 */
 @Injectable()
 export class AppStateProvider { 
-  private instances = [];
+  private static instances = [];
 
   constructor() {
   }
 
   static getInstance(type: AppStateTypes) {
+    let state;
     if(type == AppStateTypes.TEAM) {
-      return new TeamState();
+      state = new TeamState();
     } else if(type === AppStateTypes.VOTING) {
-      return new VotingState();
+      state = new VotingState();
     } else if(type === AppStateTypes.LOCATION) {
-      return new LocationState();
+      state = new LocationState();
     }
+    this.instances.push(state);
+    
+    return state;
   }
 
   resetStates() {
-    this.instances.forEach(instance => instance.reset());
+    AppStateProvider.instances.forEach(instance => instance.reset());
   }
 }

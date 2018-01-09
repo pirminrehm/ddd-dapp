@@ -193,11 +193,11 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    if(!this.state.address) {
+    if(!this.state.contract) {
       const address = await this.settingsProvider.getTeamAddress();
-      this.state.address = await this.web3Provider.getContractAt(teamArtifacts, address);
+      this.state.contract = await this.web3Provider.getContractAt(teamArtifacts, address);
     }
-    return this.state.address;
+    return this.state.contract;
   }
 
   private async call(name: string, ...params): Promise<any> {
