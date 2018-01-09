@@ -85,10 +85,12 @@ export class VotingProvider {
     const account = await this.web3Provider.getAccount();
     const contract = await this.getContract(address);
 
-    await contract.addVote(uri, points, { from: account, gas: 3000000 });
+    const trans = await contract.addVote(uri, points, { from: account, gas: 3000000 });
 
     this.state.resetLocationPoints(address);
     this.state.resetUserPoints(address);
+
+    return trans;
   }
 
   // HELPERS
