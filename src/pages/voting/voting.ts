@@ -1,3 +1,4 @@
+import { SettingsProvider } from './../../providers/storage/settings';
 import { TeamProvider } from './../../providers/web3/team';
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
@@ -22,8 +23,11 @@ export class VotingPage implements OnInit {
 
   areVotingsLoading: boolean;
 
+  teamAddress$: Promise<string>;
+
   constructor(private teamProvider: TeamProvider,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private settingsProvider: SettingsProvider) {
   }
 
   ngOnInit() {
@@ -33,7 +37,11 @@ export class VotingPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.refreshVotings();
+    this.teamAddress$ = this.settingsProvider.getTeamAddress();
+
+    if(await this.teamAddress$) {
+      this.refreshVotings();
+    }
   }
 
   async addVoting() {
