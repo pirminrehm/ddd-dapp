@@ -42,6 +42,9 @@ export class VotingPage implements OnInit {
     if(await this.teamAddress$) {
       this.refreshVotings();
     }
+
+    // We have to reset the selected voting here to prevent inconsistencies
+    this.selectedVoting = null;
   }
 
   async addVoting() {
