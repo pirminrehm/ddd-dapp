@@ -10,6 +10,7 @@ import { LocationPoint } from './../../models/location-point';
 import { UserPoint } from './../../models/user-point';
 import { Account } from './../../models/account';
 import { Location } from './../../models/location';
+import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
 
 /**
  * Generated class for the VotingDetailsPage page.
@@ -35,6 +36,9 @@ export class VotingDetailsPage implements OnInit, OnChanges {
 
   votingName$: Promise<string>;
   votingForm: FormGroup;
+
+  points = {};
+  remainingPoints = 100;
 
   constructor(private fb: FormBuilder, 
               private votingProvider: VotingProvider,
@@ -104,4 +108,15 @@ export class VotingDetailsPage implements OnInit, OnChanges {
     })
   }
 
+  pointsChanged(location: Location, $event: IonRangeSliderCallback) {
+    // We have to do this here, see: 
+    // https://github.com/PhilippStein/ng2-ion-range-slider/issues/15
+    this.points[location.uri] = $event.from;
+    
+    let newPoints = 0;
+    for (var value in this.points) {
+        newPoints += this.points[value];
+    }
+    this.remainingPoints = 100 - newPoints;
+  }
 }

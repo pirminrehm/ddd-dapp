@@ -6,11 +6,25 @@
 
   <ion-card>
     <ion-card-header>Add a vote</ion-card-header>
-
+    
     <ion-card-content>
       <div *ngIf="(locations$ | async)?.length == 0">Add a location at the team page before start voting.</div>
-      <form [formGroup]="votingForm" (submit)="addVote()" *ngIf="(locations$ | async)?.length > 0">
-        <ion-item>
+      <!-- <form [formGroup]="votingForm" (submit)="addVote()" *ngIf="(locations$ | async)?.length > 0"> -->
+        <div *ngFor="let location of locations$ | async">
+          {{location.name}}
+          <ion-range-slider 
+            min="0" 
+            max="100" 
+            from="0" 
+            from_min="0" 
+            from_max="{{remainingPoints + (points[location.uri] ? points[location.uri] : 0)}}" 
+            from_shadow="true"
+            (onChange)="pointsChanged(location, $event)">
+          </ion-range-slider>
+        </div>
+
+        
+        <!-- <ion-item>
           <ion-label>Location</ion-label>
           <ion-select formControlName="location">
             <ion-option *ngFor="let location of locations$ | async" [value]="location.uri">{{ location.uri }} {{ location.name }}</ion-option>
@@ -20,10 +34,10 @@
         <ion-item>
           <ion-label for="points">Points:</ion-label>
           <ion-input type="number" id="points" formControlName="points"></ion-input>
-        </ion-item>
+        </ion-item> -->
         
-        <button ion-button outline block type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Add a vote</button>
-      </form>
+        <!-- <button ion-button outline block type="submit" [disabled]="votingForm.invalid || votingForm.pristine">Add a vote</button> -->
+      <!-- </form> -->
     </ion-card-content>
   </ion-card>
 

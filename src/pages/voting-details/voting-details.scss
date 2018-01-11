@@ -8,4 +8,64 @@ page-voting-details {
   ion-input input {
     text-align: right;
   }
+
+
+  // Custom range slider style
+  .irs {
+    height: 55px;
+    padding: 0 4px;
+  }
+
+  .irs-min, .irs-max {
+    background-color: rgb(36, 36, 36);
+    border: none;
+    color: white;
+    z-index: 3;
+    font-size : 14px;
+    top: 16px;
+  }
+
+  .irs-min {
+    padding-right: 8px;
+  }
+  .irs-max {
+    padding-left: 8px;
+  }
+
+  .irs-single {
+    @include border-radius(50%);
+    color: black;
+    background: white;
+    height: 28px;
+    width: 28px;
+    top: 12px;
+    cursor: pointer;
+    z-index: 2;
+
+    padding-top: 6px;
+    display: block;
+    text-align: center;
+    font-size: 11px;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .irs-line, .irs-bar, .irs-shadow {
+    height: 4px;
+    top: 24px;
+  }
+  .irs-line {
+    background: white;
+  }
+
+  .irs-bar {
+    background: color($colors, secondary);
+    z-index: 1;
+  }
+  .irs-shadow {
+    background:  color($colors, danger);
+    opacity: 1;
+  }
 }
