@@ -6,6 +6,8 @@ const Web3 = require('web3');
 
 const contract = require('truffle-contract');
 
+const TEST_RPC_IP = 'localhost:9545'; //'192.168.0.150:9545';
+
 declare var window: any;
 
 /*
@@ -100,11 +102,11 @@ export class Web3Provider {
       this.web3 = new Web3(window.web3.currentProvider);
     } else {
       console.warn(
-        'No web3 detected. Falling back to http://localhost:9545. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask'
+        'No web3 detected. Falling back to http://' + TEST_RPC_IP + '. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask'
       );
       // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
       this.web3 = new Web3(
-        new Web3.providers.HttpProvider('http://localhost:9545')
+        new Web3.providers.HttpProvider('http://' + TEST_RPC_IP)
       );
     }
 
