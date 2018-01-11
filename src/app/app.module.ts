@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { IonRangeSliderModule } from "ng2-ion-range-slider";
 
 import { MyApp } from './app.component';
 
@@ -41,7 +42,8 @@ import { AppStateProvider } from '../providers/storage/app-state';
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     SettingsPageModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    IonRangeSliderModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
