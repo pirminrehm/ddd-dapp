@@ -1,6 +1,5 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
@@ -22,7 +21,7 @@ import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
   selector: 'page-voting-details',
   templateUrl: 'voting-details.html',
 })
-export class VotingDetailsPage implements OnInit, OnChanges {
+export class VotingDetailsPage implements OnChanges {
   @Input() address: string;
 
   isLoading: boolean;
@@ -35,31 +34,21 @@ export class VotingDetailsPage implements OnInit, OnChanges {
   areUserPointsLoading: Boolean;
 
   votingName$: Promise<string>;
-  votingForm: FormGroup;
 
   points = {};
   remainingPoints = 100;
 
-  constructor(private fb: FormBuilder, 
-              private votingProvider: VotingProvider,
+  constructor(private votingProvider: VotingProvider,
               private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider) {
-  }
-
-  ngOnInit() {
-    this.votingForm = this.fb.group({
-      location: ['', Validators.required],
-      points: ['', [Validators.required, Validators.min(1), Validators.max(100)]]
-    });
   }
 
   async ngOnChanges() {
     if(this.address) {
       this.isLoading = true;
 
-      if(this.votingForm) {
-        this.votingForm.reset();
-      }
+      this.remainingPoints = 100;
+      this.points = {};
 
       this.locations$ = this.locationProvider.getLocations();
       this.votingName$ = this.votingProvider.getVotingName(this.address);
@@ -74,21 +63,27 @@ export class VotingDetailsPage implements OnInit, OnChanges {
     }
   }
 
-  async addVote() {
-    const uri = this.votingForm.value.location;
-    const points = this.votingForm.value.points;
-
+  private async addVote(uri: string, points: number) {
     try {
       await this.votingProvider.addVote(this.address, uri, points);
-      this.notificationProvider.success(`You successfully voted for the location.`);
     } catch(e) {
-      this.notificationProvider.error(`The vote could not be submitted.`
+      this.notificationProvider.error(`The vote for uri ${uri} with ${points} Points failed.`
         + `Maybe you exceeded your maximum limit of 100 points?`
       );
     }
     
     this.refreshLocationPoints();
     this.refreshUserPoints();
+  }
+
+  submitVotes() {
+    try {
+      for(let uri in this.points) {
+        this.addVote(uri, this.points[uri]);
+      }
+      this.notificationProvider.success('Votes successfully submitted.')
+    } catch(e) {
+    }
   }
 
 
