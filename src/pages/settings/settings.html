@@ -41,6 +41,11 @@
         </ion-select>
       </ion-item>
       
+      <ion-item>
+        <ion-label for="loggingAddress">Logging-Addresse</ion-label>
+        <ion-input formControlName="loggingAddress" text-right></ion-input>
+      </ion-item>
+
       <button ion-button block outline type="submit" [disabled]="settingsForm.invalid">Save settings</button>
     </form>
   </ion-list>

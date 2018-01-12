@@ -12,6 +12,7 @@ import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
+const loggingArtifacts = require('../../../build/contracts/Logging.json');
 
 /*
   Generated class for the Team provider.
@@ -111,6 +112,15 @@ export class TeamProvider {
     const account = await this.web3Provider.getAccount();
     
     const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
+    let loggingAddress = await this.settingsProvider.getLoggingAddress();
+    if(loggingAddress) {
+      console.time('addTeamToLogging');
+      this.web3Provider.getContractAt(loggingArtifacts, loggingAddress).then(logging=>{
+         return logging.addTeam(team.address,  {from: account, gas: 5000000});
+      }).then(() => {
+        console.timeEnd('addTeamToLogging');        
+      });
+    }
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }
