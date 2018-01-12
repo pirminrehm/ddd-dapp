@@ -6,8 +6,8 @@ const Web3 = require('web3');
 
 const contract = require('truffle-contract');
 
-const TEST_RPC_IP = 'localhost:7545'; //'192.168.0.150:9545';
 const DEVELOPMENT_NETWORK_ID = 4447; // fix value by truffle develop
+const TEST_RPC_IP = 'localhost:7545'; //'192.168.0.150:9545';
 
 declare var window: any;
 
