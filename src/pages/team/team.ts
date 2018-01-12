@@ -112,7 +112,7 @@ export class TeamPage implements OnInit {
         return;
       }
 
-      let modal = this.modalCtrl.create(TeamJoinRequestPage, data);
+      let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
       modal.present();
 
     } catch(e) {
