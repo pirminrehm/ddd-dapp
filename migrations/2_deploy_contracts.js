@@ -18,4 +18,7 @@ module.exports = function(deployer) {
       web3.fromUtf8('auto_deployed_voting'), 
       Location.address
     ));
+  deployer.deploy(Logging).then(() => {
+    console.log('***************** ' + Logging.address + ' *****************');
+  });
 };
