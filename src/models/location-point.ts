@@ -1,9 +1,11 @@
-export class LocationPoint {
-  private uri: string;
-  private points: number;
+import { Location } from "./location";
 
-  constructor(uri: string, points: number) {
-    this.uri = uri;
+export class LocationPoint {
+  public location: Location;
+  public points: number;
+
+  constructor(location: Location, points: number) {
+    this.location = location;
     this.points = points;
   }
 }

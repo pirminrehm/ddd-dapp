@@ -1,6 +1,5 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
@@ -10,6 +9,8 @@ import { LocationPoint } from './../../models/location-point';
 import { UserPoint } from './../../models/user-point';
 import { Account } from './../../models/account';
 import { Location } from './../../models/location';
+import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
+import { SLIDE_COLORS } from '../voting-chart/voting-chart';
 
 /**
  * Generated class for the VotingDetailsPage page.
@@ -21,87 +22,67 @@ import { Location } from './../../models/location';
   selector: 'page-voting-details',
   templateUrl: 'voting-details.html',
 })
-export class VotingDetailsPage implements OnInit, OnChanges {
+export class VotingDetailsPage implements OnChanges {
   @Input() address: string;
 
   isLoading: boolean;
-
-  locations$: Promise<Location[]>;
-  userPoints: UserPoint[];
   locationPoints: LocationPoint[];
 
-  areLocationPointsLoading: Boolean;
-  areUserPointsLoading: Boolean;
-
   votingName$: Promise<string>;
-  votingForm: FormGroup;
+  
+  remainingPoints = 100;
+  colors = SLIDE_COLORS;
 
-  constructor(private fb: FormBuilder, 
-              private votingProvider: VotingProvider,
+  constructor(private votingProvider: VotingProvider,
               private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider) {
-  }
-
-  ngOnInit() {
-    this.votingForm = this.fb.group({
-      location: ['', Validators.required],
-      points: ['', [Validators.required, Validators.min(1), Validators.max(100)]]
-    });
   }
 
   async ngOnChanges() {
     if(this.address) {
       this.isLoading = true;
 
-      if(this.votingForm) {
-        this.votingForm.reset();
-      }
+      this.remainingPoints = 100;
+      this.locationPoints = [];
+      
+      const locations = await this.locationProvider.getLocations();
+      locations.forEach(location => {
+        this.locationPoints.push(new LocationPoint(location, 0));
+      });
 
-      this.locations$ = this.locationProvider.getLocations();
       this.votingName$ = this.votingProvider.getVotingName(this.address);
-
-      await this.locations$;
       await this.votingName$;
-
-      await this.refreshUserPoints();
-      await this.refreshLocationPoints();
 
       this.isLoading = false;
     }
   }
 
-  async addVote() {
-    const uri = this.votingForm.value.location;
-    const points = this.votingForm.value.points;
-
-    try {
-      await this.votingProvider.addVote(this.address, uri, points);
-      this.notificationProvider.success(`You successfully voted for the location.`);
-    } catch(e) {
-      this.notificationProvider.error(`The vote could not be submitted.`
-        + `Maybe you exceeded your maximum limit of 100 points?`
-      );
-    }
-    
-    this.refreshLocationPoints();
-    this.refreshUserPoints();
-  }
-
-
-  private refreshLocationPoints() {
-    this.areLocationPointsLoading = true;
-    this.votingProvider.getAllLocationPoints(this.address).then(locationPoints => {
-      this.locationPoints = locationPoints;
-      this.areLocationPointsLoading = false;
+  submitVotes() {
+    const votePromises = [];
+    this.locationPoints.forEach(locationPoint => {
+      const uri = locationPoint.location.uri;
+      const vote = this.votingProvider.addVote(this.address, uri, locationPoint.points);
+      votePromises.push(vote);
     });
+
+    Promise
+      .all(votePromises)
+      .then(_ => this.notificationProvider.success('Votes successfully submitted.'))
+      .catch(_ => this.notificationProvider.error(`The voting of your Points failed.`
+        + `Maybe you exceeded your maximum limit of 100 points?`
+      ));
   }
 
-  private async refreshUserPoints() {
-    this.areUserPointsLoading = true;
-    this.votingProvider.getAllUserPoints(this.address).then(userPoints => {
-      this.userPoints = userPoints;
-      this.areUserPointsLoading = false;
-    })
+  pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {
+    // We have to do this here, see: 
+    // https://github.com/PhilippStein/ng2-ion-range-slider/issues/15
+    locationPoint.points = $event.from;
+    
+    let newTotalPoints = 0;
+    this.locationPoints.forEach(currentLocationPoint => {
+      newTotalPoints += currentLocationPoint.points;
+    });
+    this.remainingPoints = 100 - newTotalPoints;
+    this.locationPoints = this.locationPoints.slice(0);
   }
-
 }

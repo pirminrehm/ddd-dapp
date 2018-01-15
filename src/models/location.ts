@@ -1,6 +1,6 @@
 export class Location {
-  private name: string;
-  private uri: string;
+  public name: string;
+  public uri: string;
 
   constructor(uri: string, name: string) {
     this.uri = uri;

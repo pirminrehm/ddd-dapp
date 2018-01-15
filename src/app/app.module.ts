@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { IonRangeSliderModule } from "ng2-ion-range-slider";
 
 import { MyApp } from './app.component';
 
@@ -25,6 +26,7 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 import { NotificationProvider } from '../providers/notification/notification';
 import { AppStateProvider } from '../providers/storage/app-state';
+import { VotingChartPage } from '../pages/voting-chart/voting-chart';
 
 @NgModule({
   declarations: [
@@ -34,14 +36,16 @@ import { AppStateProvider } from '../providers/storage/app-state';
     LocationPage,
     VotingPage,
     VotingDetailsPage,
-    TabsPage
+    TabsPage,
+    VotingChartPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     SettingsPageModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    IonRangeSliderModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -51,7 +55,8 @@ import { AppStateProvider } from '../providers/storage/app-state';
     LocationPage,
     VotingPage,
     VotingDetailsPage,
-    TabsPage
+    TabsPage,
+    VotingChartPage
   ],
   providers: [
     Web3Provider,
