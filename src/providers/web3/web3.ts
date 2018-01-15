@@ -80,10 +80,6 @@ export class Web3Provider {
     return instance;
   }
 
-  // async getDeployedContract(artifact: any) {
-  //   return (await this.getRawContract(artifact)).deployed();
-  // }
-
   async getContractAt(artifact: any, address:string) {
     console.time(`[${artifact.contractName}] getContractAt`);
 
