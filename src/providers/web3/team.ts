@@ -197,10 +197,7 @@ export class TeamProvider {
     await this.waitForAndSetContractCallMutex();
     if(!this.state.contract) {
       const address = await this.settingsProvider.getTeamAddress();
-      console.time('getContractAt');
       this.state.contract = await this.web3Provider.getContractAt(teamArtifacts, address);
-      console.count('getContractAt call number');
-      console.timeEnd('getContractAt');
     }
     this.resolveContractCallMutex();
     return this.state.contract;
