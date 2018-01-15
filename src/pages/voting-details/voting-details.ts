@@ -58,13 +58,19 @@ export class VotingDetailsPage implements OnChanges {
   }
 
   submitVotes() {
-    try {
-      this.locationPoints.forEach(locationPoint => {
-        this.addVote(locationPoint.location.uri, locationPoint.points);
-      });
-      this.notificationProvider.success('Votes successfully submitted.')
-    } catch(e) {
-    }
+    const votePromises = [];
+    this.locationPoints.forEach(locationPoint => {
+      const uri = locationPoint.location.uri;
+      const vote = this.votingProvider.addVote(this.address, uri, locationPoint.points);
+      votePromises.push(vote);
+    });
+
+    Promise
+      .all(votePromises)
+      .then(_ => this.notificationProvider.success('Votes successfully submitted.'))
+      .catch(_ => this.notificationProvider.error(`The voting of your Points failed.`
+        + `Maybe you exceeded your maximum limit of 100 points?`
+      ));
   }
 
   pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {
@@ -78,15 +84,5 @@ export class VotingDetailsPage implements OnChanges {
     });
     this.remainingPoints = 100 - newTotalPoints;
     this.locationPoints = this.locationPoints.slice(0);
-  }
-
-  private async addVote(uri: string, points: number) {
-    try {
-      await this.votingProvider.addVote(this.address, uri, points);
-    } catch(e) {
-      this.notificationProvider.error(`The vote for uri ${uri} with ${points} Points failed.`
-        + `Maybe you exceeded your maximum limit of 100 points?`
-      );
-    }
   }
 }
