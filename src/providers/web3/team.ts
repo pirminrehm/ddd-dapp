@@ -23,7 +23,8 @@ const teamArtifacts = require('../../../build/contracts/Team.json');
 export class TeamProvider {
 
   private state: TeamState;
-
+  private contractCallMutex: Boolean = false;
+  
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
               private votingProvider: VotingProvider) {
@@ -193,17 +194,22 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
+    await this.waitForAndSetContractCallMutex();
     if(!this.state.contract) {
       const address = await this.settingsProvider.getTeamAddress();
       this.state.contract = await this.web3Provider.getContractAt(teamArtifacts, address);
     }
+    this.resolveContractCallMutex();
     return this.state.contract;
   }
 
   private async call(name: string, ...params): Promise<any> {
     const contract =  await this.getContract();
     try {
-      return contract[name].call(...params);
+      console.time(name);
+      let callData = await contract[name].call(...params);
+      console.timeEnd(name);
+      return callData;
     } catch(e) {
       e => this.handleError(e);
     }
@@ -226,4 +232,26 @@ export class TeamProvider {
   private handleError(e: Error) {
     console.log(e);
   }
+
+  private async waitForAndSetContractCallMutex(): Promise<any> {
+    return new Promise(resolve => {
+      let tryEntrance = () => {
+        if (!this.contractCallMutex) {
+          this.contractCallMutex = true;
+          // console.log('mutex: close');
+          resolve();
+        } else {
+          setTimeout(tryEntrance, 50);
+        }
+      };
+      tryEntrance();
+    });
+  }
+
+  private resolveContractCallMutex(): Promise<any> {
+    this.contractCallMutex = false;
+    // console.log('mutex: open');    
+    return Promise.resolve();
+  }
+  
 }

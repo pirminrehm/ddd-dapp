@@ -7,6 +7,7 @@ const Web3 = require('web3');
 const contract = require('truffle-contract');
 
 const TEST_RPC_IP = 'localhost:9545'; //'192.168.0.150:9545';
+const DEVELOPMENT_NETWORK_ID = 4447; // fix value by truffle develop
 
 declare var window: any;
 
@@ -74,17 +75,32 @@ export class Web3Provider {
   async getRawContract(artifact: any) {
     await this.ready;
 
-    const location = contract(artifact);
-    location.setProvider(this.web3.currentProvider);
-    return location;
-  }
-
-  async getDeployedContract(artifact: any) {
-    return (await this.getRawContract(artifact)).deployed();
+    const instance = contract(artifact);
+    instance.setProvider(this.web3.currentProvider);
+    return instance;
   }
 
   async getContractAt(artifact: any, address:string) {
-    return (await this.getRawContract(artifact)).at(address);
+    console.time(`[${artifact.contractName}] getContractAt`);
+
+    let contract;
+    
+    if(artifact.networks[DEVELOPMENT_NETWORK_ID]) {
+      // A simple workaround to improve the performance: 
+      // If we have a local network configured, we use it to get the contract. 
+      // BUT: Needs more research in production.
+      artifact.networks[DEVELOPMENT_NETWORK_ID]['address'] = address;
+      contract = (await this.getRawContract(artifact)).deployed();
+
+      console.count(`[${artifact.contractName}] getContractAt with .deployed()`);
+    } 
+    else {
+      contract = (await this.getRawContract(artifact)).at(address);
+      console.count(`[${artifact.contractName}] getContractAt with .at()`);      
+    }
+
+    console.timeEnd(`[${artifact.contractName}] getContractAt`);
+    return contract;
   }
 
 
