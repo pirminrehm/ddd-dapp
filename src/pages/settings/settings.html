@@ -14,26 +14,28 @@
 
 
 <ion-content padding>
-  <ion-list>
-    <ion-item>
-      Team: 
-      
-      <div class="team-address">
-        <span *ngIf="teamAddress$ | async; then showTeamAddress else noTeamAddress"></span>
-        <ng-template #showTeamAddress>
-          {{ teamName$ | async }}
-          <ion-icon name="close-circle" item-end (click)="removeTeamAddress()"></ion-icon>  
-        </ng-template>
-        <ng-template #noTeamAddress>You're not part of a team</ng-template>
-      </div>
-    </ion-item>
-
-    <form [formGroup]="settingsForm" (submit)="save()">
+  <form [formGroup]="settingsForm" (submit)="save()">
+    <ion-list>
+      <ion-list-header>App settings</ion-list-header>
+      <ion-item>
+        Team: 
+        
+        <div class="team-address">
+          <span *ngIf="teamAddress$ | async; then showTeamAddress else noTeamAddress"></span>
+          <ng-template #showTeamAddress>
+            {{ teamName$ | async }}
+            <ion-icon name="close-circle" item-end (click)="removeTeamAddress()"></ion-icon>  
+          </ng-template>
+          <ng-template #noTeamAddress>You're not part of a team</ng-template>
+        </div>
+      </ion-item>
       <ion-item>
         <ion-label for="name">Name</ion-label>
         <ion-input formControlName="name" text-right></ion-input>
       </ion-item>
-      
+    </ion-list>
+    <ion-list>
+      <ion-list-header class="dev-options">Developer options</ion-list-header>
       <ion-item>
         <ion-label for="account">Account</ion-label>
         <ion-select formControlName="account">    
@@ -41,7 +43,12 @@
         </ion-select>
       </ion-item>
       
+      <ion-item>
+        <ion-label for="loggingAddress">Logging-Addresse</ion-label>
+        <ion-input formControlName="loggingAddress" text-right></ion-input>
+      </ion-item>
+
       <button ion-button block outline type="submit" [disabled]="settingsForm.invalid">Save settings</button>
-    </form>
-  </ion-list>
+    </ion-list>
+  </form>
 </ion-content>

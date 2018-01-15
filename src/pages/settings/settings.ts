@@ -1,3 +1,4 @@
+import { LoggingProvider } from './../../providers/web3/logging';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -34,11 +35,13 @@ export class SettingsPage {
               private web3Provider: Web3Provider,
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
+              private loggingProvider: LoggingProvider,
               private notificationProvier: NotificationProvider) {
 
     this.settingsForm = this.fb.group({
       account: ['', [Validators.required]],
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      loggingAddress: ['']
     });
   }
 
@@ -48,7 +51,8 @@ export class SettingsPage {
 
     this.settingsForm.setValue({
       name: await this.settingsProvider.getName(),
-      account: await this.settingsProvider.getAccount()
+      account: await this.settingsProvider.getAccount(),
+      loggingAddress: await this.loggingProvider.getAddress()
     });
 
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
@@ -63,6 +67,7 @@ export class SettingsPage {
     try {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
+      await this.settingsProvider.setLoggingAddress(this.settingsForm.value.loggingAddress);
       await this.settingsProvider.setTeamAddress(await this.teamAddress$);
       this.notificationProvier.success('Settings saved');
     } catch(e) {

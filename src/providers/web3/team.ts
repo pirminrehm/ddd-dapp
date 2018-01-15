@@ -1,3 +1,4 @@
+import { LoggingProvider } from './logging';
 import { TeamState } from './../../states/team';
 import { AppStateTypes } from './../../states/types';
 import { TeamInvitation } from './../../models/team-invitation';
@@ -27,7 +28,8 @@ export class TeamProvider {
   
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider) {
+              private votingProvider: VotingProvider,
+              private loggingProvider: LoggingProvider) {
                 
     this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
   }
@@ -111,6 +113,7 @@ export class TeamProvider {
     const account = await this.web3Provider.getAccount();
     
     const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
+    await this.loggingProvider.addTeam(team.address);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }

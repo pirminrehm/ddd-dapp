@@ -33,6 +33,9 @@ export class SettingsProvider {
     // TODO: return await this.get('avatar-id');
   }
   
+  async getLoggingAddress() {
+    return await this.get('loggingAccount');
+  }
 
   async setName(value: string) {
     return await this.set('name', value);
@@ -45,6 +48,10 @@ export class SettingsProvider {
   async setTeamAddress(value: string) {
     await this.set('team-address', value);
     this.appStateProvider.resetStates();
+  }
+
+  async setLoggingAddress(value: string) {
+    return await this.set('loggingAccount', value);
   }
 
 
