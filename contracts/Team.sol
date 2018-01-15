@@ -209,12 +209,13 @@ contract Team {
     uint index = 0;
     bool success = false;
 
-    for (uint j = index; j < pendingMemberAddresses.length-1; j++) {
+    for (uint j = index; j < pendingMemberAddresses.length; j++) {
       if (pendingMemberAddresses[j] == addressToRemove) {
         success = true;
-        index = i;
+        index = j;
       }
     }
+    require(success);
     //move elements to the gap and delete the last (void) element
     for (uint i = index; i < pendingMemberAddresses.length-1; i++) {
       pendingMemberAddresses[i] = pendingMemberAddresses[i+1];
@@ -230,20 +231,19 @@ contract Team {
     uint index = 0;
     bool success = false;
 
-    for (uint j = index; j < votingAddresses.length-1; j++) {
+    for (uint j = index; j < votingAddresses.length; j++) {
       if (votingAddresses[j] == addressToRemove) {
         success = true;
-        index = i;
+        index = j;
       }
     }
-    if (success) {
-      //move elements to the gap and delete the last (void) element
-      for (uint i = index; i < votingAddresses.length-1; i++) {
-        votingAddresses[i] = votingAddresses[i+1];
-      }
-      delete votingAddresses[votingAddresses.length-1];
-      votingAddresses.length--;
-      closedVotingAddresses.push(addressToRemove);
+    require(success);
+    //move elements to the gap and delete the last (void) element
+    for (uint i = index; i < votingAddresses.length-1; i++) {
+      votingAddresses[i] = votingAddresses[i+1];
     }
+    delete votingAddresses[votingAddresses.length-1];
+    votingAddresses.length--;
+    closedVotingAddresses.push(addressToRemove);
   }
 }

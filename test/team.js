@@ -59,13 +59,15 @@ contract('Team', (accounts) => {
   describe('Story 1:', () => {
     var users;
     var invitationToken;
+    var invitationToken2;
     var pendingMember;
     
     before(done => {
       users = [
         {name: 'user_0_name', avatarId: 17, account: accounts[0]},
         {name: 'user_1_name', avatarId: 11, account: accounts[1]},
-        {name: 'user_2_name', avatarId: 93, account: accounts[2]}
+        {name: 'user_2_name', avatarId: 93, account: accounts[2]},
+        {name: 'user_3_name', avatarId: 12, account: accounts[3]}
       ]
       Team.new(
         f8('story_1_team'),
@@ -216,7 +218,7 @@ contract('Team', (accounts) => {
     });
 
 
-    describe('user_1 invites user_2', () => {
+    describe('user_1 invites user_2 and user_3', () => {
       it('should create and return an invitation token', async () => {
         const res = await contract.createInvitationToken({from: users[1].account});
         expect(res).not.to.be.null;
@@ -244,10 +246,85 @@ contract('Team', (accounts) => {
         const count = await contract.getPendingMembersCount.call();
         expect(nr(count)).to.be.equal(1);
       });
+
+      it('should create and return an invitation token', async () => {
+        const res = await contract.createInvitationToken({from: users[1].account});
+        expect(res).not.to.be.null;
+        expect(res.logs).to.be.an('array');
+        expect(res.logs[0].args).to.be.an('object');
+        expect(res.logs[0].args.token).to.be.a('string');
+        invitationToken2 = res.logs[0].args.token;
+      });
+
+      it('should send a join team request by user_3', async () => {
+        const res = await contract.sendJoinTeamRequest( 
+          invitationToken2,
+          f8(users[3].name),
+          users[3].avatarId,
+          {from: users[3].account}
+        );
+        expect(res).not.to.be.null;
+        expect(res.receipt).to.be.an('object');
+        expect(res.receipt.blockNumber).to.be.gt(0);
+        expect(res.receipt.gasUsed).to.be.gt(0);
+        expect(res.receipt.transactionHash).to.be.a('string');
+      });
+
+      it('should now have two pending member', async () => {
+        const count = await contract.getPendingMembersCount.call();
+        expect(nr(count)).to.be.equal(2);
+      });
+    });
+
+    describe('user_0 accepts user_3', () => {
+      it('should request the pending member user_3 by index', async () => {
+        pendingMember = await contract.getPendingMemberByIndex.call(1);
+        expect(pendingMember[0]).to.equal(users[3].account);
+        expect(t8(pendingMember[1])).to.equal(users[3].name);
+        expect(nr(pendingMember[2])).to.equal(users[3].avatarId);
+        expect(pendingMember[3]).to.equal(invitationToken2);
+      });
+
+      it('should accept pending member user_3 by address', async () => {
+        const res = await contract.acceptPendingMember(
+          pendingMember[0],
+          {from: users[0].account}
+        );
+        expect(res).not.to.be.null;
+        expect(res.receipt).to.be.an('object');
+        expect(res.receipt.blockNumber).to.be.gt(0);
+        expect(res.receipt.gasUsed).to.be.gt(0);
+        expect(res.receipt.transactionHash).to.be.a('string');
+      });
+
+      it('should now have one pending member', async () => {
+        const count = await contract.getPendingMembersCount.call();
+        expect(nr(count)).to.be.equal(1);
+      });
+
+      it('should now have user_2 as pending members', async () => {
+        const m2 = await contract.getPendingMemberByIndex.call(0);
+        expect(m2[0]).to.equal(users[2].account);
+        expect(t8(m2[1])).to.equal(users[2].name);
+        expect(nr(m2[2])).to.equal(users[2].avatarId);
+      });     
+
+      it('should now have three members', async () => {
+        const count = await contract.getMembersCount.call();
+        expect(nr(count)).to.equal(3);
+      });
+
+      it('should now have user_3 as further members', async () => {
+        const m2 = await contract.getMemberByIndex.call(2);
+
+        expect(m2[0]).to.equal(users[3].account);
+        expect(t8(m2[1])).to.equal(users[3].name);
+        expect(nr(m2[2])).to.equal(users[3].avatarId);
+      });     
     });
 
     describe('user_0 accepts user_2', () => {
-      it('should request the pending member user_1 by index', async () => {
+      it('should request the pending member user_2 by index', async () => {
         pendingMember = await contract.getPendingMemberByIndex.call(0);
         expect(pendingMember[0]).to.equal(users[2].account);
         expect(t8(pendingMember[1])).to.equal(users[2].name);
@@ -255,7 +332,7 @@ contract('Team', (accounts) => {
         expect(pendingMember[3]).to.equal(invitationToken);
       });
 
-      it('should accept pending member user_1 by address', async () => {
+      it('should accept pending member user_2 by address', async () => {
         const res = await contract.acceptPendingMember(
           pendingMember[0],
           {from: users[0].account}
@@ -272,18 +349,17 @@ contract('Team', (accounts) => {
         expect(nr(count)).to.be.equal(0);
       });
 
-      it('should now have three members', async () => {
+      it('should now have four members', async () => {
         const count = await contract.getMembersCount.call();
-        expect(nr(count)).to.equal(3);
+        expect(nr(count)).to.equal(4);
       });
 
-      it('should now have user_3 as further members', async () => {
-        const m2 = await contract.getMemberByIndex.call(2);
-
+      it('should now have user_2 as further members', async () => {
+        const m2 = await contract.getMemberByIndex.call(3);
         expect(m2[0]).to.equal(users[2].account);
         expect(t8(m2[1])).to.equal(users[2].name);
         expect(nr(m2[2])).to.equal(users[2].avatarId);
-      });     
+      });
     });
   });
 
