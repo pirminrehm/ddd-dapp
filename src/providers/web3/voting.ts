@@ -1,3 +1,4 @@
+import { Location } from './../../models/location';
 import { AppStateTypes } from './../../states/types';
 import { Injectable } from '@angular/core';
 
@@ -68,7 +69,8 @@ export class VotingProvider {
     if(!this.state.getLocationPointsByIndex(address, index)) {
       const v = await this.call(address, 'getLocationPointsByIndex', index);
       this.state.setLocationPointsByIndex(address, index, new LocationPoint(
-        `Location: ${await this.web3Provider.fromWeb3String(v[0])}`, 
+        // TODO: Query location name if necessary
+        new Location(await this.web3Provider.fromWeb3String(v[0]), `TODO`),
         await this.web3Provider.fromWeb3Number(v[1])
       ));
     }

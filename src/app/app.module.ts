@@ -26,6 +26,7 @@ import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 import { NotificationProvider } from '../providers/notification/notification';
 import { AppStateProvider } from '../providers/storage/app-state';
+import { VotingChartPage } from '../pages/voting-chart/voting-chart';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { AppStateProvider } from '../providers/storage/app-state';
     LocationPage,
     VotingPage,
     VotingDetailsPage,
-    TabsPage
+    TabsPage,
+    VotingChartPage
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,8 @@ import { AppStateProvider } from '../providers/storage/app-state';
     LocationPage,
     VotingPage,
     VotingDetailsPage,
-    TabsPage
+    TabsPage,
+    VotingChartPage
   ],
   providers: [
     Web3Provider,

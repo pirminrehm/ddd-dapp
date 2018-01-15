@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { NotificationProvider } from './../../providers/notification/notification';
@@ -10,6 +10,7 @@ import { UserPoint } from './../../models/user-point';
 import { Account } from './../../models/account';
 import { Location } from './../../models/location';
 import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
+import { SLIDE_COLORS } from '../voting-chart/voting-chart';
 
 /**
  * Generated class for the VotingDetailsPage page.
@@ -25,18 +26,12 @@ export class VotingDetailsPage implements OnChanges {
   @Input() address: string;
 
   isLoading: boolean;
-
-  locations$: Promise<Location[]>;
-  userPoints: UserPoint[];
   locationPoints: LocationPoint[];
 
-  areLocationPointsLoading: Boolean;
-  areUserPointsLoading: Boolean;
-
   votingName$: Promise<string>;
-
-  points = {};
+  
   remainingPoints = 100;
+  colors = SLIDE_COLORS;
 
   constructor(private votingProvider: VotingProvider,
               private locationProvider: LocationProvider,
@@ -48,19 +43,41 @@ export class VotingDetailsPage implements OnChanges {
       this.isLoading = true;
 
       this.remainingPoints = 100;
-      this.points = {};
+      this.locationPoints = [];
+      
+      const locations = await this.locationProvider.getLocations();
+      locations.forEach(location => {
+        this.locationPoints.push(new LocationPoint(location, 0));
+      });
 
-      this.locations$ = this.locationProvider.getLocations();
       this.votingName$ = this.votingProvider.getVotingName(this.address);
-
-      await this.locations$;
       await this.votingName$;
-
-      await this.refreshUserPoints();
-      await this.refreshLocationPoints();
 
       this.isLoading = false;
     }
+  }
+
+  submitVotes() {
+    try {
+      this.locationPoints.forEach(locationPoint => {
+        this.addVote(locationPoint.location.uri, locationPoint.points);
+      });
+      this.notificationProvider.success('Votes successfully submitted.')
+    } catch(e) {
+    }
+  }
+
+  pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {
+    // We have to do this here, see: 
+    // https://github.com/PhilippStein/ng2-ion-range-slider/issues/15
+    locationPoint.points = $event.from;
+    
+    let newTotalPoints = 0;
+    this.locationPoints.forEach(currentLocationPoint => {
+      newTotalPoints += currentLocationPoint.points;
+    });
+    this.remainingPoints = 100 - newTotalPoints;
+    this.locationPoints = this.locationPoints.slice(0);
   }
 
   private async addVote(uri: string, points: number) {
@@ -71,47 +88,5 @@ export class VotingDetailsPage implements OnChanges {
         + `Maybe you exceeded your maximum limit of 100 points?`
       );
     }
-    
-    this.refreshLocationPoints();
-    this.refreshUserPoints();
-  }
-
-  submitVotes() {
-    try {
-      for(let uri in this.points) {
-        this.addVote(uri, this.points[uri]);
-      }
-      this.notificationProvider.success('Votes successfully submitted.')
-    } catch(e) {
-    }
-  }
-
-
-  private refreshLocationPoints() {
-    this.areLocationPointsLoading = true;
-    this.votingProvider.getAllLocationPoints(this.address).then(locationPoints => {
-      this.locationPoints = locationPoints;
-      this.areLocationPointsLoading = false;
-    });
-  }
-
-  private async refreshUserPoints() {
-    this.areUserPointsLoading = true;
-    this.votingProvider.getAllUserPoints(this.address).then(userPoints => {
-      this.userPoints = userPoints;
-      this.areUserPointsLoading = false;
-    })
-  }
-
-  pointsChanged(location: Location, $event: IonRangeSliderCallback) {
-    // We have to do this here, see: 
-    // https://github.com/PhilippStein/ng2-ion-range-slider/issues/15
-    this.points[location.uri] = $event.from;
-    
-    let newPoints = 0;
-    for (var value in this.points) {
-        newPoints += this.points[value];
-    }
-    this.remainingPoints = 100 - newPoints;
   }
 }

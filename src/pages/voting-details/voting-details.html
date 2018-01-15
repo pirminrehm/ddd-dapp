@@ -7,21 +7,24 @@
   <ion-card>
     <ion-card-header>Vote for locations</ion-card-header>
     <ion-card-content>
-      <div *ngIf="(locations$ | async)?.length == 0">Add a location at the team page before start voting.</div>
-        <div *ngFor="let location of locations$ | async">
-          {{location.name}}
-          <ion-range-slider 
-            min="0" 
-            max="100" 
-            from="0" 
-            from_min="0" 
-            from_max="{{remainingPoints + (points[location.uri] ? points[location.uri] : 0)}}" 
-            from_shadow="true"
-            (onChange)="pointsChanged(location, $event)">
-          </ion-range-slider>
-        </div>
+      <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
+      <div *ngFor="let locationPoint of locationPoints; let i=index">
+        {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+        <ion-range-slider 
+          min="0" 
+          max="100" 
+          from="0"
+          from_min="0" 
+          from_max="{{remainingPoints + locationPoint.points}}" 
+          from_shadow="true"
+          (onChange)="pointsChanged(locationPoint, $event)">
+        </ion-range-slider>
+      </div>
+
+      <page-voting-chart [locationPoints]="locationPoints"></page-voting-chart>
+
+      <button ion-button outline block type="submit" [disabled]="remainingPoints == 100" (click)="submitVotes()">Submit your votes</button>
     </ion-card-content>
-    <button ion-button outline block type="submit" [disabled]="remainingPoints == 100" (click)="submitVotes()">Submit your votes</button>
   </ion-card>
 
   <ion-card>

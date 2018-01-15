@@ -34,17 +34,15 @@ page-voting-details {
 
   .irs-single {
     @include border-radius(50%);
-    color: black;
+    color: white;
     background: white;
     height: 28px;
     width: 28px;
     top: 12px;
     cursor: pointer;
+    
     z-index: 2;
-
-    padding-top: 6px;
     display: block;
-    text-align: center;
     font-size: 11px;
 
     &:after {
