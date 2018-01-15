@@ -1,3 +1,4 @@
+import { LoggingProvider } from './logging';
 import { TeamState } from './../../states/team';
 import { AppStateTypes } from './../../states/types';
 import { TeamInvitation } from './../../models/team-invitation';
@@ -12,7 +13,6 @@ import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const teamArtifacts = require('../../../build/contracts/Team.json');
-const loggingArtifacts = require('../../../build/contracts/Logging.json');
 
 /*
   Generated class for the Team provider.
@@ -28,7 +28,8 @@ export class TeamProvider {
   
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider) {
+              private votingProvider: VotingProvider,
+              private loggingProvider: LoggingProvider) {
                 
     this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
   }
@@ -112,15 +113,7 @@ export class TeamProvider {
     const account = await this.web3Provider.getAccount();
     
     const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
-    let loggingAddress = await this.settingsProvider.getLoggingAddress();
-    if(loggingAddress) {
-      console.time('addTeamToLogging');
-      this.web3Provider.getContractAt(loggingArtifacts, loggingAddress).then(logging=>{
-         return logging.addTeam(team.address,  {from: account, gas: 5000000});
-      }).then(() => {
-        console.timeEnd('addTeamToLogging');        
-      });
-    }
+    await this.loggingProvider.addTeam(team.address);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }

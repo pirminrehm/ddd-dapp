@@ -6,4 +6,17 @@ page-settings {
       margin: 0 0 0 12px !important;
     }
   }
+
+  ion-list-header {
+    margin-bottom: 1px !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid #dedede;
+    &.dev-options {
+      margin-top: 36px !important;
+    }
+  }
+
+  button {
+    margin-top: 24px !important;
+  }
 }

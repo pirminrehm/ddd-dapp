@@ -27,6 +27,7 @@ import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-reques
 import { NotificationProvider } from '../providers/notification/notification';
 import { AppStateProvider } from '../providers/storage/app-state';
 import { VotingChartPage } from '../pages/voting-chart/voting-chart';
+import { LoggingProvider } from '../providers/web3/logging';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { VotingChartPage } from '../pages/voting-chart/voting-chart';
     LocationProvider,
     VotingProvider,
     TeamProvider,
+    LoggingProvider,
     SettingsProvider,
     AppStateProvider,
     StatusBar,
