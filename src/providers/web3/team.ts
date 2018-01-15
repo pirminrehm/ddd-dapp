@@ -24,7 +24,6 @@ export class TeamProvider {
 
   private state: TeamState;
   private contractCallMutex: Boolean = false;
-  private getContractInvokes: number = 0;
   
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
@@ -195,15 +194,12 @@ export class TeamProvider {
   // INTERNAL
 
   private async getContract(): Promise<any> {
-    let currentCall = this.getContractInvokes++
-    console.log('TRY_invokeGetContract', currentCall);
     await this.waitForAndSetContractCallMutex();
-    console.log('invokeGetContract', currentCall);
     if(!this.state.contract) {
       const address = await this.settingsProvider.getTeamAddress();
       console.time('getContractAt');
       this.state.contract = await this.web3Provider.getContractAt(teamArtifacts, address);
-      console.log('getContractAt by No', currentCall);  
+      console.count('getContractAt call number');
       console.timeEnd('getContractAt');
     }
     this.resolveContractCallMutex();
@@ -215,7 +211,7 @@ export class TeamProvider {
     try {
       console.time(name);
       let callData = await contract[name].call(...params);
-      console.timeEnd(name);      
+      console.timeEnd(name);
       return callData;
     } catch(e) {
       e => this.handleError(e);
