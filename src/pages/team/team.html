@@ -77,7 +77,7 @@
 
     <!-- APPROVE PENDING MEMBERS -->
 
-    <ion-card>
+    <ion-card class="approve-members">
       <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>
       <ion-card-content *ngIf="(pendingMembers.length == 0) && !(loader.pendingMembers === -1)">No pending invitations</ion-card-content>
       <ion-list *ngIf="(pendingMembers.length > 0) && !(loader.pendingMembers === -1)">

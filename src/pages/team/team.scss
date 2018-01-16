@@ -24,8 +24,9 @@ page-team {
     min-height: 180px;
   }
 
-  .members {
-    h2 {
+  
+  .members, .approve-members {
+    h2, h3 {
       color: color($colors, light);
     }
   }
