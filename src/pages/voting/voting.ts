@@ -21,12 +21,16 @@ import { Voting } from '../../models/voting';
 })
 export class VotingPage implements OnInit {
   createVotingForm: FormGroup;
-  votings: Voting[];
   selectedVoting: string;
-
-  areVotingsLoading: boolean;
-
   teamAddress$: Promise<string>;
+
+  segmentArea = 'open';
+
+  openVotings: Voting[];
+  areOpenVotingsLoading: boolean;
+  
+  closedVotings: Voting[];
+  areClosedVotingsLoading: boolean;
 
   constructor(private teamProvider: TeamProvider,
               private fb: FormBuilder,
@@ -37,13 +41,19 @@ export class VotingPage implements OnInit {
     this.createVotingForm = this.fb.group({
       name: ['', [Validators.required]],
     });
+
+    // TODO:
+    this.closedVotings = [];
   }
 
   async ionViewWillEnter() {
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
 
     if(await this.teamAddress$) {
-      this.refreshVotings();
+      await this.refreshOpenVotings();
+      if(this.openVotings.length == 0) {
+        this.segmentArea = 'new';
+      }
     }
 
     // We have to reset the selected voting here to prevent inconsistencies
@@ -53,14 +63,15 @@ export class VotingPage implements OnInit {
   async addVoting() {
     const name = this.createVotingForm.value.name;
     this.teamProvider.onVotingCreated().then(votingAddress => {
-      this.refreshVotings();
+      this.refreshOpenVotings();
     });
     await this.teamProvider.addVoting(name);
+    this.segmentArea = 'open';
   }
 
-  private async refreshVotings() {
-    this.areVotingsLoading = true;
-    this.votings = await this.teamProvider.getVotings();
-    this.areVotingsLoading = false;
+  private async refreshOpenVotings() {
+    this.areOpenVotingsLoading = true;
+    this.openVotings = await this.teamProvider.getVotings();
+    this.areOpenVotingsLoading = false;
   }
 }

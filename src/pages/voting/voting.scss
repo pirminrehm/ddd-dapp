@@ -9,6 +9,16 @@ page-voting {
   }
 
   .no-member {
-    padding: 12px;
+    padding: 24px;
+  }
+
+  .segment-entry {
+    padding: 24px 16px 16px !important;
+
+    &.create {
+      button {
+        margin-top: 12px;
+      }
+    }
   }
 }

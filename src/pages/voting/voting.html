@@ -13,35 +13,58 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
   <div class="no-member" *ngIf="!(teamAddress$ | async)">
     You're not part of a team. Join a team to create and participate at votings.
   </div>
-  
+
   <div *ngIf="!!(teamAddress$ | async)">
-    <ion-card>
-      <ion-card-header>Create voting</ion-card-header>
-      <ion-card-content>
-        <form [formGroup]="createVotingForm" (submit)="addVoting()">
-          <ion-item>
-            <ion-label for="name">Name:</ion-label>
-            <ion-input class="form-control" type="text" formControlName="name"></ion-input>
-          </ion-item>
-          <button ion-button outline block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Create voting</button>
-        </form>
-      </ion-card-content>
-    </ion-card>
-  
-    <ion-card>
-      <ion-card-header>Select an active voting <ion-spinner name="dots" *ngIf="areVotingsLoading"></ion-spinner></ion-card-header>
-      <ion-list radio-group [(ngModel)]="selectedVoting">
-        <ion-item *ngFor="let voting of votings">
+    <div>
+      <ion-segment [(ngModel)]="segmentArea">
+        <ion-segment-button value="open">
+          Open
+        </ion-segment-button>
+        <ion-segment-button value="new">
+          <ion-icon name="create"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="closed">
+          Closed
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+    
+    <!-- Open votings -->
+    <div *ngIf="segmentArea == 'open'" class="segment-entry open">
+      <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
+      <ion-list radio-group [(ngModel)]="selectedVoting" *ngIf="areOpenVotingsLoading || openVotings.length > 0">
+        <ion-list-header>
+          Select a voting
+          <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner>
+        </ion-list-header>
+        <ion-item *ngFor="let voting of openVotings">
           <ion-label>{{ voting.name }}</ion-label>
           <ion-radio [value]="voting.address"></ion-radio>
         </ion-item>
       </ion-list>
-    </ion-card>
-  
-    <page-voting-details [address]="selectedVoting"></page-voting-details>
+      <page-voting-details [address]="selectedVoting"></page-voting-details>
+    </div>
+
+    <!-- Closed votings -->
+    <div *ngIf="segmentArea == 'closed'" padding class="segment-entry closed">
+      <div *ngIf="closedVotings.length <= 0">No votings have been closed so far.</div>
+    </div>  
+
+
+    <!-- Create votings -->
+    <div *ngIf="segmentArea == 'new'" padding class="segment-entry create">
+      <form [formGroup]="createVotingForm" (submit)="addVoting()">
+        <ion-item>
+          <ion-label for="name">Name:</ion-label>
+          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+        </ion-item>
+        <button ion-button block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Add a new voting</button>
+      </form>
+    </div>  
   </div>
+  
 </ion-content>
