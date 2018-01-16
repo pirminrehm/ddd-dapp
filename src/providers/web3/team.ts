@@ -10,7 +10,6 @@ import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
 import { Voting } from './../../models/voting';
 
-import { VotingProvider } from './voting';
 import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
@@ -30,7 +29,6 @@ export class TeamProvider {
   
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
               private loggingProvider: LoggingProvider) {
                 
     this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
@@ -175,19 +173,6 @@ export class TeamProvider {
     }
     return members;
   }
-
-  async getVotings(): Promise<Voting[]> {
-    const addresses = await this.getVotingAddresses();
-    const names$ = addresses.map(address => this.votingProvider.getVotingName(address));
-    const names = await Promise.all(names$);
-    
-    const votings = [];
-    for(let i=0; i < addresses.length; i++) {
-      votings.push(new Voting(addresses[i], names[i]));
-    }
-    return votings;
-  }
-
 
   async getPendingMembers(): Promise<PendingMember[]> {
     const count = await this.getPendingMembersCount();

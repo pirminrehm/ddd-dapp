@@ -1,15 +1,15 @@
-import { AppStateTypes } from './../../states/types';
-import { Injectable } from '@angular/core';
-
-import { Web3Provider } from './web3';
+import { Injectable, Inject, forwardRef } from '@angular/core';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const locationArtifacts = require('../../../build/contracts/Location.json');
 
-import { Location } from './../../models/location';
+import { Web3Provider } from './web3';
 import { TeamProvider } from './team';
-import { LocationState } from '../../states/location';
 import { AppStateProvider } from '../storage/app-state';
+
+import { Location } from './../../models/location';
+import { AppStateTypes } from './../../states/types';
+import { LocationState } from '../../states/location';
 
 /*
   Generated class for the Locations provider.
@@ -19,7 +19,6 @@ import { AppStateProvider } from '../storage/app-state';
 */
 @Injectable()
 export class LocationProvider {
-
   private state: LocationState;
 
   constructor(private web3Provider: Web3Provider,
@@ -46,6 +45,15 @@ export class LocationProvider {
       this.state.locationByIndex[index] = new Location(uri, name);
     }
     return this.state.locationByIndex[index];
+  }
+
+  async getLocationByURI(uri: string): Promise<Location> {
+    if(!this.state.locationByURI[uri]) {
+      const v = await this.call('getLocationByURI', uri);
+      const name = await this.web3Provider.fromWeb3String(v[1]);
+      this.state.locationByURI[uri] = new Location(uri, name);
+    }
+    return this.state.locationByURI[uri];
   }
 
   async addLocation(uri, name) {

@@ -6,11 +6,13 @@ export class LocationState implements IState {
   public count: number;
 
   public locationByIndex = [];
+  public locationByURI = {};
 
   reset() {
     this.contract = null;
     this.count = null;
     
     this.locationByIndex = [];
+    this.locationByURI = {}
   }
 }

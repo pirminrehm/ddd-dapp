@@ -38,7 +38,7 @@
       <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
       <ion-card *ngIf="areOpenVotingsLoading || openVotings.length > 0">
         <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
-        <ion-list radio-group [(ngModel)]="selectedVoting">
+        <ion-list radio-group [(ngModel)]="selectedOpenVoting">
           <ion-item *ngFor="let voting of openVotings">
             <ion-label>{{ voting.name }}</ion-label>
             <ion-radio [value]="voting.address"></ion-radio>
@@ -46,13 +46,25 @@
         </ion-list>
       </ion-card>
       
-      <page-voting-details [address]="selectedVoting"></page-voting-details>
+      <page-voting-details [address]="selectedOpenVoting"></page-voting-details>
     </div>
 
     <!-- Closed votings -->
     <div *ngIf="segmentArea == 'closed'" padding class="segment-entry closed">
-      <div *ngIf="closedVotings.length <= 0">No votings have been closed so far.</div>
-    </div>  
+      <div *ngIf="!areClosedVotingsLoading && closedVotings.length <= 0">No votings have been closed so far.</div>
+      
+      <ion-card *ngIf="areClosedVotingsLoading || closedVotings.length > 0">
+        <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-list radio-group (ionChange)="onChangeClosedVoting($event)">
+          <ion-item *ngFor="let voting of openVotings">
+            <ion-label>{{ voting.name }}</ion-label>
+            <ion-radio [value]="voting.address"></ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+
+      <page-voting-chart [locationPoints]="selectedLocationPoints$ | async"></page-voting-chart>
+    </div>
 
 
     <!-- Create votings -->
