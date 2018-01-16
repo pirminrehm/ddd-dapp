@@ -8,6 +8,8 @@ import { Injectable } from '@angular/core';
 import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
+import { Voting } from './../../models/voting';
+
 import { VotingProvider } from './voting';
 import { AppStateProvider } from '../storage/app-state';
 
@@ -172,6 +174,18 @@ export class TeamProvider {
       members.push(await this.getMemberByIndex(i));
     }
     return members;
+  }
+
+  async getVotings(): Promise<Voting[]> {
+    const addresses = await this.getVotingAddresses();
+    const names$ = addresses.map(address => this.votingProvider.getVotingName(address));
+    const names = await Promise.all(names$);
+    
+    const votings = [];
+    for(let i=0; i < addresses.length; i++) {
+      votings.push(new Voting(addresses[i], names[i]));
+    }
+    return votings;
   }
 
 

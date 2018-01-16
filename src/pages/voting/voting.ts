@@ -1,8 +1,11 @@
-import { SettingsProvider } from './../../providers/storage/settings';
-import { TeamProvider } from './../../providers/web3/team';
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
+import { SettingsProvider } from './../../providers/storage/settings';
+import { TeamProvider } from './../../providers/web3/team';
+import { Voting } from '../../models/voting';
+
 
 /**
  * Generated class for the VotingPage page.
@@ -18,7 +21,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class VotingPage implements OnInit {
   createVotingForm: FormGroup;
-  votings: string[];
+  votings: Voting[];
   selectedVoting: string;
 
   areVotingsLoading: boolean;
@@ -55,11 +58,9 @@ export class VotingPage implements OnInit {
     await this.teamProvider.addVoting(name);
   }
 
-  private refreshVotings() {
+  private async refreshVotings() {
     this.areVotingsLoading = true;
-    this.teamProvider.getVotingAddresses().then(votings => {
-      this.votings = votings;
-      this.areVotingsLoading = false;
-    });
+    this.votings = await this.teamProvider.getVotings();
+    this.areVotingsLoading = false;
   }
 }

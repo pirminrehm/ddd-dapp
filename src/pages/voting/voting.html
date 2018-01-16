@@ -36,8 +36,8 @@
       <ion-card-header>Select an active voting <ion-spinner name="dots" *ngIf="areVotingsLoading"></ion-spinner></ion-card-header>
       <ion-list radio-group [(ngModel)]="selectedVoting">
         <ion-item *ngFor="let voting of votings">
-          <ion-label>{{ voting }}</ion-label>
-          <ion-radio [value]="voting"></ion-radio>
+          <ion-label>{{ voting.name }}</ion-label>
+          <ion-radio [value]="voting.address"></ion-radio>
         </ion-item>
       </ion-list>
     </ion-card>
