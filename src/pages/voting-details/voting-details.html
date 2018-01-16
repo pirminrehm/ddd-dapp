@@ -1,29 +1,24 @@
 <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
 
-<div *ngIf="address && !isLoading">
+<ion-card *ngIf="address && !isLoading">
+  <ion-card-header>Vote for {{votingName$ | async}}</ion-card-header>
+  <ion-card-content>
+    <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
+    <div *ngFor="let locationPoint of locationPoints; let i=index">
+      {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+      <ion-range-slider 
+        min="0" 
+        max="100" 
+        from="0"
+        from_min="0" 
+        from_max="{{remainingPoints + locationPoint.points}}" 
+        from_shadow="true"
+        (onChange)="pointsChanged(locationPoint, $event)">
+      </ion-range-slider>
+    </div>
 
-  <h3>Voting: {{votingName$ | async}}</h3>
+    <page-voting-chart [locationPoints]="locationPoints"></page-voting-chart>
 
-  <ion-card>
-    <ion-card-header>Vote for locations</ion-card-header>
-    <ion-card-content>
-      <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
-      <div *ngFor="let locationPoint of locationPoints; let i=index">
-        {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
-        <ion-range-slider 
-          min="0" 
-          max="100" 
-          from="0"
-          from_min="0" 
-          from_max="{{remainingPoints + locationPoint.points}}" 
-          from_shadow="true"
-          (onChange)="pointsChanged(locationPoint, $event)">
-        </ion-range-slider>
-      </div>
-
-      <page-voting-chart [locationPoints]="locationPoints"></page-voting-chart>
-
-      <button ion-button outline block type="submit" [disabled]="remainingPoints == 100" (click)="submitVotes()">Submit your votes</button>
-    </ion-card-content>
-  </ion-card>
-</div>
+    <button ion-button outline block type="submit" [disabled]="remainingPoints == 100" (click)="submitVotes()">Submit your votes</button>
+  </ion-card-content>
+</ion-card>

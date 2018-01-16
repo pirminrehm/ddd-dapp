@@ -36,16 +36,16 @@
     <!-- Open votings -->
     <div *ngIf="segmentArea == 'open'" class="segment-entry open">
       <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
-      <ion-list radio-group [(ngModel)]="selectedVoting" *ngIf="areOpenVotingsLoading || openVotings.length > 0">
-        <ion-list-header>
-          Select a voting
-          <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner>
-        </ion-list-header>
-        <ion-item *ngFor="let voting of openVotings">
-          <ion-label>{{ voting.name }}</ion-label>
-          <ion-radio [value]="voting.address"></ion-radio>
-        </ion-item>
-      </ion-list>
+      <ion-card *ngIf="areOpenVotingsLoading || openVotings.length > 0">
+        <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-list radio-group [(ngModel)]="selectedVoting">
+          <ion-item *ngFor="let voting of openVotings">
+            <ion-label>{{ voting.name }}</ion-label>
+            <ion-radio [value]="voting.address"></ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+      
       <page-voting-details [address]="selectedVoting"></page-voting-details>
     </div>
 

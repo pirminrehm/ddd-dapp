@@ -1,12 +1,19 @@
 page-voting-details {
+
+  ion-card {
+    margin: 38px 0 0 0 !important;
+    width: 100% !important;
+  }
+
   ion-spinner {
     width: 100%;
   }
-  h3 {
-    margin: 34px 12px;
-  }
   ion-input input {
     text-align: right;
+  }
+
+  button {
+    margin-top: 16px !important;
   }
 
 
