@@ -104,7 +104,7 @@
       </ion-list>
     </ion-card>
 
-    <ion-card>
+    <ion-card class="members">
       <ion-card-header>Members <ion-spinner name="dots" *ngIf="loader.members"></ion-spinner></ion-card-header>
       <ion-card-content *ngIf="(members.length == 0) && !(loader.members === -1)">No team members</ion-card-content>
       <ion-list *ngIf="(members.length) > 0 && !(loader.members === -1)">

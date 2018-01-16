@@ -23,4 +23,10 @@ page-team {
     min-width: 180px;
     min-height: 180px;
   }
+
+  .members {
+    h2 {
+      color: color($colors, light);
+    }
+  }
 }
