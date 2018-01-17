@@ -23,8 +23,8 @@ contract('Voting', accounts => {
         return teamContract.addVoting(data.votingName1, {from: accounts[0]});
       }).then(() => {
         return teamContract.getVotingByIndex.call(0);
-      }).then(votingAddress => {
-        contract = Voting.at(votingAddress);
+      }).then(voting => {
+        contract = Voting.at(voting[0]);
         done();
       });
     });
@@ -94,8 +94,8 @@ contract('Voting', accounts => {
         return teamContract.addVoting(data.votingName1, {from: accounts[0]});
       }).then(() => {
         return teamContract.getVotingByIndex.call(0);
-      }).then(votingAddress => {
-        contract = Voting.at(votingAddress);
+      }).then(voting => {
+        contract = Voting.at(voting[0]);
         return contract.addVote(data.uri1, 50 ,{from: accounts[0]});
       }).then(() => {
         return teamContract.closeVotingStochastic(contract.address, {from: accounts[0]})
@@ -140,8 +140,8 @@ contract('Voting', accounts => {
         return teamContract.addVoting(data.votingName1, {from: accounts[0]});
       }).then(() => {
         return teamContract.getVotingByIndex.call(0);
-      }).then(votingAddress => {
-        contract = Voting.at(votingAddress);
+      }).then(voting => {
+        contract = Voting.at(voting[0]);
         done();
       });
     });
@@ -177,8 +177,8 @@ contract('Voting', accounts => {
         return teamContract.addVoting(data.votingName1, {from: accounts[0]});
       }).then(() => {
         return teamContract.getVotingByIndex.call(0);
-      }).then(votingAddress => {
-        contract = Voting.at(votingAddress);
+      }).then(voting => {
+        contract = Voting.at(voting[0]);
         done();
       });
     });
@@ -248,8 +248,8 @@ contract('Voting', accounts => {
         return teamContract.addVoting(data.votingName2, {from: accounts[0]});
       }).then(() => {
         return teamContract.getVotingByIndex.call(0);
-      }).then(votingAddress => {
-        contract = Voting.at(votingAddress);
+      }).then(voting => {
+        contract = Voting.at(voting[0]);
         done();
       });
     });

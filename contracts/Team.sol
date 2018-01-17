@@ -13,6 +13,12 @@ contract Team {
     bytes32 invitationToken;
   }
 
+  struct VotingStruct {
+    address voting;
+    bytes32 name;
+    uint timestamp;
+  }
+
   //*************** Public Vars ***************//
   //-------------------------------------------//
   bytes32 public teamName;
@@ -20,8 +26,10 @@ contract Team {
   //************** Private Vars ***************//
   //-------------------------------------------//
   address private locationAddress;
+
   address[] private votingAddresses;
   address[] private closedVotingAddresses;
+  mapping (address => VotingStruct) private votingStructs;  
  
   mapping (bytes32 => bool) private invitationTokens;
 
@@ -93,7 +101,12 @@ contract Team {
     isAMember(msg.sender)
   {
     address votingAddress = new Voting(votingName, locationAddress);
+
     votingAddresses.push(votingAddress);
+    votingStructs[votingAddress].voting = votingAddress;
+    votingStructs[votingAddress].name = votingName;
+    votingStructs[votingAddress].timestamp = block.timestamp;
+
     VotingCreated(votingAddress);
   }
 
@@ -159,16 +172,20 @@ contract Team {
     return votingAddresses.length;
   }  
   
-  function getVotingByIndex(uint index) public constant returns (address votingAddress) {
-    return votingAddresses[index];
+  function getVotingByIndex(uint index) public constant
+  returns (address votingAddress, bytes32 votingName, uint timestamp) {
+    VotingStruct storage v = votingStructs[votingAddresses[index]];
+    return (v.voting, v.name, v.timestamp);
   }
 
   function getClosedVotingsCount() public constant returns (uint memberCount) {
     return closedVotingAddresses.length;
   }  
   
-  function getClosedVotingByIndex(uint index) public constant returns (address votingAddress) {
-    return closedVotingAddresses[index];
+  function getClosedVotingByIndex(uint index) public constant
+  returns (address votingAddress, bytes32 votingName, uint timestamp) {
+    VotingStruct storage v = votingStructs[closedVotingAddresses[index]];
+    return (v.voting, v.name, v.timestamp);
   }
 
   //***************** Modifier ****************//
