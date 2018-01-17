@@ -113,7 +113,7 @@ export class TeamProvider {
     const account = await this.web3Provider.getAccount();
     
     const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
-    await this.loggingProvider.addTeam(team.address);
+    await this.loggingProvider.addTeam(team.address, name);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }

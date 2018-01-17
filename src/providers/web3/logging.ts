@@ -29,12 +29,11 @@ export class LoggingProvider {
     return (await this.getDeployedContract()).address;
   }
 
-  async addTeam(teamAddress) {
+  async addTeam(teamAddress, teamName) {
     console.time('addTeamToLogging');
     const contract = await this.web3Provider.getContractAt(loggingArtifacts, await this.getAddress());
     const account = await this.settingsProvider.getAccount();
-
-    const trans = await contract.addTeam(teamAddress, {from: account, gas: 5000000});
+    const trans = await contract.addTeam(teamAddress, teamName, {from: account, gas: 5000000});
     console.timeEnd('addTeamToLogging');
     return trans;
   }
