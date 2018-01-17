@@ -134,8 +134,10 @@ export class VotingProvider {
 
   private async getContract(address: string): Promise<any> {
     if(!this.state.contract[address]) {
-      const contract = await this.web3Provider.getRawContract(votingArtifacts);
-      this.state.contract[address] = contract.at(address);
+      console.time('clonedVotingArtifacts');
+      let clonedVotingArtifacts = JSON.parse(JSON.stringify(votingArtifacts));
+      console.timeEnd('clonedVotingArtifacts');      
+      this.state.contract[address] = await this.web3Provider.getContractAt(clonedVotingArtifacts, address);
     }
     return this.state.contract[address];
   }
