@@ -60,9 +60,12 @@ export class VotingDetailsPage implements OnChanges {
   submitVotes() {
     const votePromises = [];
     this.locationPoints.forEach(locationPoint => {
-      const uri = locationPoint.location.uri;
-      const vote = this.votingProvider.addVote(this.address, uri, locationPoint.points);
-      votePromises.push(vote);
+      //avoid call for 0 points -> error
+      if (locationPoint.points) {
+        const uri = locationPoint.location.uri;
+        const vote = this.votingProvider.addVote(this.address, uri, locationPoint.points);
+        votePromises.push(vote);
+      }
     });
 
     Promise
