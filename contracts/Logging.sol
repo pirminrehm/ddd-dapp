@@ -6,7 +6,13 @@ contract Logging {
   //************** Private Vars ***************//
   //-------------------------------------------//
 
-  address[] private teamList;
+  struct TeamStruct {
+    address team;
+    bytes32 name;
+  }
+
+  address[] private teamAddresses;
+  mapping(address => TeamStruct) private teamStructs;
 
   //************** Constructor ****************//
   //-------------------------------------------//
@@ -14,19 +20,23 @@ contract Logging {
 
   //************** Transactions ***************//
   //-------------------------------------------//
-  function addTeam(address teamAddress) public
+  function addTeam(address teamAddress, bytes32 teamName) public
   {
-    teamList.push(teamAddress);
+    teamStructs[teamAddress].team = teamAddress;
+    teamStructs[teamAddress].name = teamName;
+    teamAddresses.push(teamAddress);
   }
 
   //**************** Getter *******************//
   //-------------------------------------------//
-  function getTeamAddressByIndex(uint index) public constant returns (address teamAddress) {
-    return (teamList[index]);
+  function getTeamAddressByIndex(uint index) public constant
+  returns (address teamAddress, bytes32 teamName) {
+    TeamStruct storage t = teamStructs[teamAddresses[index]];
+    return (t.team, t.name);
   }
 
   function getTeamAddressCount() public constant returns (uint locationCount) {
-    return teamList.length;
+    return teamAddresses.length;
   }
 
 }
