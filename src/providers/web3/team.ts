@@ -45,27 +45,18 @@ export class TeamProvider {
   }
 
   async getPendingMembersCount(): Promise<number> {
-    if(!this.state.pendingMembersCount) {
-      const count = await this.call('getPendingMembersCount');
-      this.state.pendingMembersCount = await this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.pendingMembersCount;
+    const count = await this.call('getPendingMembersCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
   async getMembersCount(): Promise<number> {
-    if(!this.state.membersCount) {
-      const count = await this.call('getMembersCount');
-      this.state.membersCount = await this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.membersCount;
+    const count = await this.call('getMembersCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
   async getVotingsCount(): Promise<number> {
-    if(!this.state.votingsCount) {
-      const count = await this.call('getVotingsCount');
-      this.state.votingsCount = await this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.votingsCount;
+    const count = await this.call('getVotingsCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
   async getLocationAddress(): Promise<string> {
@@ -164,7 +155,6 @@ export class TeamProvider {
     const VotingCreated = (await this.getContract()).VotingCreated(); 
     const res = await this.listenOnce(VotingCreated);
     
-    this.state.votingsCount += 1;
     return res.args.votingAddress;
   }
 

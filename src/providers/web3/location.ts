@@ -29,11 +29,8 @@ export class LocationProvider {
   // CONTRACT ACCESSORS
 
   async getCount(): Promise<number> {
-    if(!this.state.count) {
-      const count = await this.call('getLocationCount');
-      this.state.count = await this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.count;
+    const count = await this.call('getLocationCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
   async getLocationByIndex(index: number): Promise<Location> {
@@ -62,8 +59,6 @@ export class LocationProvider {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });
-
-    this.state.count = null
     return trans;
   }
 
