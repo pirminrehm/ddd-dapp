@@ -96,11 +96,16 @@ export class TeamProvider {
     return this.state.pendingMemberByIndex[index]
   }
 
-  async getVotingAddressByIndex(index: number): Promise<PendingMember> {
-    if(!this.state.votingAddressByIndex[index]) {
-      this.state.votingAddressByIndex[index] = await this.call('getVotingByIndex', index);
+  async getVotingsByIndex(index: number): Promise<PendingMember> {
+    if(!this.state.votingsByIndex[index]) {
+      let voting = await this.call('getVotingByIndex', index);
+      this.state.votingsByIndex[index] = new Voting(
+        voting[0], 
+        await this.web3Provider.fromWeb3String(voting[1]),
+        new Date(await this.web3Provider.fromWeb3Number(voting[2])).toISOString()
+      );
     }
-    return this.state.votingAddressByIndex[index];
+    return this.state.votingsByIndex[index];
   }
 
   // TRANSACTIONS
@@ -183,11 +188,11 @@ export class TeamProvider {
     return pendingMembers;
   }
 
-  async getVotingAddresses(): Promise<string[]> {
+  async getVotings(): Promise<Voting[]> {
     const count = await this.getVotingsCount();
     const votings = [];
     for(let i = 0; i < count; i++) {
-      votings.push(await this.getVotingAddressByIndex(i));
+      votings.push(await this.getVotingsByIndex(i));
     }
     return votings;
   }

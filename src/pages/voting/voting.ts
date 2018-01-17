@@ -74,22 +74,15 @@ export class VotingPage implements OnInit {
     this.segmentArea = 'open';
   }
 
+    
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
-    
-    const addresses = await this.teamProvider.getVotingAddresses();
-    const names$ = addresses.map(address => this.votingProvider.getVotingName(address));
-    const names = await Promise.all(names$);
-    const votings = [];
-    for(let i=0; i < addresses.length; i++) {
-      votings.push(new Voting(addresses[i], names[i]));
-    }
+    let votings = await this.teamProvider.getVotings();
     this.openVotings = votings;
 
     // TODO: query closed votings
     this.closedVotings = this.openVotings;
-
-    this.areOpenVotingsLoading = false;
+    this.areOpenVotingsLoading = false;    
   }
 
   async onChangeClosedVoting(address: string) {
