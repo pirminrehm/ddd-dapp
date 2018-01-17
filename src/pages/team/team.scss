@@ -13,7 +13,7 @@ page-team {
   }
 
   .hint {
-    padding: 12px 0;
+    padding: 6px 16px;
   }
 
 
@@ -22,5 +22,12 @@ page-team {
     background: white;
     min-width: 180px;
     min-height: 180px;
+  }
+
+  
+  .members, .approve-members {
+    h2, h3 {
+      color: color($colors, light);
+    }
   }
 }

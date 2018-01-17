@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import { Web3Provider } from './web3';
 import { PendingMember } from '../../models/pending-member';
 import { Member } from './../../models/member';
-import { VotingProvider } from './voting';
+import { Voting } from './../../models/voting';
+
 import { AppStateProvider } from '../storage/app-state';
 
 // Import our contract artifacts and turn them into usable abstractions.
@@ -28,7 +29,6 @@ export class TeamProvider {
   
   constructor(private web3Provider: Web3Provider,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
               private loggingProvider: LoggingProvider) {
                 
     this.state = AppStateProvider.getInstance(AppStateTypes.TEAM) as TeamState;
@@ -96,11 +96,16 @@ export class TeamProvider {
     return this.state.pendingMemberByIndex[index]
   }
 
-  async getVotingAddressByIndex(index: number): Promise<PendingMember> {
-    if(!this.state.votingAddressByIndex[index]) {
-      this.state.votingAddressByIndex[index] = await this.call('getVotingByIndex', index);
+  async getVotingsByIndex(index: number): Promise<PendingMember> {
+    if(!this.state.votingsByIndex[index]) {
+      let voting = await this.call('getVotingByIndex', index);
+      this.state.votingsByIndex[index] = new Voting(
+        voting[0], 
+        await this.web3Provider.fromWeb3String(voting[1]),
+        new Date(await this.web3Provider.fromWeb3Number(voting[2])).toISOString()
+      );
     }
-    return this.state.votingAddressByIndex[index];
+    return this.state.votingsByIndex[index];
   }
 
   // TRANSACTIONS
@@ -113,7 +118,7 @@ export class TeamProvider {
     const account = await this.web3Provider.getAccount();
     
     const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
-    await this.loggingProvider.addTeam(team.address);
+    await this.loggingProvider.addTeam(team.address, name);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
   }
@@ -174,7 +179,6 @@ export class TeamProvider {
     return members;
   }
 
-
   async getPendingMembers(): Promise<PendingMember[]> {
     const count = await this.getPendingMembersCount();
     const pendingMembers = [];
@@ -184,11 +188,11 @@ export class TeamProvider {
     return pendingMembers;
   }
 
-  async getVotingAddresses(): Promise<string[]> {
+  async getVotings(): Promise<Voting[]> {
     const count = await this.getVotingsCount();
     const votings = [];
     for(let i = 0; i < count; i++) {
-      votings.push(await this.getVotingAddressByIndex(i));
+      votings.push(await this.getVotingsByIndex(i));
     }
     return votings;
   }

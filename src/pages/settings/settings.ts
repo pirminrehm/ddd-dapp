@@ -52,7 +52,7 @@ export class SettingsPage {
     this.settingsForm.setValue({
       name: await this.settingsProvider.getName(),
       account: await this.settingsProvider.getAccount(),
-      loggingAddress: await this.loggingProvider.getAddress()
+      loggingAddress: await this.loggingProvider.getAddress() || '0x345ca3e014aaf5dca488057592ee47305d9b3e10'
     });
 
     this.teamAddress$ = this.settingsProvider.getTeamAddress();

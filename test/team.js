@@ -459,25 +459,28 @@ contract('Team', (accounts) => {
       });
 
       it('should create a second voting with the team contract', done => {
-        let noLogWasRecieved = true;
-        contract.VotingCreated().watch((error, log) => {
-          if(noLogWasRecieved) {
-            noLogWasRecieved = false;
-            expect(log).to.be.an('object');
-            expect(log.event).to.equal('VotingCreated');        
-            expect(log.args).to.be.an('object');
-            expect(log.args.votingAddress).to.be.a('string');
-            let votingAddress = log.args.votingAddress;
-            expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-            votingInstance2 = Voting.at(votingAddress);
-            contract.VotingCreated().stopWatching();
-            done();
-          }
-        });
+        // delay -> don not receive first log twice
+        setTimeout(() => {
+          let noLogWasRecieved = true;
+          contract.VotingCreated().watch((error, log) => {
+            if(noLogWasRecieved) {
+              noLogWasRecieved = false;
+              expect(log).to.be.an('object');
+              expect(log.event).to.equal('VotingCreated');        
+              expect(log.args).to.be.an('object');
+              expect(log.args.votingAddress).to.be.a('string');
+              let votingAddress = log.args.votingAddress;
+              expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
+              votingInstance2 = Voting.at(votingAddress);             
+              contract.VotingCreated().stopWatching();
+              done();
+            }
+          });
 
-        contract.addVoting(data.votingName2, {from: accounts[0]}).then(res => { 
-          expect(res).not.to.be.null;
-        });        
+          contract.addVoting(data.votingName2, {from: accounts[0]}).then(res => { 
+            expect(res).not.to.be.null;
+          });        
+        }, 500);
       });
 
       it('should get the new votings count', async () => {
@@ -486,15 +489,19 @@ contract('Team', (accounts) => {
       });
 
       it('should get the first new voting by index', async () => {
-        const votingAddress = await contract.getVotingByIndex.call(0);
-        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-        expect(votingAddress).to.equal(votingInstance1.address);
+        const voting = await contract.getVotingByIndex.call(0);
+        expect(voting[0]).to.match(/^0x[a-f0-9]{40}$/);
+        expect(voting[0]).to.equal(votingInstance1.address);
+        expect(t8(voting[1])).to.equal(data.votingName1);
+        expect(nr(voting[2])).to.be.gt(1516182195);
       });
 
       it('should get the second new voting by index', async () => {
-        const votingAddress = await contract.getVotingByIndex.call(1);
-        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-        expect(votingAddress).to.equal(votingInstance2.address);
+        const voting = await contract.getVotingByIndex.call(1);
+        expect(voting[0]).to.match(/^0x[a-f0-9]{40}$/);
+        expect(voting[0]).to.equal(votingInstance2.address);
+        expect(t8(voting[1])).to.equal(data.votingName2);
+        expect(nr(voting[2])).to.be.gt(1516182195);
       });
 
       it("should add a new voting by recieved address", async () => {
@@ -546,9 +553,12 @@ contract('Team', (accounts) => {
       });
 
       it('should get the second and now only remaining voting by index', async () => {
-        const votingAddress = await contract.getVotingByIndex.call(0); //now index 0
-        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-        expect(votingAddress).to.equal(votingInstance2.address);
+        const voting = await contract.getVotingByIndex.call(0); //now index 0
+        expect(voting[0]).to.match(/^0x[a-f0-9]{40}$/);
+        expect(voting[0]).to.equal(votingInstance2.address);
+        expect(t8(voting[1])).to.equal(data.votingName2);
+        expect(nr(voting[2])).to.be.gt(1516182195);
+        
       });
 
       it('should get the closed votings count', async () => {
@@ -557,9 +567,11 @@ contract('Team', (accounts) => {
       });
 
       it('should get the closed voting by index', async () => {
-        const votingAddress = await contract.getClosedVotingByIndex.call(0);
-        expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-        expect(votingAddress).to.equal(votingInstance1.address);
+        const voting = await contract.getClosedVotingByIndex.call(0);
+        expect(voting[0]).to.match(/^0x[a-f0-9]{40}$/);
+        expect(voting[0]).to.equal(votingInstance1.address);
+        expect(t8(voting[1])).to.equal(data.votingName1);
+        expect(nr(voting[2])).to.be.gt(1516182195);
       });
 
       it("should not close a voting due to non-member", done => {

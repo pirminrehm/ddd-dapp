@@ -12,7 +12,7 @@ export class TeamState implements IState {
 
   public memberByIndex = [];
   public pendingMemberByIndex = [];
-  public votingAddressByIndex = [];
+  public votingsByIndex = [];
 
   reset() {
     this.contract = null;
@@ -25,6 +25,6 @@ export class TeamState implements IState {
     
     this.memberByIndex = [];
     this.pendingMemberByIndex = [];
-    this.votingAddressByIndex = [];
+    this.votingsByIndex = [];
   }
 }
