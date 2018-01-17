@@ -28,6 +28,8 @@ export class TeamMemberPage implements OnChanges {
   members: Member[];
   loader: Loader;
 
+  segmentArea = 'members';
+
   constructor(private teamProvider: TeamProvider,
               private notificationProvider: NotificationProvider) {
     this.pendingMembers = [];
@@ -42,6 +44,12 @@ export class TeamMemberPage implements OnChanges {
     }
   }
 
+  createFirstInvitiationToken() {
+    if(!this.teamInvitation) {
+      this.createInvitationToken();
+    }
+  }
+
   createInvitationToken() {
     this.loader.activate('createInvitationToken');
     this.teamProvider.onTokenCreated().then(teamInvitation => {
@@ -51,10 +59,6 @@ export class TeamMemberPage implements OnChanges {
     });
 
     this.teamProvider.createInvitationToken();
-  }
-
-  deleteInvitationToken() {
-    this.teamInvitation = null;
   }
 
   async acceptPendingMember(pendingMember: PendingMember) {

@@ -11,6 +11,7 @@ import 'rxjs/add/operator/filter';
 export class TeamPage implements OnInit {
 
   teamAddress: Boolean;
+  isLoading: Boolean;
 
   constructor(public navCtrl: NavController, 
               private settingsProvider: SettingsProvider) {                                
@@ -25,8 +26,9 @@ export class TeamPage implements OnInit {
   }
 
   private async stateChanged() {
-    let teamAddress = await this.settingsProvider.getTeamAddress();
-    this.teamAddress = teamAddress;
+    this.isLoading = true;
+    this.teamAddress = await this.settingsProvider.getTeamAddress();
+    this.isLoading = false;
   }
 
   onTeamCreated() {

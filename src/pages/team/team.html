@@ -7,9 +7,9 @@
 <ion-content>
 
   <!-- USER DOES NOT HAVE A TEAM -->
-  <page-team-no-member *ngIf="!teamAddress" (teamCreated)="onTeamCreated()"></page-team-no-member>
+  <page-team-no-member *ngIf="!teamAddress && !isLoading" (teamCreated)="onTeamCreated()"></page-team-no-member>
 
   <!-- USER HAS A TEAM -->
-  <page-team-member *ngIf="teamAddress" [teamAddress]="teamAddress"></page-team-member>
+  <page-team-member *ngIf="teamAddress && !isLoading" [teamAddress]="teamAddress"></page-team-member>
     
 </ion-content>
