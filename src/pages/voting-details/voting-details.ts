@@ -1,9 +1,10 @@
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
 import { VotingProvider } from './../../providers/web3/voting';
+import { TeamProvider } from './../../providers/web3/team';
 
 import { LocationPoint } from './../../models/location-point';
 import { UserPoint } from './../../models/user-point';
@@ -24,6 +25,7 @@ import { SLIDE_COLORS } from '../voting-chart/voting-chart';
 })
 export class VotingDetailsPage implements OnChanges {
   @Input() address: string;
+  @Output() votingClosed = new EventEmitter();
 
   isLoading: boolean;
   locationPoints: LocationPoint[];
@@ -36,6 +38,7 @@ export class VotingDetailsPage implements OnChanges {
   colors = SLIDE_COLORS;
 
   constructor(private votingProvider: VotingProvider,
+              private teamProvider: TeamProvider,
               private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider) {
   }
@@ -85,8 +88,9 @@ export class VotingDetailsPage implements OnChanges {
       });
   }
 
-  closeVoting() {
-    
+  async closeVoting() {
+    await this.teamProvider.closeVoting(this.address);
+    this.votingClosed.emit(this.address);
   }
 
   pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {

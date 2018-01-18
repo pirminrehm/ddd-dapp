@@ -73,6 +73,8 @@ export class VotingPage implements OnInit {
 
     if(await this.teamAddress$) {
       await this.refreshOpenVotings();
+      await this.refreshClosedVotings();
+
       if(this.openVotings.length == 0) {
         this.segmentArea = 'new';
       }
@@ -89,15 +91,22 @@ export class VotingPage implements OnInit {
 
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
-    let votings = await this.teamProvider.getVotings();
-    this.openVotings = votings;
+    this.openVotings = await this.teamProvider.getVotings();
 
-    // TODO: query closed votings
-    this.closedVotings = this.openVotings;
     this.areOpenVotingsLoading = false;    
+  }
+
+  private async refreshClosedVotings() {
+    this.areClosedVotingsLoading = true;
+    this.closedVotings = await this.teamProvider.getClosedVotings();
+    this.areClosedVotingsLoading = false;    
   }
 
   async onChangeClosedVoting(address: string) {
     this.selectedLocationPoints$ = this.votingProvider.getLocationPoints(address);
+  }
+
+  onVotingClosed() {
+    this.stateChanged();
   }
 }

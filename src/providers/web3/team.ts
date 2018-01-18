@@ -59,6 +59,11 @@ export class TeamProvider {
     return this.web3Provider.fromWeb3Number(count);
   }
 
+  async getClosedVotingsCount(): Promise<number> {
+    const count = await this.call('getClosedVotingsCount');
+    return this.web3Provider.fromWeb3Number(count);
+  }
+
   async getLocationAddress(): Promise<string> {
     if(!this.state.locationAddress) {
       this.state.locationAddress = await this.call('getLocationAddress');
@@ -90,13 +95,17 @@ export class TeamProvider {
   async getVotingsByIndex(index: number): Promise<PendingMember> {
     if(!this.state.votingsByIndex[index]) {
       let voting = await this.call('getVotingByIndex', index);
-      this.state.votingsByIndex[index] = new Voting(
-        voting[0], 
-        await this.web3Provider.fromWeb3String(voting[1]),
-        new Date(await this.web3Provider.fromWeb3Number(voting[2])).toISOString()
-      );
+      this.state.votingsByIndex[index] = this.prepareVoting(voting);
     }
     return this.state.votingsByIndex[index];
+  }
+
+  async getClosedVotingByIndex(index: number): Promise<PendingMember> {
+    if(!this.state.closedVotingsByIndex[index]) {
+      let voting = await this.call('getClosedVotingByIndex', index);
+      this.state.closedVotingsByIndex[index] = this.prepareVoting(voting);
+    }
+    return this.state.closedVotingsByIndex[index];
   }
 
   // TRANSACTIONS
@@ -143,6 +152,18 @@ export class TeamProvider {
     return contract.addVoting(name, {from: account, gas: 3000000});
   }
 
+  async closeVoting(votingAddress: string) {
+    const contract = await this.getContract();
+    const account = await this.web3Provider.getAccount();
+    try {
+      const trans = contract.closeVotingStochastic(votingAddress, {from: account, gas: 3000000});
+      this.state.resetVotings();
+      return trans;
+    } catch(e) {
+      throw e;
+    }
+  }
+
   // EVENTS
 
   async onTokenCreated(): Promise<any> {
@@ -186,6 +207,18 @@ export class TeamProvider {
     }
     return votings;
   }
+
+
+  async getClosedVotings(): Promise<Voting[]> {
+    const count = await this.getClosedVotingsCount();
+    console.log(count);
+    const votings = [];
+    for(let i = 0; i < count; i++) {
+      votings.push(await this.getClosedVotingByIndex(i));
+    }
+    return votings;
+  }
+
 
   async isMember(address: string, account: string): Promise<Boolean> {
     const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
@@ -254,6 +287,15 @@ export class TeamProvider {
     this.contractCallMutex = false;
     // console.log('mutex: open');    
     return Promise.resolve();
+  }
+
+
+  private async prepareVoting(voting) {
+    return new Voting(
+      voting[0], 
+      await this.web3Provider.fromWeb3String(voting[1]),
+      new Date(await this.web3Provider.fromWeb3Number(voting[2])).toISOString()
+    )
   }
   
 }
