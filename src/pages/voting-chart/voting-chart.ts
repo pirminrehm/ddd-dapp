@@ -20,6 +20,7 @@ export const SLIDE_COLORS = ['#488aff', '#7babff', '#005afa', '#aecbff'];
 export class VotingChartPage implements OnInit, OnChanges {
   @ViewChild('pieChart') pieChart: ElementRef;
   @Input() locationPoints: LocationPoint[];
+  @Input() displayLegend: Boolean;
 
   totalPoints: number = 0;
   ready = false;
@@ -40,6 +41,11 @@ export class VotingChartPage implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
+    if(this.displayLegend) {
+      this.chartOptions.legend.position = 'right';
+      this.chartOptions.chartArea.right = 40;
+      this.chartOptions.chartArea.width = '80%';
+    }
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(() => {
       this.chart = new google.visualization.PieChart(this.pieChart.nativeElement);
