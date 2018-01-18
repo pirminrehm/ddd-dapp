@@ -8,6 +8,8 @@ import { Loader } from './../../models/loader';
 import { PendingMember } from './../../models/pending-member';
 import { Member } from './../../models/member';
 
+import { Subject } from 'rxjs/Subject';
+
 /**
  * Generated class for the TeamMemberPage page.
  *
@@ -28,6 +30,8 @@ export class TeamMemberPage implements OnChanges {
   members: Member[];
   loader: Loader;
 
+  refreshSubject: Subject<any>;
+
   segmentArea = 'members';
 
   constructor(private teamProvider: TeamProvider,
@@ -35,6 +39,7 @@ export class TeamMemberPage implements OnChanges {
     this.pendingMembers = [];
     this.members = [];
     this.loader = new Loader(['members', 'pendingMembers', 'createInvitationToken']);    
+    this.refreshSubject = new Subject();
   }
 
   ngOnChanges() {
@@ -71,13 +76,21 @@ export class TeamMemberPage implements OnChanges {
     }
   }
 
+  async doRefresh(refresher) {
+    this.stateChanged();
+
+    // TODO: Listen to stateChanged callback
+    setTimeout(() => refresher.complete(), 1000);
+  }
+
   private async stateChanged() {
+    this.refreshSubject.next();
     this.loader.activateAll();
     this.loader.deactivate('createInvitationToken');    
     
     if(this.teamAddress) {
       this.teamProvider.getMembers().then(members => {
-        this.members = members;       
+        this.members = members;
         this.loader.deactivate('members');
       });
       this.teamProvider.getPendingMembers().then(pendingMembers =>  {
