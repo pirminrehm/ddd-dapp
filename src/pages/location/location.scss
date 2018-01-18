@@ -2,7 +2,17 @@ page-location {
   ion-card {
     margin-bottom: 24px !important;
   }
-  ion-card-header {
-    font-weight: bold;
+
+  .add-location {
+    padding-left: 8px;
   }
+
+  ion-icon {
+    width: 25px !important;
+  }
+
+  ion-spinner {
+    color: color($colors, light);
+    margin-left: 16px;
+  } 
 }

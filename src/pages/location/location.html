@@ -6,30 +6,15 @@
 -->
 
 <ion-card>
-  <ion-card-header>Add a new location</ion-card-header>
-  <ion-card-content>
-    <form [formGroup]="locationForm" (submit)="addLocation()">
-      
-      <ion-item>
-        <ion-label for="name">Name:</ion-label>
-        <ion-input class="form-control" type="text" id="name" formControlName="name"></ion-input>
-      </ion-item>
-  
-      <ion-item>
-        <ion-label for="uri">Uri:</ion-label>
-        <ion-input class="form-control" type="text" id="uri" formControlName="uri"></ion-input>
-      </ion-item>
-      
-      <button ion-button block outline type="submit" [disabled]="loading || locationForm.invalid || locationForm.pristine">Add Location</button>
-  
-    </form>
-  </ion-card-content>
-</ion-card>
-
-<ion-card>
-  <ion-card-header>Existing Locations <ion-spinner name="dots" *ngIf="areLocationsLoading"></ion-spinner></ion-card-header>
-  <ion-list *ngIf="!areLocationsLoading && locations.length > 0">
-    <ion-item *ngFor="let location of locations">{{location.uri}}: {{location.name}}</ion-item>
+  <ion-list>
+    <ion-item class="add-location">
+      <ion-input class="form-control" type="text" id="name" [(ngModel)]="newLocationName" placeholder="Add a location..."></ion-input>
+      <button ion-button icon-only item-right round (click)="addLocation()" [disabled]="!newLocationName">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-item>
+    <ion-spinner name="dots" *ngIf="areLocationsLoading"></ion-spinner>
+    <ion-item *ngFor="let location of locations">{{location.name}}</ion-item>
   </ion-list>
   <ion-card-content *ngIf="!areLocationsLoading && locations.length < 1">
     No locations specified.
