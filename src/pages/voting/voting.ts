@@ -8,7 +8,6 @@ import { Voting } from '../../models/voting';
 
 import { VotingProvider } from './../../providers/web3/voting';
 import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
-import { LocationPoint } from './../../models/location-point';
 
 
 /**
@@ -34,7 +33,7 @@ export class VotingPage implements OnInit {
   areOpenVotingsLoading: boolean;
   
   closedVotings: Voting[];
-  selectedLocationPoints$: Promise<LocationPoint[]>;
+  selectedClosedVoting: string;
   areClosedVotingsLoading: boolean;
 
   constructor(private teamProvider: TeamProvider,
@@ -100,10 +99,6 @@ export class VotingPage implements OnInit {
     this.areClosedVotingsLoading = true;
     this.closedVotings = await this.teamProvider.getClosedVotings();
     this.areClosedVotingsLoading = false;    
-  }
-
-  async onChangeClosedVoting(address: string) {
-    this.selectedLocationPoints$ = this.votingProvider.getLocationPoints(address);
   }
 
   onVotingClosed() {

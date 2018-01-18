@@ -60,15 +60,15 @@
       
       <ion-card *ngIf="areClosedVotingsLoading || closedVotings.length > 0">
         <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
-        <ion-list radio-group (ionChange)="onChangeClosedVoting($event)">
+        <ion-list radio-group [(ngModel)]="selectedClosedVoting">
           <ion-item *ngFor="let voting of closedVotings">
             <ion-label>{{ voting.name }}</ion-label>
             <ion-radio [value]="voting.address"></ion-radio>
           </ion-item>
         </ion-list>
       </ion-card>
-
-      <page-voting-chart [locationPoints]="selectedLocationPoints$ | async"></page-voting-chart>
+      
+      <page-voting-closed-details [address]="selectedClosedVoting"></page-voting-closed-details>
     </div>
 
 
