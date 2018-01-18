@@ -65,11 +65,12 @@ export class VotingChartPage implements OnInit, OnChanges {
 
     this.totalPoints = this.locationPoints.reduce((sum, l) => sum + l.points, 0);
 
-    let data = [
-      ['Location', 'Voting points'], 
-      ['Unassigned points', 100 - this.totalPoints], 
-      ...this.locationPoints.map(lp => [lp.location.name, lp.points])
-    ];
+    let data = [['Location', 'Voting points']] as any;
+    if(this.totalPoints < 100) {
+      data.push(['Unassigned points', 100 - this.totalPoints]);
+    }
+    data.push(...this.locationPoints.map(lp => [lp.location.name, lp.points]));
+    
     data = google.visualization.arrayToDataTable(data);
     this.chart.draw(data, this.chartOptions);
     
