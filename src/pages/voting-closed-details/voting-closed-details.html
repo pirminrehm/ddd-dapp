@@ -1,2 +1,5 @@
-<page-voting-chart [locationPoints]="selectedLocationPoints$ | async"></page-voting-chart>
-    
+<ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+
+<div [style.display]="(address && !isLoading) ? 'block' : 'none'">
+  <page-voting-chart [locationPoints]="selectedLocationPoints" displayLegend="true"></page-voting-chart>
+</div>

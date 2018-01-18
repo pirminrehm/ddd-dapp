@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, Input, OnChanges } from '@angular/core';
 
 import { LocationPoint } from './../../models/location-point';
 import { VotingProvider } from '../../providers/web3/voting';
@@ -14,17 +13,20 @@ import { VotingProvider } from '../../providers/web3/voting';
   selector: 'page-voting-closed-details',
   templateUrl: 'voting-closed-details.html',
 })
-export class VotingClosedDetailsPage {
+export class VotingClosedDetailsPage implements OnChanges {
   @Input() address: string;
-  
-  selectedLocationPoints$: Promise<LocationPoint[]>;
+
+  isLoading: Boolean;
+  selectedLocationPoints: LocationPoint[];
 
   constructor(private votingProvider: VotingProvider) {
   }
 
-  ngOnChanges() {
+  async ngOnChanges() {
     if(this.address) {
-      this.selectedLocationPoints$ = this.votingProvider.getLocationPoints(this.address);
+      this.isLoading = true;
+      this.selectedLocationPoints = await this.votingProvider.getLocationPoints(this.address);
+      this.isLoading = false;
     }
   }
 }
