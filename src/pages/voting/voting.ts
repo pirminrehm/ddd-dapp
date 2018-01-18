@@ -55,7 +55,10 @@ export class VotingPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.stateChanged();
+    await this.stateChanged();
+    if(this.openVotings.length == 0) {
+      this.segmentArea = 'new';
+    }
   }
 
   async addVoting() {
@@ -73,10 +76,6 @@ export class VotingPage implements OnInit {
     if(await this.teamAddress$) {
       await this.refreshOpenVotings();
       await this.refreshClosedVotings();
-
-      if(this.openVotings.length == 0) {
-        this.segmentArea = 'new';
-      }
     }
 
     // We have to reset the selected voting here to prevent inconsistencies
@@ -103,5 +102,6 @@ export class VotingPage implements OnInit {
 
   onVotingClosed() {
     this.stateChanged();
+    this.selectedOpenVoting = null;
   }
 }
