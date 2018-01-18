@@ -28,6 +28,8 @@ export class VotingDetailsPage implements OnChanges {
   isLoading: boolean;
   locationPoints: LocationPoint[];
 
+  hasVoted: Boolean;
+
   votingName$: Promise<string>;
   
   remainingPoints = 100;
@@ -53,6 +55,8 @@ export class VotingDetailsPage implements OnChanges {
       this.votingName$ = this.votingProvider.getVotingName(this.address);
       await this.votingName$;
 
+      this.hasVoted = await this.votingProvider.hasVoted(this.address);
+
       this.isLoading = false;
     }
   }
@@ -70,10 +74,19 @@ export class VotingDetailsPage implements OnChanges {
 
     Promise
       .all(votePromises)
-      .then(_ => this.notificationProvider.success('Votes successfully submitted.'))
-      .catch(_ => this.notificationProvider.error(`The voting of your Points failed.`
-        + `Maybe you exceeded your maximum limit of 100 points?`
-      ));
+      .then(_ => {
+        this.hasVoted = true;
+        this.notificationProvider.success('Votes successfully submitted.');
+      })
+      .catch(e => {
+        console.log(e);
+        this.notificationProvider.error(`The voting of your Points failed.`
+          + `Maybe you exceeded your maximum limit of 100 points?`);
+      });
+  }
+
+  closeVoting() {
+    
   }
 
   pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {

@@ -1,3 +1,4 @@
+import { SettingsProvider } from './../storage/settings';
 import { Injectable } from '@angular/core';
 
 // Import our contract artifacts and turn them into usable abstractions.
@@ -25,7 +26,8 @@ export class VotingProvider {
   private state: VotingState;
 
   constructor(private web3Provider: Web3Provider,
-              private locationProvider: LocationProvider) {
+              private locationProvider: LocationProvider,
+              private settingsProvider: SettingsProvider) {
     this.state = AppStateProvider.getInstance(AppStateTypes.VOTING) as VotingState;
   }
 
@@ -55,6 +57,14 @@ export class VotingProvider {
       ));
     }
     return this.state.getUserPointsByIndex(address, index);
+  }
+
+  async getUserPointsByAddress(address:string, account: string): Promise<number> {
+    if(!this.state.getUserPointsByAddress(address, account)) {
+      const points = (await this.call(address, 'getUserPointsByAddress', account))[1];
+      this.state.setUserPointsByAddress(address, account, await this.web3Provider.fromWeb3Number(points));
+    }
+    return this.state.getUserPointsByAddress(address, account);
   }
 
   async getVotedLocationsCount(address: string): Promise<number> {
@@ -88,7 +98,8 @@ export class VotingProvider {
     const trans = await contract.addVote(uri, points, { from: account, gas: 3000000 });
 
     this.state.resetLocationPoints(address);
-    this.state.resetUserPoints(address);
+    this.state.resetUserPointsByAddress(address);
+    this.state.resetUserPointsByIndex(address);
 
     return trans;
   }
@@ -115,6 +126,10 @@ export class VotingProvider {
     return locationPoints;
   }
 
+  async hasVoted(address: string): Promise<Boolean> {
+    const account = await this.settingsProvider.getAccount();
+    return (await this.getUserPointsByAddress(address, account)) > 0;
+  }
 
   // INTERNAL
   private async call(address: string,name: string, ...params): Promise<any> {
