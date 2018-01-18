@@ -78,12 +78,6 @@ export class TeamNoMemberPage implements OnInit {
       }
 
       let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
-
-      modal.onDidDismiss(failed => {
-        if(!failed) {
-          // TODO: Listen to approve events
-        }
-      });
       modal.present();
 
     } catch(e) {
