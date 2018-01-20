@@ -70,6 +70,7 @@ export class TeamMemberPage implements OnChanges {
     try {
       await this.teamProvider.acceptPendingMember(pendingMember.account);
       this.notificationProvider.success(`Pending user ${pendingMember.name} added`);
+      this.stateChanged();
     } catch(e) {
       this.notificationProvider.error(`An error occured while approving the member. ${pendingMember.name} remains unapproved`);
       console.log(e);

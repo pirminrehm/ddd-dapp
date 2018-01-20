@@ -46,7 +46,8 @@ export class SettingsProvider {
   }
 
   async setAccount(value: string) {
-    return await this.set('account', value);
+    await this.set('account', value);
+    this.appStateProvider.resetStates();
   }
 
   async setTeamAddress(value: string) {
