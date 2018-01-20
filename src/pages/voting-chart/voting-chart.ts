@@ -20,6 +20,7 @@ export const SLIDE_COLORS = ['#488aff', '#7babff', '#005afa', '#aecbff'];
 export class VotingChartPage implements OnInit, OnChanges {
   @ViewChild('pieChart') pieChart: ElementRef;
   @Input() locationPoints: LocationPoint[];
+  @Input() displayLegend: Boolean;
 
   totalPoints: number = 0;
   ready = false;
@@ -40,6 +41,11 @@ export class VotingChartPage implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
+    if(this.displayLegend) {
+      this.chartOptions.legend.position = 'right';
+      this.chartOptions.chartArea.right = 40;
+      this.chartOptions.chartArea.width = '80%';
+    }
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(() => {
       this.chart = new google.visualization.PieChart(this.pieChart.nativeElement);
@@ -59,11 +65,12 @@ export class VotingChartPage implements OnInit, OnChanges {
 
     this.totalPoints = this.locationPoints.reduce((sum, l) => sum + l.points, 0);
 
-    let data = [
-      ['Location', 'Voting points'], 
-      ['Unassigned points', 100 - this.totalPoints], 
-      ...this.locationPoints.map(lp => [lp.location.name, lp.points])
-    ];
+    let data = [['Location', 'Voting points']] as any;
+    if(this.totalPoints < 100) {
+      data.push(['Unassigned points', 100 - this.totalPoints]);
+    }
+    data.push(...this.locationPoints.map(lp => [lp.location.name, lp.points]));
+    
     data = google.visualization.arrayToDataTable(data);
     this.chart.draw(data, this.chartOptions);
     

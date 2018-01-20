@@ -1,6 +1,6 @@
 <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
 
-<ion-card *ngIf="address && !isLoading">
+<ion-card *ngIf="address && !isLoading && !hasVoted">
   <ion-card-header>Vote for {{votingName$ | async}}</ion-card-header>
   <ion-card-content>
     <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
@@ -19,6 +19,11 @@
 
     <page-voting-chart [locationPoints]="locationPoints"></page-voting-chart>
 
-    <button ion-button outline block type="submit" [disabled]="remainingPoints == 100" (click)="submitVotes()">Submit your votes</button>
+    <button ion-button outline block type="submit" [disabled]="remainingPoints != 0" (click)="submitVotes()">Submit your votes</button>
   </ion-card-content>
 </ion-card>
+
+<div *ngIf="hasVoted">
+  You already voted for this voting.
+  <button ion-button outline block type="submit" (click)="closeVoting()">Close voting</button>
+</div>  

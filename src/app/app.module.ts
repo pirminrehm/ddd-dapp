@@ -1,3 +1,4 @@
+import { VotingClosedDetailsPage } from './../pages/voting-closed-details/voting-closed-details';
 import { TeamMemberPage } from './../pages/team-member/team-member';
 import { TeamNoMemberPage } from './../pages/team-no-member/team-no-member';
 import { NgModule, ErrorHandler } from '@angular/core';
@@ -41,6 +42,7 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingClosedDetailsPage,
     VotingDetailsPage,
     TabsPage,
     VotingChartPage
@@ -62,6 +64,7 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
+    VotingClosedDetailsPage,
     VotingDetailsPage,
     TabsPage,
     VotingChartPage

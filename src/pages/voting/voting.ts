@@ -8,7 +8,6 @@ import { Voting } from '../../models/voting';
 
 import { VotingProvider } from './../../providers/web3/voting';
 import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
-import { LocationPoint } from './../../models/location-point';
 
 
 /**
@@ -34,7 +33,7 @@ export class VotingPage implements OnInit {
   areOpenVotingsLoading: boolean;
   
   closedVotings: Voting[];
-  selectedLocationPoints$: Promise<LocationPoint[]>;
+  selectedClosedVoting: string;
   areClosedVotingsLoading: boolean;
 
   constructor(private teamProvider: TeamProvider,
@@ -56,7 +55,10 @@ export class VotingPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.stateChanged();
+    await this.stateChanged();
+    if(this.openVotings.length == 0) {
+      this.segmentArea = 'new';
+    }
   }
 
   async addVoting() {
@@ -73,9 +75,7 @@ export class VotingPage implements OnInit {
 
     if(await this.teamAddress$) {
       await this.refreshOpenVotings();
-      if(this.openVotings.length == 0) {
-        this.segmentArea = 'new';
-      }
+      await this.refreshClosedVotings();
     }
 
     // We have to reset the selected voting here to prevent inconsistencies
@@ -89,15 +89,19 @@ export class VotingPage implements OnInit {
 
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
-    let votings = await this.teamProvider.getVotings();
-    this.openVotings = votings;
+    this.openVotings = await this.teamProvider.getVotings();
 
-    // TODO: query closed votings
-    this.closedVotings = this.openVotings;
     this.areOpenVotingsLoading = false;    
   }
 
-  async onChangeClosedVoting(address: string) {
-    this.selectedLocationPoints$ = this.votingProvider.getLocationPoints(address);
+  private async refreshClosedVotings() {
+    this.areClosedVotingsLoading = true;
+    this.closedVotings = await this.teamProvider.getClosedVotings();
+    this.areClosedVotingsLoading = false;    
+  }
+
+  onVotingClosed() {
+    this.stateChanged();
+    this.selectedOpenVoting = null;
   }
 }

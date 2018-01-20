@@ -7,6 +7,7 @@ export class VotingState implements IState {
   
   private locationPointsByIndexData = {};
   private userPointsByIndexData = {};
+  private userPointsByAddressData = {};
 
   getLocationPointsByIndex(address, index) {
     if(!this.locationPointsByIndexData[address]) {
@@ -36,15 +37,31 @@ export class VotingState implements IState {
     }
     this.userPointsByIndexData[address][index] = userPoints;
   }
-  resetUserPoints(address) {
+  resetUserPointsByIndex(address) {
     this.userPointsByIndexData[address] = {};
   }
 
+  getUserPointsByAddress(address, account) {
+    if(!this.userPointsByAddressData[address]) {
+      this.userPointsByAddressData[address] = {};
+    }
+    return this.userPointsByAddressData[address][account];
+  }
+  setUserPointsByAddress(address, account, userPoints) {
+    if(!this.userPointsByAddressData[address]) {
+      this.userPointsByAddressData[address] = {};
+    }
+    this.userPointsByAddressData[address][account] = userPoints;
+  }
+  resetUserPointsByAddress(address) {
+    this.userPointsByAddressData[address] = {};
+  }
 
   reset() {
     this.contract = {};
     this.name = {};
     this.userPointsByIndexData = {};
+    this.userPointsByAddressData = {};
     this.locationPointsByIndexData = {};
   }
 }
