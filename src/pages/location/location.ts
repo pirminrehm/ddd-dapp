@@ -1,11 +1,11 @@
 import { NotificationProvider } from './../../providers/notification/notification';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { LocationProvider } from './../../providers/web3/location';
 
 import { Location } from '../../models/location';
+import { Subject } from 'rxjs/Subject';
 
 
 /**
@@ -19,14 +19,13 @@ import { Location } from '../../models/location';
   templateUrl: 'location.html',
 })
 export class LocationPage implements OnInit {
+  @Input() refresh: Subject<any>;
 
   locations: Location[];
   locationForm: FormGroup;
   areLocationsLoading: boolean;
 
-  constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              private locationProvider: LocationProvider,
+  constructor(private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider,
               private fb: FormBuilder) {
   }
@@ -37,6 +36,7 @@ export class LocationPage implements OnInit {
       uri: ['', Validators.required],
     });
     this.refreshLocations();
+    this.refresh.subscribe(_ => this.refreshLocations());
   }
 
   refreshLocations() {

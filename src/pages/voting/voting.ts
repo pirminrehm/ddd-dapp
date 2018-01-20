@@ -81,7 +81,12 @@ export class VotingPage implements OnInit {
     // We have to reset the selected voting here to prevent inconsistencies
     this.selectedOpenVoting = null;
   }
-    
+  
+  async doRefresh(refresher) {
+    await this.stateChanged();
+    refresher.complete();
+  }
+
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
     let votings = await this.teamProvider.getVotings();

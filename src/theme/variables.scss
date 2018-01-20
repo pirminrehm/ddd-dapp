@@ -41,6 +41,10 @@ $colors: (
   dark:       #222
 );
 
+$refresher-icon-color: color($colors, light);
+$refresher-text-color: color($colors, light);
+$refresher-border-color: color($colors, dark);
+
 
 // App iOS Variables
 // --------------------------------------------------
