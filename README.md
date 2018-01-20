@@ -23,42 +23,65 @@ within this directory to install the supported version.
   $ npm install
   ```
 
+5. Install Ganache: 
+  Additionally on windows:
+  ```shell
+  $ npm install -g windows-build-tools
+  ```
+http://truffleframework.com/ganache/
 ## Workflow
+### Ganache
+  Open Ganache and make sure, it runs on Port `7545` and your local IP (e.g. `192.168.0.150`).
+  Also it should have the network id `5777`.
 
-  Open the terminal and start the TestRPC and truffle development console:
+  Set your local IP also in `truffle.js` for the key `host: 'localhost'`.
+
+  Compile the contracts wiht:
 
   ```shell
-  $ truffle develop 
+  $ truffle compile
   ```
-
-  Afterwards, migrate the contracts inside the development console:
+### Compile and Migrate
+  Afterwards, migrate the contracts to the Ganache Network:
 
   ```shell 
-  truffle(develop)> migrate
+  $ truffle migrate
   ``` 
-  
-  > Hint: After pulling a new version, delete the ./build folder to avoid issues.
-  
-  If you want to get a better unstanding of the interaction with TestRPC, 
-  open a new tab and run:
-  ```shell 
-  $ truffle develop --log
-   ``` 
 
+  In Ganache you should see, that some contracts were deployed.
+  
+  > Hint: After pulling a new version, compile all contracts again, to avoide issues:
+  > ```shell 
+  > $ truffle compile --all
+  > ``` 
+  > Maybe you have to delete the `build` folder in addition
 
-  Serve the ionic app in a second console tab / window:
+### Serve the App
+
+ Update the const `TEST_RPC_IP` with your local IP address in `src/providers/web3/web3.js` for connecting Ganache
+
+ Serve the ionic app in a second console tab / window:
   ```shell
   $ ionic serve
+  ```
+  Or with your android phone:
+  ```shell
+  $ ionic cordova run android --device
   ```
 
 ## Truffle Tests
   Truffle Tests are written in `Mocha` and stored within `./test`. 
 
-  Run the tests with:
+  Run the tests inside the truffle develop shell:
 
   ```shell
-  $ truffle test
+  $ truffle develop
+  $ truffle(develop)> migrate
   ```
+
+## Dashbaord
+
+TODO Link DDD Dashboarad Repo
 
 ## License
 
