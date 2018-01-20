@@ -1,3 +1,5 @@
+import { TeamMemberPage } from './../pages/team-member/team-member';
+import { TeamNoMemberPage } from './../pages/team-no-member/team-no-member';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -33,6 +35,8 @@ import { LoggingProvider } from '../providers/web3/logging';
   declarations: [
     MyApp,
     TeamPage,
+    TeamMemberPage,
+    TeamNoMemberPage,
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,
@@ -52,6 +56,8 @@ import { LoggingProvider } from '../providers/web3/logging';
   entryComponents: [
     MyApp,
     TeamPage,
+    TeamMemberPage,
+    TeamNoMemberPage,
     TeamJoinRequestPage,
     LocationPage,
     VotingPage,

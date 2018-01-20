@@ -4,120 +4,12 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-
+<ion-content>
 
   <!-- USER DOES NOT HAVE A TEAM -->
-  <div *ngIf="!teamAddress">
-    <p class="hint">
-      Before you start voting, please join a team. You can create your own team 
-      or join an existing team by using a qr code.
-    </p>
-
-    <!-- CREATE A NEW TEAM -->
-    <ion-card>
-      <ion-card-header>Create a team</ion-card-header>
-      <ion-card-content>
-        <form [formGroup]="createTeamForm" (submit)="createTeam()">
-          
-          <ion-item>
-            <ion-label for="name">Team name:</ion-label>
-            <ion-input class="form-control" type="text" formControlName="name"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label for="creatorName">Your name:</ion-label>
-            <ion-input class="form-control" type="text" formControlName="creatorName"></ion-input>
-          </ion-item>
-          
-          <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
-      
-        </form>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- JOIN AN EXISTING TEAM -->
-    
-    <ion-card>
-      <ion-card-header>Join an existing team</ion-card-header>
-      <ion-card-content>
-        <button ion-button outline block icon-left (click)="scanInvitationToken()">
-          <ion-icon name="qr-scanner"></ion-icon>Scan an invitation token
-        </button>
-      </ion-card-content>
-    </ion-card>
-  </div>
+  <page-team-no-member *ngIf="!teamAddress && !isLoading" (teamCreated)="onTeamCreated()"></page-team-no-member>
 
   <!-- USER HAS A TEAM -->
-  <div *ngIf="teamAddress">
-    <p class="hint">
-      Glad to see that you're a team member. Invite your friends and start votings now.
-    </p>
-
-    <!-- CREATE INVITATION TOKEN -->
-    <button ion-button outline block icon-left *ngIf="!teamInvitation && !invitationTokenIsLoading" (click)="createInvitationToken()">
-      <ion-icon name="barcode"></ion-icon>Create invitation token 
-      <ion-spinner name="dots" *ngIf="loader.createInvitationToken"></ion-spinner>
-    </button>
+  <page-team-member *ngIf="teamAddress && !isLoading" [teamAddress]="teamAddress"></page-team-member>
     
-    <ion-card>
-      <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
-      
-      <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
-      
-      <ion-navbar *ngIf="teamInvitation">
-        <ion-buttons start>
-          <button ion-button (click)="deleteInvitationToken()">Delete token</button>
-        </ion-buttons>
-        <ion-buttons end>
-          <button ion-button (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">Refresh token</button>
-        </ion-buttons>
-      </ion-navbar>
-    </ion-card>
-
-    <!-- APPROVE PENDING MEMBERS -->
-
-    <ion-card class="approve-members">
-      <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>
-      <ion-card-content *ngIf="(pendingMembers.length == 0) && !(loader.pendingMembers === -1)">No pending invitations</ion-card-content>
-      <ion-list *ngIf="(pendingMembers.length > 0) && !(loader.pendingMembers === -1)">
-        <ion-item-sliding *ngFor="let pendingMember of pendingMembers">
-          <ion-item>
-            <ion-avatar item-start>
-              <img src="img/avatar-{pendingMember.avatarId}.png">
-            </ion-avatar>
-            <h2>{{ pendingMember.name }}</h2>
-            <h3>{{ pendingMember.account }}</h3>
-            <p>Token: {{ pendingMember.invitationToken }}</p>
-          </ion-item>
-          <ion-item-options side="right">
-            <button ion-button color="primary" (click)="acceptPendingMember(pendingMember)">
-              <ion-icon name="checkmark"></ion-icon>
-              Accept
-            </button>
-            <button ion-button color="danger">
-              <ion-icon name="close"></ion-icon>
-              Reject
-            </button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-card>
-
-    <ion-card class="members">
-      <ion-card-header>Members <ion-spinner name="dots" *ngIf="loader.members"></ion-spinner></ion-card-header>
-      <ion-card-content *ngIf="(members.length == 0) && !(loader.members === -1)">No team members</ion-card-content>
-      <ion-list *ngIf="(members.length) > 0 && !(loader.members === -1)">
-        <ion-item *ngFor="let member of members">
-          <ion-avatar item-start>
-            <img src="img/avatar-{member.avatarId}.png">
-          </ion-avatar>
-          <h2>{{ member.name }}</h2>
-          <p>{{ member.account }}</p>
-        </ion-item>
-      </ion-list>
-    </ion-card>
-
-    <page-location></page-location>
-  </div>
 </ion-content>

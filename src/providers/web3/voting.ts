@@ -41,11 +41,8 @@ export class VotingProvider {
   }
 
   async getVotingUsersCount(address: string): Promise<number> {
-    if(!this.state.usersCount[address]) {
-      const count = await this.call(address, 'getVotingUsersCount');
-      this.state.usersCount[address] = this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.usersCount[address];
+    const count = await this.call(address, 'getVotingUsersCount');
+    return this.web3Provider.fromWeb3Number(count);
    }
 
   async getUserPointsByIndex(address: string, index: number): Promise<UserPoint> {
@@ -61,11 +58,8 @@ export class VotingProvider {
   }
 
   async getVotedLocationsCount(address: string): Promise<number> {
-    if(!this.state.locationsCount[address]) {
-      const count = await this.call(address, 'getVotedLocationsCount');
-      this.state.locationsCount[address] = await this.web3Provider.fromWeb3Number(count);
-    }
-    return this.state.locationsCount[address];
+    const count = await this.call(address, 'getVotedLocationsCount');
+    return this.web3Provider.fromWeb3Number(count);
   }
 
   async getLocationPointsByIndex(address: string, index: number): Promise<LocationPoint> {

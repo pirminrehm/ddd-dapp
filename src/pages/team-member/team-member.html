@@ -1,0 +1,80 @@
+<div>
+  <ion-segment [(ngModel)]="segmentArea">
+    <ion-segment-button value="members">
+      Members
+    </ion-segment-button>
+    <ion-segment-button value="createToken" (click)="createFirstInvitiationToken()">
+      <ion-icon name="barcode"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="locations">
+      Locations
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<!-- <p class="hint">
+  Glad to see that you're a team member. Invite your friends and start votings now.
+</p> -->
+  
+<div *ngIf="segmentArea == 'members'" class="segment-entry members">
+  <ion-card class="approve-members">
+    <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>
+    <ion-card-content *ngIf="(pendingMembers.length == 0) && !(loader.pendingMembers === -1)">No pending invitations</ion-card-content>
+    <ion-list *ngIf="(pendingMembers.length > 0) && !(loader.pendingMembers === -1)">
+      <ion-item-sliding *ngFor="let pendingMember of pendingMembers">
+        <ion-item>
+          <ion-avatar item-start>
+            <img src="img/avatar-{pendingMember.avatarId}.png">
+          </ion-avatar>
+          <h2>{{ pendingMember.name }}</h2>
+          <h3>{{ pendingMember.account }}</h3>
+          <p>Token: {{ pendingMember.invitationToken }}</p>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="primary" (click)="acceptPendingMember(pendingMember)">
+            <ion-icon name="checkmark"></ion-icon>
+            Accept
+          </button>
+          <button ion-button color="danger">
+            <ion-icon name="close"></ion-icon>
+            Reject
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-card>
+  
+  <ion-card class="members">
+    <ion-card-header>Members <ion-spinner name="dots" *ngIf="loader.members"></ion-spinner></ion-card-header>
+    <ion-card-content *ngIf="(members.length == 0) && !(loader.members === -1)">No team members</ion-card-content>
+    <ion-list *ngIf="(members.length) > 0 && !(loader.members === -1)">
+      <ion-item *ngFor="let member of members">
+        <ion-avatar item-start>
+          <img src="img/avatar-{member.avatarId}.png">
+        </ion-avatar>
+        <h2>{{ member.name }}</h2>
+        <p>{{ member.account }}</p>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+</div>
+
+
+<!-- CREATE INVITATION TOKEN -->
+<div *ngIf="segmentArea == 'createToken'" class="segment-entry createToken">
+  <ion-card>
+      <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
+      
+      <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
+      
+      <button ion-button block (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
+        Refresh token 
+        <ion-spinner name="dots" *ngIf="loader.createInvitationToken" color="light"></ion-spinner>
+      </button>
+    </ion-card>
+</div>
+
+<div *ngIf="segmentArea == 'locations'" class="segment-entry locations">
+  <page-location></page-location>
+</div>
