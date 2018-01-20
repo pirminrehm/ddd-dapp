@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavParams, ViewController } from 'ionic-angular';
 
 import { TeamProvider } from './../../providers/web3/team';
+import { MemberApprovedProvider } from '../../providers/helpers/member-approved';
 
 /**
  * Generated class for the TeamJoinRequestPage page.
@@ -26,6 +27,7 @@ export class TeamJoinRequestPage {
               private fb: FormBuilder,
               public viewCtrl: ViewController,
               private teamProvider: TeamProvider,
+              private memberApprovedProvider: MemberApprovedProvider,
               private settingsProvider: SettingsProvider) {
 
     this.joinRequestForm = this.fb.group({
@@ -48,6 +50,10 @@ export class TeamJoinRequestPage {
     try {
       const name = this.joinRequestForm.value.name;
       await this.teamProvider.sendJoinTeamRequest(this.address, this.token, name, 0 /* TODO: AVATAR VAL */);
+
+      await this.settingsProvider.setPendingTeamAddress(this.address);
+      this.memberApprovedProvider.doCheck();
+
       this.viewCtrl.dismiss();
     } catch(e) {
       this.requestFailed = true;
@@ -56,6 +62,6 @@ export class TeamJoinRequestPage {
   }
 
   dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(this.requestFailed);
   }
 }

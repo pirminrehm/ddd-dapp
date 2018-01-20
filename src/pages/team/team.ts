@@ -1,24 +1,25 @@
+import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
 import { SettingsProvider } from './../../providers/storage/settings';
 import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
-
-import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'page-team',
   templateUrl: 'team.html'
 })
-export class TeamPage implements OnInit {
+export class TeamPage {
 
   teamAddress: Boolean;
   isLoading: Boolean;
 
   constructor(public navCtrl: NavController, 
-              private settingsProvider: SettingsProvider) {                                
+              private settingsProvider: SettingsProvider,
+              private memberApprovedProvider: MemberApprovedProvider) {                                
   }
 
   ngOnInit() {
     this.teamAddress = false;
+    this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
   async ionViewWillEnter() {

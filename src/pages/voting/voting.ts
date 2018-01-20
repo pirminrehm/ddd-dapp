@@ -7,6 +7,7 @@ import { TeamProvider } from './../../providers/web3/team';
 import { Voting } from '../../models/voting';
 
 import { VotingProvider } from './../../providers/web3/voting';
+import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
 import { LocationPoint } from './../../models/location-point';
 
 
@@ -39,7 +40,8 @@ export class VotingPage implements OnInit {
   constructor(private teamProvider: TeamProvider,
               private fb: FormBuilder,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider) {
+              private votingProvider: VotingProvider,
+              private memberApprovedProvider: MemberApprovedProvider) {
   }
 
   ngOnInit() {
@@ -49,9 +51,24 @@ export class VotingPage implements OnInit {
 
     // TODO:
     this.closedVotings = [];
+
+    this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
   async ionViewWillEnter() {
+    this.stateChanged();
+  }
+
+  async addVoting() {
+    const name = this.createVotingForm.value.name;
+    this.teamProvider.onVotingCreated().then(votingAddress => {
+      this.refreshOpenVotings();
+    });
+    await this.teamProvider.addVoting(name);
+    this.segmentArea = 'open';
+  }
+
+  private async stateChanged() {
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
 
     if(await this.teamAddress$) {
@@ -64,16 +81,6 @@ export class VotingPage implements OnInit {
     // We have to reset the selected voting here to prevent inconsistencies
     this.selectedOpenVoting = null;
   }
-
-  async addVoting() {
-    const name = this.createVotingForm.value.name;
-    this.teamProvider.onVotingCreated().then(votingAddress => {
-      this.refreshOpenVotings();
-    });
-    await this.teamProvider.addVoting(name);
-    this.segmentArea = 'open';
-  }
-
     
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;

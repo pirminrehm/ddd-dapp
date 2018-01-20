@@ -37,6 +37,10 @@ export class SettingsProvider {
     return await this.get('loggingAccount');
   }
 
+  async getPendingTeamAddress() {
+    return await this.get('pending-team-address');
+  }
+
   async setName(value: string) {
     return await this.set('name', value);
   }
@@ -53,6 +57,11 @@ export class SettingsProvider {
   async setLoggingAddress(value: string) {
     return await this.set('loggingAccount', value);
   }
+
+  async setPendingTeamAddress(value: string) {
+    return await this.set('pending-team-address', value);
+  }
+
 
 
 

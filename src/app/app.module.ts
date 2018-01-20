@@ -30,6 +30,7 @@ import { NotificationProvider } from '../providers/notification/notification';
 import { AppStateProvider } from '../providers/storage/app-state';
 import { VotingChartPage } from '../pages/voting-chart/voting-chart';
 import { LoggingProvider } from '../providers/web3/logging';
+import { MemberApprovedProvider } from '../providers/helpers/member-approved';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { LoggingProvider } from '../providers/web3/logging';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BarcodeScanner,
-    NotificationProvider
+    NotificationProvider,
+    MemberApprovedProvider
   ]
 })
 export class AppModule {}

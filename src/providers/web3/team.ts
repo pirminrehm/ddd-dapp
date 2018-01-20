@@ -187,6 +187,11 @@ export class TeamProvider {
     return votings;
   }
 
+  async isMember(address: string, account: string): Promise<Boolean> {
+    const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
+    return contract.checkMemberByAddress.call(account);
+  }
+
 
   // INTERNAL
 
