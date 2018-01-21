@@ -1,5 +1,8 @@
 import { LocationPoint } from './../../models/location-point';
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/debounceTime';
 
 declare var google:any;
 
@@ -17,10 +20,11 @@ export const SLIDE_COLORS = ['#488aff', '#7babff', '#005afa', '#aecbff'];
   selector: 'page-voting-chart',
   templateUrl: 'voting-chart.html',
 })
-export class VotingChartPage implements OnInit, OnChanges {
+export class VotingChartPage implements OnInit {
   @ViewChild('pieChart') pieChart: ElementRef;
   @Input() locationPoints: LocationPoint[];
   @Input() displayLegend: Boolean;
+  @Input() reload: Observable<any>;
 
   totalPoints: number = 0;
   ready = false;
@@ -52,14 +56,14 @@ export class VotingChartPage implements OnInit, OnChanges {
       this.drawChart();
       this.ready = true;
     });
-  }
 
-  ngOnChanges() {
-    this.drawChart();
+    if(this.reload) {
+      this.reload.debounceTime(200).subscribe(_ => this.drawChart());
+    }
   }
 
   drawChart() {
-    if(!this.locationPoints || this.locationPoints.length <= 0 || !this.ready) {
+    if(!this.locationPoints || !this.ready) {
       return;
     }
 

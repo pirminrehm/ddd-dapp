@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges, Output, EventEmitter, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { NotificationProvider } from './../../providers/notification/notification';
@@ -13,6 +13,8 @@ import { Location } from './../../models/location';
 import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
 import { SLIDE_COLORS } from '../voting-chart/voting-chart';
 
+import { Subject } from 'rxjs/Subject';
+
 /**
  * Generated class for the VotingDetailsPage page.
  *
@@ -23,7 +25,7 @@ import { SLIDE_COLORS } from '../voting-chart/voting-chart';
   selector: 'page-voting-details',
   templateUrl: 'voting-details.html',
 })
-export class VotingDetailsPage implements OnChanges {
+export class VotingDetailsPage implements OnChanges, OnInit {
   @Input() address: string;
   @Output() votingClosed = new EventEmitter();
 
@@ -31,6 +33,7 @@ export class VotingDetailsPage implements OnChanges {
   locationPoints: LocationPoint[];
 
   hasVoted: Boolean;
+  chartReloadSubject: Subject<any>;
 
   votingName$: Promise<string>;
   
@@ -41,6 +44,10 @@ export class VotingDetailsPage implements OnChanges {
               private teamProvider: TeamProvider,
               private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider) {
+  }
+
+  ngOnInit() {
+    this.chartReloadSubject = new Subject();
   }
 
   async ngOnChanges() {
@@ -103,6 +110,6 @@ export class VotingDetailsPage implements OnChanges {
       newTotalPoints += currentLocationPoint.points;
     });
     this.remainingPoints = 100 - newTotalPoints;
-    this.locationPoints = this.locationPoints.slice(0);
+    this.chartReloadSubject.next();
   }
 }

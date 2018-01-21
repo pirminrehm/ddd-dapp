@@ -17,7 +17,7 @@
       </ion-range-slider>
     </div>
 
-    <page-voting-chart [locationPoints]="locationPoints"></page-voting-chart>
+    <page-voting-chart [locationPoints]="locationPoints" [reload]="chartReloadSubject"></page-voting-chart>
 
     <button ion-button outline block type="submit" [disabled]="remainingPoints != 0" (click)="submitVotes()">Submit your votes</button>
   </ion-card-content>
