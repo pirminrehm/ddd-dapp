@@ -54,6 +54,9 @@ export class LocationProvider {
   }
 
   async addLocation(uri, name) {
+    uri = await this.web3Provider.toWeb3String(uri);
+    name = await this.web3Provider.toWeb3String(name);
+
     return this.transaction('addLocation', uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
