@@ -1,5 +1,5 @@
 import { LocationPoint } from './../../models/location-point';
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
@@ -25,9 +25,9 @@ export class VotingChartPage implements OnInit {
   @Input() locationPoints: LocationPoint[];
   @Input() displayLegend: Boolean;
   @Input() reload: Observable<any>;
+  @Output() chartDrawn = new EventEmitter();
 
   totalPoints: number = 0;
-  ready = false;
   
   private chart: any;
 
@@ -54,7 +54,6 @@ export class VotingChartPage implements OnInit {
     google.charts.setOnLoadCallback(() => {
       this.chart = new google.visualization.PieChart(this.pieChart.nativeElement);
       this.drawChart();
-      this.ready = true;
     });
 
     if(this.reload) {
@@ -62,22 +61,29 @@ export class VotingChartPage implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    const locationPoints = changes.locationPoints;
+    if(locationPoints && locationPoints.currentValue !== locationPoints.previousValue) {
+      this.drawChart();
+    }
+  }
+
   drawChart() {
-    if(!this.locationPoints || !this.ready) {
+    if(!this.chart || !this.locationPoints) {
       return;
     }
 
     this.totalPoints = this.locationPoints.reduce((sum, l) => sum + l.points, 0);
+    const unassignedPoints = this.totalPoints < 100 ? (100 - this.totalPoints) : 0;
 
-    let data = [['Location', 'Voting points']] as any;
-    if(this.totalPoints < 100) {
-      data.push(['Unassigned points', 100 - this.totalPoints]);
-    }
+    let data = [['Location', 'Voting points'],
+                ['Unassigned points', unassignedPoints]];
     data.push(...this.locationPoints.map(lp => [lp.location.name, lp.points]));
     
     data = google.visualization.arrayToDataTable(data);
     this.chart.draw(data, this.chartOptions);
     
     console.count('Google Chart drawn');
+    this.chartDrawn.emit();
   }
 }

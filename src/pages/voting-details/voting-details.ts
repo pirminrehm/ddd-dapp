@@ -30,6 +30,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
   @Output() votingClosed = new EventEmitter();
 
   isLoading: boolean;
+  initialChartDraw: boolean;
   locationPoints: LocationPoint[];
 
   hasVoted: Boolean;
@@ -53,6 +54,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
   async ngOnChanges() {
     if(this.address) {
       this.isLoading = true;
+      this.initialChartDraw = false;
 
       this.remainingPoints = 100;
       this.locationPoints = [];
@@ -98,6 +100,10 @@ export class VotingDetailsPage implements OnChanges, OnInit {
   async closeVoting() {
     await this.teamProvider.closeVoting(this.address);
     this.votingClosed.emit(this.address);
+  }
+
+  onChartDrawn() {
+    this.initialChartDraw = true;
   }
 
   pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {
