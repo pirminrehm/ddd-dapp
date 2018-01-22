@@ -39,6 +39,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
   votingName$: Promise<string>;
   
   remainingPoints = 100;
+  isTransmitting: Boolean;
   colors = SLIDE_COLORS;
 
   constructor(private votingProvider: VotingProvider,
@@ -67,6 +68,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
       this.votingName$ = this.votingProvider.getVotingName(this.address);
       await this.votingName$;
 
+      this.isTransmitting = false;
       this.hasVoted = await this.votingProvider.hasVoted(this.address);
 
       this.isLoading = false;
@@ -75,6 +77,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
 
   submitVotes() {
     const votePromises = [];
+    this.isTransmitting = true;
     this.locationPoints.forEach(locationPoint => {
       //avoid call for 0 points -> error
       if (locationPoint.points) {
@@ -88,6 +91,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
       .all(votePromises)
       .then(_ => {
         this.hasVoted = true;
+        this.isTransmitting = false;
         this.notificationProvider.success('Votes successfully submitted.');
       })
       .catch(e => {
