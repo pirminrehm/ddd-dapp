@@ -128,44 +128,34 @@ export class TeamProvider {
   }
 
   async createInvitationToken() {
-    const contract = await this.getContract();
     const account = await this.web3Provider.getAccount();
-    return contract.createInvitationToken({from: account});
+    return this.transaction('createInvitationToken', {from: account});
   }
 
   async sendJoinTeamRequest(teamAddress: string, token: string, name: string, avatarId: number) {
     name = await this.web3Provider.toWeb3String(name);
     // TODO: avatarId = await this.web3Provider.toWeb3Number(avatarId);
-    const contract = await this.web3Provider.getContractAt(teamArtifacts, teamAddress);
     const account = await this.web3Provider.getAccount();
     
-    return contract.sendJoinTeamRequest(token, name, avatarId, {from: account, gas: 3000000});
+    return this.transactionAt(teamAddress, 'sendJoinTeamRequest', token, name, avatarId, {from: account, gas: 3000000});
   }
 
   async acceptPendingMember(address: string) {
-    const contract = await this.getContract();
     const account = await this.web3Provider.getAccount();
-    return contract.acceptPendingMember(address, {from: account, gas: 3000000});
+    return this.transaction('acceptPendingMember', address, {from: account, gas: 3000000});
   }
 
   async addVoting(name: string) {
     name = await this.web3Provider.toWeb3String(name);
-
-    const contract = await this.getContract();
     const account = await this.web3Provider.getAccount();
-    return contract.addVoting(name, {from: account, gas: 3000000});
+    return this.transaction('addVoting', name, {from: account, gas: 3000000});
   }
 
   async closeVoting(votingAddress: string) {
-    const contract = await this.getContract();
     const account = await this.web3Provider.getAccount();
-    try {
-      const trans = contract.closeVotingStochastic(votingAddress, {from: account, gas: 3000000});
-      this.state.resetVotings();
-      return trans;
-    } catch(e) {
-      throw e;
-    }
+    const trans = this.transaction('closeVotingStochastic', votingAddress, {from: account, gas: 3000000});
+    this.state.resetVotings();
+    return trans;
   }
 
   // EVENTS
@@ -252,6 +242,22 @@ export class TeamProvider {
       e => this.handleError(e);
     }
   }
+
+  private async transaction(name: string, ...params): Promise<any> {
+    const contract =  await this.getContract();
+    const trans = await contract[name](...params);
+    if(trans.receipt.status != '0x01') {
+      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
+    }
+  }
+  private async transactionAt(address: string, name: string, ...params): Promise<any> {
+    const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
+    const trans = await contract[name](...params);
+    if(trans.receipt.status != '0x01') {
+      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
+    }
+  }
+
 
   private listenOnce(Event: any): Promise<any> {
     return new Promise((resolve, reject) => {

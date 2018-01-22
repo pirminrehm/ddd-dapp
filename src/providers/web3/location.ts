@@ -54,12 +54,10 @@ export class LocationProvider {
   }
 
   async addLocation(uri, name) {
-    const contract = await this.getContract();
-    const trans = await contract.addLocation(uri, name, {
+    return this.transaction('addLocation', uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
     });
-    return trans;
   }
 
 
@@ -91,6 +89,14 @@ export class LocationProvider {
       return contract[name].call(...params);
     } catch(e) {
       e => this.handleError(e);
+    }
+  }
+
+  private async transaction(name: string, ...params) {
+    const contract = await this.getContract();
+    const trans = await contract[name](...params);
+    if(trans.receipt.status != '0x01') {
+      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
     }
   }
 
