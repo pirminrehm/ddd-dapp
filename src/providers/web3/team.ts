@@ -247,14 +247,18 @@ export class TeamProvider {
     const contract =  await this.getContract();
     const trans = await contract[name](...params);
     if(trans.receipt.status != '0x01') {
-      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
+      return Promise.reject(
+        `Transaction of ${name} failed with status code ${trans.receipt.status}`
+      );
     }
   }
   private async transactionAt(address: string, name: string, ...params): Promise<any> {
     const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
     const trans = await contract[name](...params);
     if(trans.receipt.status != '0x01') {
-      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
+      return Promise.reject(
+        `Transaction of ${name} failed with status code ${trans.receipt.status}`
+      );
     }
   }
 

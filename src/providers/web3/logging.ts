@@ -41,7 +41,9 @@ export class LoggingProvider {
     const contract = await this.web3Provider.getContractAt(loggingArtifacts, await this.getAddress());
     const trans = await contract[name](...params);
     if(trans.receipt.status != '0x01') {
-      throw `Transaction of ${name} failed with status code ${trans.receipt.status}`;
+      return Promise.reject(
+        `Transaction of ${name} failed with status code ${trans.receipt.status}`
+      );
     }
   }
 
