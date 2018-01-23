@@ -82,8 +82,7 @@ export class VotingChartPage implements OnInit {
     
     data = google.visualization.arrayToDataTable(data);
     this.chart.draw(data, this.chartOptions);
-    
-    console.count('Google Chart drawn');
+
     this.chartDrawn.emit();
   }
 }
