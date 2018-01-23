@@ -46,7 +46,9 @@ export class LocationProvider {
 
   async getLocationByURI(uri: string): Promise<Location> {
     if(!this.state.locationByURI[uri]) {
-      const v = await this.call('getLocationByURI', uri);
+      const web3Uri = await this.web3Provider.toWeb3String(uri);
+      const v = await this.call('getLocationByURI', web3Uri);
+
       const name = await this.web3Provider.fromWeb3String(v[1]);
       this.state.locationByURI[uri] = new Location(uri, name);
     }
@@ -54,6 +56,9 @@ export class LocationProvider {
   }
 
   async addLocation(uri, name) {
+    uri = await this.web3Provider.toWeb3String(uri);
+    name = await this.web3Provider.toWeb3String(name);
+
     return this.transaction('addLocation', uri, name, {
       from: await this.web3Provider.getAccount(), 
       gas: 3000000 // TODO: Check gas.
