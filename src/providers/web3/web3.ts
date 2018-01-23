@@ -84,15 +84,14 @@ export class Web3Provider {
 
     let contract;
     
-    const developmentId = truffleConfig.network_id;
-    if(!artifact.networks[developmentId]) {
-      artifact.networks[developmentId] = {'address': address};
-    }
-
     // A simple workaround to improve the performance: 
     // If we have a local network configured, we use it to get the contract. 
     // BUT: Needs more research in production.
-    artifact.networks[developmentId]['address'] = address;
+    const networkId = truffleConfig.network_id;
+    if(!artifact.networks[networkId]) {
+      artifact.networks[networkId] = {};
+    }
+    artifact.networks[networkId].address = address;
     contract = (await this.getRawContract(artifact)).deployed();
     
     console.count(`[${artifact.contractName}] getContractAt with .deployed()`);
