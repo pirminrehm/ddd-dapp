@@ -82,21 +82,25 @@ export class TeamProvider {
   }
 
   async getPendingMemberByIndex(index: number): Promise<PendingMember> {
-    if(!this.state.pendingMemberByIndex[index]) {
+    // We can not cache the pending members by index since we manipulate the array in smart contract
+    // TODO: Remove it from app state or provide a different implementation
+    // if(!this.state.pendingMemberByIndex[index]) {
       const v = await this.call('getPendingMemberByIndex', index);
       const name = await this.web3Provider.fromWeb3String(v[1]);
       const avatarId = await this.web3Provider.fromWeb3Number(v[2]);
   
       this.state.pendingMemberByIndex[index] = new PendingMember(v[0], name, avatarId, v[3]);
-    }
+    // }
     return this.state.pendingMemberByIndex[index]
   }
 
   async getVotingsByIndex(index: number): Promise<PendingMember> {
-    if(!this.state.votingsByIndex[index]) {
+    // We can not cache the voting by index since we manipulate the array in smart contract
+    // TODO: Remove it from app state or provide a different implementation
+    // if(!this.state.votingsByIndex[index]) {
       let voting = await this.call('getVotingByIndex', index);
       this.state.votingsByIndex[index] = this.prepareVoting(voting);
-    }
+    // }
     return this.state.votingsByIndex[index];
   }
 
@@ -211,7 +215,6 @@ export class TeamProvider {
 
   async getClosedVotings(): Promise<Voting[]> {
     const count = await this.getClosedVotingsCount();
-    console.log(count);
     const votings = [];
     for(let i = 0; i < count; i++) {
       votings.push(await this.getClosedVotingByIndex(i));
