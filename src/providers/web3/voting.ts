@@ -93,9 +93,8 @@ export class VotingProvider {
     points = await this.web3Provider.toWeb3Number(points);
 
     const account = await this.web3Provider.getAccount();
-    const contract = await this.getContract(address);
 
-    const trans = await contract.addVote(uri, points, { from: account, gas: 3000000 });
+    const trans = await this.transaction(address, 'addVote', uri, points, {from: account, gas: 3000000 });
 
     this.state.resetLocationPoints(address);
     this.state.resetUserPointsByAddress(address);
@@ -132,12 +131,22 @@ export class VotingProvider {
   }
 
   // INTERNAL
-  private async call(address: string,name: string, ...params): Promise<any> {
+  private async call(address: string, name: string, ...params): Promise<any> {
     const contract =  await this.getContract(address);
     try {
       return contract[name].call(...params);
     } catch(e) {
       e => this.handleError(e);
+    }
+  }
+
+  private async transaction(address: string, name: string, ...params): Promise<any> {
+    const contract = await this.getContract(address);
+    const trans = await contract[name](...params);
+    if(trans.receipt.status != '0x01') {
+      return Promise.reject(
+        `Transaction of ${name} failed with status code ${trans.receipt.status}`
+      );
     }
   }
 

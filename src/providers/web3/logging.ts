@@ -31,11 +31,20 @@ export class LoggingProvider {
 
   async addTeam(teamAddress, teamName) {
     console.time('addTeamToLogging');
-    const contract = await this.web3Provider.getContractAt(loggingArtifacts, await this.getAddress());
     const account = await this.settingsProvider.getAccount();
-    const trans = await contract.addTeam(teamAddress, teamName, {from: account, gas: 5000000});
+    const trans = await this.transaction('addTeam', teamAddress, teamName, {from: account, gas: 5000000});
     console.timeEnd('addTeamToLogging');
     return trans;
+  }
+
+  private async transaction(name: string, ...params) {
+    const contract = await this.web3Provider.getContractAt(loggingArtifacts, await this.getAddress());
+    const trans = await contract[name](...params);
+    if(trans.receipt.status != '0x01') {
+      return Promise.reject(
+        `Transaction of ${name} failed with status code ${trans.receipt.status}`
+      );
+    }
   }
 
   

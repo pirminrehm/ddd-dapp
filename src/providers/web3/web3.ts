@@ -5,9 +5,8 @@ import { Injectable } from '@angular/core';
 const Web3 = require('web3');
 
 const contract = require('truffle-contract');
+const truffleConfig = require("./../../../truffle.js").networks.development;
 
-const DEVELOPMENT_NETWORK_ID = 5777; // fix value by truffle develop
-const TEST_RPC_IP = 'localhost:7545'; //'192.168.0.150:9545';
 
 declare var window: any;
 
@@ -85,14 +84,14 @@ export class Web3Provider {
 
     let contract;
     
-    if(!artifact.networks[DEVELOPMENT_NETWORK_ID]) {
-      artifact.networks[DEVELOPMENT_NETWORK_ID] = {'address': address};
-    }
-
     // A simple workaround to improve the performance: 
     // If we have a local network configured, we use it to get the contract. 
     // BUT: Needs more research in production.
-    artifact.networks[DEVELOPMENT_NETWORK_ID]['address'] = address;
+    const networkId = truffleConfig.network_id;
+    if(!artifact.networks[networkId]) {
+      artifact.networks[networkId] = {};
+    }
+    artifact.networks[networkId].address = address;
     contract = (await this.getRawContract(artifact)).deployed();
     
     console.count(`[${artifact.contractName}] getContractAt with .deployed()`);
@@ -116,11 +115,11 @@ export class Web3Provider {
       this.web3 = new Web3(window.web3.currentProvider);
     } else {
       console.warn(
-        'No web3 detected. Falling back to http://' + TEST_RPC_IP + '. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask'
+        `No web3 detected. Falling back to http://${truffleConfig.host}:${truffleConfig.port}. You should remove this fallback when you deploy live, as it\'s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask`
       );
       // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
       this.web3 = new Web3(
-        new Web3.providers.HttpProvider('http://' + TEST_RPC_IP)
+        new Web3.providers.HttpProvider(`http://${truffleConfig.host}:${truffleConfig.port}`)
       );
     }
 
