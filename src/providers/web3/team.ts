@@ -105,12 +105,10 @@ export class TeamProvider {
   }
 
   async getClosedVotingByIndex(index: number): Promise<PendingMember> {
-    // We can not cache the voting by index since we manipulate the array in smart contract
-    // TODO: Remove it from app state or provide a different implementation
-    // if(!this.state.closedVotingsByIndex[index]) {
+    if(!this.state.closedVotingsByIndex[index]) {
       let voting = await this.call('getClosedVotingByIndex', index);
       this.state.closedVotingsByIndex[index] = this.prepareVoting(voting);
-    // }
+    }
     return this.state.closedVotingsByIndex[index];
   }
 
