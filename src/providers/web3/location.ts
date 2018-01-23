@@ -46,7 +46,9 @@ export class LocationProvider {
 
   async getLocationByURI(uri: string): Promise<Location> {
     if(!this.state.locationByURI[uri]) {
-      const v = await this.call('getLocationByURI', uri);
+      const web3Uri = await this.web3Provider.toWeb3String(uri);
+      const v = await this.call('getLocationByURI', web3Uri);
+
       const name = await this.web3Provider.fromWeb3String(v[1]);
       this.state.locationByURI[uri] = new Location(uri, name);
     }
