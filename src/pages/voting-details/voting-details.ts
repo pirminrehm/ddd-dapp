@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges, Output, EventEmitter, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { NotificationProvider } from './../../providers/notification/notification';
@@ -13,6 +13,8 @@ import { Location } from './../../models/location';
 import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
 import { SLIDE_COLORS } from '../voting-chart/voting-chart';
 
+import { Subject } from 'rxjs/Subject';
+
 /**
  * Generated class for the VotingDetailsPage page.
  *
@@ -23,18 +25,21 @@ import { SLIDE_COLORS } from '../voting-chart/voting-chart';
   selector: 'page-voting-details',
   templateUrl: 'voting-details.html',
 })
-export class VotingDetailsPage implements OnChanges {
+export class VotingDetailsPage implements OnChanges, OnInit {
   @Input() address: string;
   @Output() votingClosed = new EventEmitter();
 
   isLoading: boolean;
+  initialChartDraw: boolean;
   locationPoints: LocationPoint[];
 
   hasVoted: Boolean;
+  chartReloadSubject: Subject<any>;
 
   votingName$: Promise<string>;
   
   remainingPoints = 100;
+  isTransmitting: Boolean;
   colors = SLIDE_COLORS;
 
   constructor(private votingProvider: VotingProvider,
@@ -43,9 +48,14 @@ export class VotingDetailsPage implements OnChanges {
               private notificationProvider: NotificationProvider) {
   }
 
+  ngOnInit() {
+    this.chartReloadSubject = new Subject();
+  }
+
   async ngOnChanges() {
     if(this.address) {
       this.isLoading = true;
+      this.initialChartDraw = false;
 
       this.remainingPoints = 100;
       this.locationPoints = [];
@@ -58,6 +68,7 @@ export class VotingDetailsPage implements OnChanges {
       this.votingName$ = this.votingProvider.getVotingName(this.address);
       await this.votingName$;
 
+      this.isTransmitting = false;
       this.hasVoted = await this.votingProvider.hasVoted(this.address);
 
       this.isLoading = false;
@@ -66,6 +77,7 @@ export class VotingDetailsPage implements OnChanges {
 
   submitVotes() {
     const votePromises = [];
+    this.isTransmitting = true;
     this.locationPoints.forEach(locationPoint => {
       //avoid call for 0 points -> error
       if (locationPoint.points) {
@@ -79,6 +91,7 @@ export class VotingDetailsPage implements OnChanges {
       .all(votePromises)
       .then(_ => {
         this.hasVoted = true;
+        this.isTransmitting = false;
         this.notificationProvider.success('Votes successfully submitted.');
       })
       .catch(e => {
@@ -93,6 +106,10 @@ export class VotingDetailsPage implements OnChanges {
     this.votingClosed.emit(this.address);
   }
 
+  onChartDrawn() {
+    this.initialChartDraw = true;
+  }
+
   pointsChanged(locationPoint: LocationPoint, $event: IonRangeSliderCallback) {
     // We have to do this here, see: 
     // https://github.com/PhilippStein/ng2-ion-range-slider/issues/15
@@ -103,6 +120,6 @@ export class VotingDetailsPage implements OnChanges {
       newTotalPoints += currentLocationPoint.points;
     });
     this.remainingPoints = 100 - newTotalPoints;
-    this.locationPoints = this.locationPoints.slice(0);
+    this.chartReloadSubject.next();
   }
 }

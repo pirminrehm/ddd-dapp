@@ -33,7 +33,7 @@
     You're not part of a team. Join a team to create and participate at votings.
   </div>
 
-  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!!(teamAddress$ | async)">
+  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!!(teamAddress$ | async)" [enabled]="!(segmentArea == 'open' && selectedOpenVoting)">
       <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -50,7 +50,7 @@
           </ion-item>
         </ion-list>
       </ion-card>
-      
+
       <page-voting-details [address]="selectedOpenVoting" (votingClosed)="onVotingClosed()"></page-voting-details>
     </div>
 

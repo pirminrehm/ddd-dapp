@@ -5,7 +5,7 @@ page-voting {
   }
 
   ion-card-header {
-    color: #32db64 !important;
+    color: color($colors, secondary) !important;
     font-weight: bold;
   }
 
