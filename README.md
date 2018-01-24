@@ -95,6 +95,8 @@ Or with your android phone:
 $ ionic cordova run android --device
 ```
 
+After entering the app check the settings tab to make sure an account and a logging address are selected.
+
 ## Testing of Smart Contracts
 The tests for smart contracts are based on truffle's built-in features and written in `Mocha`. You can find them in `./test`. 
 
