@@ -1,7 +1,7 @@
 {
   "name": "ws17-ethereum-blockchain",
   "version": "1.0.0",
-  "description": "",
+  "description": "Developers Dining Dilemma is a mobile application that uses the Ethereum network for decision-making in a team. The aim of the project is to evaluate the feasibility of applications in the blockchain and to use its decentralization to increase the forgery protection of applications.",
   "scripts": {
     "lint": "ionic-app-scripts lint",
     "build": "ionic-app-scripts build",
@@ -50,7 +50,7 @@
     "rxjs": "5.5.2",
     "sw-toolbox": "3.6.0",
     "tslib": "1.9.0",
-    "web3": "^0.20.4",
+    "web3": "0.20.4",
     "zone.js": "0.8.18"
   },
   "cordova": {
