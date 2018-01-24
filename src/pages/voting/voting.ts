@@ -56,7 +56,7 @@ export class VotingPage implements OnInit {
 
   async ionViewWillEnter() {
     await this.stateChanged();
-    if(this.openVotings.length == 0) {
+    if(this.openVotings && this.openVotings.length == 0) {
       this.segmentArea = 'new';
     }
   }
