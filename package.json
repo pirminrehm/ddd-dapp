@@ -18,7 +18,8 @@
     "json-loader": "^0.5.4",
     "style-loader": "^0.13.1",
     "truffle-contract": "^1.1.11",
-    "typescript": "2.4.2"
+    "typescript": "2.4.2",
+    "ws": "3.3.2"
   },
   "dependencies": {
     "@angular/common": "5.0.1",
