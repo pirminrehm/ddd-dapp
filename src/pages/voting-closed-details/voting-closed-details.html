@@ -1,5 +1,5 @@
 <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
 
 <div [style.display]="(address && !isLoading) ? 'block' : 'none'">
-  <page-voting-chart [locationPoints]="selectedLocationPoints" displayLegend="true"></page-voting-chart>
+  <page-voting-chart [locationPoints]="locationPoints" displayLegend="true" [reload]="chartReloadSubject"></page-voting-chart>
 </div>
