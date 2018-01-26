@@ -9,6 +9,8 @@ import { Account } from '../../models/account';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { TeamProvider } from '../../providers/web3/team';
 
+import { Subject } from 'rxjs/Subject';
+
 /**
  * Generated class for the SettingsPage page.
  *
@@ -27,7 +29,9 @@ export class SettingsPage {
   accounts: Account[];
 
   teamAddress$: Promise<string>;
-  teamName$: Promise<string>
+  teamName$: Promise<string>;
+
+  saveSubject: Subject<Boolean> = new Subject();
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -43,6 +47,10 @@ export class SettingsPage {
       name: ['', Validators.required],
       loggingAddress: ['']
     });
+
+    this.saveSubject
+      .debounceTime(500)
+      .subscribe(silently => this.persist(silently));
   }
 
   async ionViewWillEnter() {
@@ -63,20 +71,35 @@ export class SettingsPage {
     }
   }
 
-  async save() {
+  onInputChange() {
+    this.saveSubject.next(true);
+  }
+
+  onSubmitButton() {
+    this.saveSubject.next(false);
+  }
+
+  async removeTeamAddress() {
+    this.teamAddress$ = null;
+    this.saveSubject.next(true);
+  }
+
+  private async persist(silently: Boolean = false) {
+    console.log('** PERSIST SETTINGS ** ');
     try {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
       await this.settingsProvider.setLoggingAddress(this.settingsForm.value.loggingAddress);
       await this.settingsProvider.setTeamAddress(await this.teamAddress$);
-      this.notificationProvier.success('Settings saved');
+
+      if(!silently) {
+        this.notificationProvier.success('Settings saved');
+      }
     } catch(e) {
-      this.notificationProvier.error('An error occured while saving the settings.');
+      if(!silently) {
+        this.notificationProvier.error('An error occured while saving the settings.');
+      }
       console.log(e);
     }
-  }
-
-  async removeTeamAddress() {
-    this.teamAddress$ = null;
   }
 }
