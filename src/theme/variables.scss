@@ -47,6 +47,7 @@ $colors: (
   list:       #1b150f,
   text-light: #fff,
   text-dark:  #222,
+  inactive:   #777,
 
 ) !default;
 
@@ -66,11 +67,15 @@ $toolbar-background:         color($colors, dark) !default;
 $toolbar-border-color:       color($colors, secondary) !default;
 $toolbar-text-color:         $text-color !default;
 $toolbar-active-color:       $link-color !default;
-$toolbar-inactive-color:     #8c8c8c !default;
+$toolbar-inactive-color:     #afafaf !default;
 
 $tabs-background:            color($colors, tabs) !default;
 $tabs-border-color:          color($colors, secondary) !default;
-$tabs-tab-color-inactive:    #8c8c8c !default;
+$tabs-md-tab-icon-color:     color($colors, inactive) !default;
+$tabs-md-tab-text-color:     $tabs-md-tab-icon-color !default;
+$tabs-ios-tab-text-color:    $tabs-md-tab-icon-color !default;
+$tabs-ios-tab-icon-color:    $tabs-md-tab-icon-color !default;
+$tabs-tab-color-inactive:    #b1b1b1 !default;
 $tabs-tab-color-active:      $link-color !default;
 
 $list-text-color:            $text-color !default;
