@@ -24,7 +24,6 @@ $app-direction: ltr;
 
 
 
-
 // Named Color Variables
 // --------------------------------------------------
 // Named colors makes it easy to reuse colors on various components.
@@ -33,13 +32,60 @@ $app-direction: ltr;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
+
 $colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
-  danger:     #f53d3d,
+
+  primary:    #e7723b,
+  secondary:  #ffc917,
+  danger:     #630700,
+  success:    rgb(49, 100, 7),
   light:      #f4f4f4,
-  dark:       #222
-);
+  dark:       #0e0705,
+
+  tabs:       #241d18,
+  list:       #1b150f,
+  text-light: #fff,
+  text-dark:  #222,
+
+) !default;
+
+
+$text-color:                 color($colors, text-light) !default;
+$link-color:                 color($colors, primary) !default;
+$background-color:           color($colors, dark) !default;
+$subdued-text-color:         #666 !default;
+
+$font-family-base:           -apple-system, "Helvetica Neue", "Roboto", sans-serif !default;
+$font-size-base:             1.4rem !default; // 1.4rem == 14px
+
+$content-padding:            16px !default;
+$content-margin:             16px !default;
+
+$toolbar-background:         color($colors, dark) !default;
+$toolbar-border-color:       color($colors, secondary) !default;
+$toolbar-text-color:         $text-color !default;
+$toolbar-active-color:       $link-color !default;
+$toolbar-inactive-color:     #8c8c8c !default;
+
+$tabs-background:            color($colors, tabs) !default;
+$tabs-border-color:          color($colors, secondary) !default;
+$tabs-tab-color-inactive:    #8c8c8c !default;
+$tabs-tab-color-active:      $link-color !default;
+
+$list-text-color:            $text-color !default;
+$list-background-color:      color($colors, list) !default;
+$list-border-color:          #000 !default;
+
+
+// Custom Vars
+// --------------------------------------------------
+// 
+
+
+$toast-success:             color($colors, success);
+$toast-text-success:        color($colors, text-light);
+$toast-danger:              color($colors, danger);
+$toast-text-danger:         color($colors, text-light);
 
 $refresher-icon-color: color($colors, light);
 $refresher-text-color: color($colors, light);
@@ -74,7 +120,7 @@ $refresher-border-color: color($colors, dark);
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.dark";
+// @import "ionic.theme.dark";
 
 
 // Ionicons
