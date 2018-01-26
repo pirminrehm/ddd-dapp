@@ -45,8 +45,8 @@ page-voting-details {
 
   .irs-single {
     @include border-radius(50%);
-    color: white;
-    background: white;
+    color: color($colors, lightbrown);
+    background: color($colors, lightbrown);
     height: 28px;
     width: 28px;
     top: 12px;
@@ -66,11 +66,11 @@ page-voting-details {
     top: 24px;
   }
   .irs-line {
-    background: white;
+    background: color($colors, lightbrown);
   }
 
   .irs-bar {
-    background: color($colors, secondary);
+    background: color($colors, primary);
     z-index: 1;
   }
   .irs-shadow {
