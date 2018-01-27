@@ -27,7 +27,7 @@
         <ion-item>
           <ion-label floating>Your public name</ion-label>
           <ion-avatar item-start class="input-avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
-          <ion-input formControlName="name" text-left></ion-input>
+          <ion-input formControlName="creatorName" text-left></ion-input>
         </ion-item>
         
         <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
