@@ -1,3 +1,4 @@
+import { AvatarSelectorPage } from './../pages/avatar-selector/avatar-selector';
 import { VotingClosedDetailsPage } from './../pages/voting-closed-details/voting-closed-details';
 import { TeamMemberPage } from './../pages/team-member/team-member';
 import { TeamNoMemberPage } from './../pages/team-no-member/team-no-member';
@@ -45,7 +46,8 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     VotingClosedDetailsPage,
     VotingDetailsPage,
     TabsPage,
-    VotingChartPage
+    VotingChartPage,
+    AvatarSelectorPage
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,8 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     VotingClosedDetailsPage,
     VotingDetailsPage,
     TabsPage,
-    VotingChartPage
+    VotingChartPage,
+    AvatarSelectorPage
   ],
   providers: [
     Web3Provider,

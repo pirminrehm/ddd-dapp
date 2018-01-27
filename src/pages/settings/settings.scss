@@ -19,4 +19,9 @@ page-settings {
   button {
     margin-top: 24px !important;
   }
+
+  ion-avatar.avatar {
+    z-index: 2 !important;
+    margin-top: 12px !important;
+  }
 }

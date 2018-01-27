@@ -1,3 +1,4 @@
+import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
 import { LoggingProvider } from './../../providers/web3/logging';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
@@ -8,6 +9,7 @@ import { SettingsProvider } from './../../providers/storage/settings';
 import { Account } from '../../models/account';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { TeamProvider } from '../../providers/web3/team';
+import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 
 import { Subject } from 'rxjs/Subject';
 
@@ -28,6 +30,8 @@ export class SettingsPage {
   settingsForm: FormGroup;
   accounts: Account[];
 
+  avatarId: number;
+
   teamAddress$: Promise<string>;
   teamName$: Promise<string>;
 
@@ -36,6 +40,7 @@ export class SettingsPage {
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private fb: FormBuilder,
+              private modalCtrl: ModalController,
               private web3Provider: Web3Provider,
               private teamProvider: TeamProvider,
               private settingsProvider: SettingsProvider,
@@ -69,6 +74,19 @@ export class SettingsPage {
     if(await this.teamAddress$) {
       this.teamName$ = this.teamProvider.getTeamName();
     }
+
+    this.avatarId = await this.settingsProvider.getAvatarId();
+    if(!this.avatarId) {
+      this.avatarId = 0;
+    }
+  }
+
+  selectAvatar() {
+    const modal = this.modalCtrl.create(AvatarSelectorPage);
+    modal.onDidDismiss(avatarId => {
+      this.avatarId = avatarId
+    })
+    modal.present();
   }
 
   onInputChange(silently: Boolean = true) {

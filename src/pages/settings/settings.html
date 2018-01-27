@@ -16,7 +16,13 @@
 <ion-content padding>
   <form [formGroup]="settingsForm" (submit)="onSubmitButton()">
     <ion-list>
-      <ion-list-header>App settings</ion-list-header>
+      <ion-list-header>Your settings</ion-list-header>
+      <ion-item>
+        <ion-label floating>Your public name</ion-label>
+        <ion-avatar item-start class="avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
+        <ion-input formControlName="name" text-left (keyup)="onInputChange()"></ion-input>
+      </ion-item>
+
       <ion-item>
         Team: 
         
@@ -28,10 +34,6 @@
           </ng-template>
           <ng-template #noTeamAddress>You're not part of a team</ng-template>
         </div>
-      </ion-item>
-      <ion-item>
-        <ion-label for="name">Name</ion-label>
-        <ion-input formControlName="name" text-right (keyup)="onInputChange()"></ion-input>
       </ion-item>
     </ion-list>
     <ion-list>

@@ -49,7 +49,7 @@ export class SettingsProvider {
     this.appStateProvider.resetStates();
   }
 
-  async setAvatarId(avatarId: string) {
+  async setAvatarId(avatarId: number) {
     await this.set('avatar-id', avatarId);
   }
 
@@ -81,7 +81,7 @@ export class SettingsProvider {
     }
   }
 
-  private set(key: string, value: string): Promise<any> {
+  private set(key: string, value: string | number): Promise<any> {
     try {
       return this.storage.set(key, value);
     } catch(e) {

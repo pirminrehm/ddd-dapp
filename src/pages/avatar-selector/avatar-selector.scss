@@ -1,0 +1,13 @@
+page-avatar-selector {
+  top: 10% !important;
+  background: rgba(25,25,25, 0.9) !important;
+
+  :host {
+    margin: 12px !important;
+    padding: 24px;
+  }
+
+  img  {
+    margin: 8px;
+  }
+}
