@@ -22,8 +22,9 @@ export class LocationPage implements OnInit {
   @Input() refresh: Subject<any>;
 
   locations: Location[];
-  newLocationName: String;
   areLocationsLoading: boolean;
+
+  newLocationForm: FormGroup;
 
   constructor(private locationProvider: LocationProvider,
               private notificationProvider: NotificationProvider,
@@ -31,6 +32,10 @@ export class LocationPage implements OnInit {
   }
 
   ngOnInit() {
+    this.newLocationForm = this.fb.group({
+      name: ['', Validators.required]
+    });
+
     this.refreshLocations();
     this.refresh.subscribe(_ => this.refreshLocations());
   }
@@ -44,10 +49,11 @@ export class LocationPage implements OnInit {
   }
 
   async addLocation() {
-    try { 
-      await this.locationProvider.addLocation(this.newLocationName, this.newLocationName)
+    try {
+      const newLocationName = this.newLocationForm.value.name;
+      await this.locationProvider.addLocation(newLocationName, newLocationName);
       this.notificationProvider.success(`Location: ${name} added.`);
-      this.newLocationName = null;
+      this.newLocationForm.controls['name'].reset();
       
       this.refreshLocations();
     } catch(e) {

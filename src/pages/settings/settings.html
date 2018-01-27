@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <form [formGroup]="settingsForm" (submit)="save()">
+  <form [formGroup]="settingsForm" (submit)="onSubmitButton()">
     <ion-list>
       <ion-list-header>App settings</ion-list-header>
       <ion-item>
@@ -31,21 +31,21 @@
       </ion-item>
       <ion-item>
         <ion-label for="name">Name</ion-label>
-        <ion-input formControlName="name" text-right></ion-input>
+        <ion-input formControlName="name" text-right (keyup)="onInputChange()"></ion-input>
       </ion-item>
     </ion-list>
     <ion-list>
       <ion-list-header class="dev-options">Developer options</ion-list-header>
       <ion-item>
         <ion-label for="account">Account</ion-label>
-        <ion-select formControlName="account">    
+        <ion-select formControlName="account" (ionChange)="onInputChange(false)">    
           <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
         </ion-select>
       </ion-item>
       
       <ion-item>
         <ion-label for="loggingAddress">Logging-Addresse</ion-label>
-        <ion-input formControlName="loggingAddress" text-right></ion-input>
+        <ion-input formControlName="loggingAddress" text-right (keyup)="onInputChange()"></ion-input>
       </ion-item>
 
       <button ion-button block outline type="submit" [disabled]="settingsForm.invalid">Save settings</button>
