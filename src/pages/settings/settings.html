@@ -38,7 +38,7 @@
       <ion-list-header class="dev-options">Developer options</ion-list-header>
       <ion-item>
         <ion-label for="account">Account</ion-label>
-        <ion-select formControlName="account" (ionChange)="onInputChange()">    
+        <ion-select formControlName="account" (ionChange)="onInputChange(false)">    
           <ion-option *ngFor="let account of accounts" [value]="account.address">{{account.name}}: {{account.address}}</ion-option>
         </ion-select>
       </ion-item>

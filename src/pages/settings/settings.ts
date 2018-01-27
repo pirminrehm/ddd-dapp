@@ -71,8 +71,8 @@ export class SettingsPage {
     }
   }
 
-  onInputChange() {
-    this.saveSubject.next(true);
+  onInputChange(silently: Boolean = true) {
+    this.saveSubject.next(silently);
   }
 
   onSubmitButton() {
