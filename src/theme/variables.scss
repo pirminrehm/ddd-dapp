@@ -37,7 +37,7 @@ $colors: (
 
   // primary:    #e7723b, // more intensive
   primary:    #d18228,
-  secondary:  #ffc917,
+  secondary:  #d1a26c,
   lightbrown: #ffe1bb,
   danger:     #630700,
   // success:    #316407, // dark green
@@ -50,6 +50,7 @@ $colors: (
   tabs:       #1d150f,
   list:       #18130d,
   text-light: #fff,
+  text-sub:   #aa9e8e,
   inactive:   #685c4c,
 
 ) !default;
@@ -58,7 +59,7 @@ $colors: (
 $text-color:                 color($colors, text-light) !default;
 $link-color:                 color($colors, primary) !default;
 $background-color:           color($colors, dark) !default;
-$subdued-text-color:         rgb(136, 33, 33) !default;
+$subdued-text-color:         color($colors, text-sub) !default;
 
 $font-family-base:           -apple-system, "Helvetica Neue", "Roboto", sans-serif !default;
 $font-size-base:             1.4rem !default; // 1.4rem == 14px
@@ -93,6 +94,12 @@ $card-text-color:            color($colors, text-light);
 $card-md-text-color:         $card-text-color;
 $card-ios-text-color:        $card-text-color;
 $card-item-header-color:     color($colors, secondary);
+
+$label-md-text-color:           $subdued-text-color;
+$label-ios-text-color:          $subdued-text-color;
+$item-md-paragraph-text-color:  $subdued-text-color;
+$item-ios-paragraph-text-color: $subdued-text-color;
+$text-input-placeholder-color:  $subdued-text-color;
 
 // Custom Vars
 // --------------------------------------------------

@@ -36,13 +36,21 @@
 
 ion-card-header, ion-list-header {
   color: color($colors, secondary) !important;
-    // font-weight: bold;
+  font-size: 1.5rem !important;
+  text-transform: uppercase;
+  // font-weight: bold;
+  font-size: 1.3em;
 
     ion-spinner {
     margin-bottom: -9px;
     margin-left: 5px;
     margin-top: -5px;
   }
+}
+
+ion-card {
+  margin: 0 0 24px 0 !important;
+  width: 100% !important;
 }
 
 ion-card.infobox {
