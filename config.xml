@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>ws17-blockchainEthereum</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <name>DDD</name>
+    <description>Developers Dining Dilemma is a mobile application that uses the Ethereum network for decision-making in a team. The aim of the project is to evaluate the feasibility of applications in the blockchain and to use its decentralization to increase the forgery protection of applications.</description>
+    <author email="pr057@hdm-stuttgart.de" href="http://hdm-stuttgart.de/">Pascal Fecht, Pirmin Rehm</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -19,6 +19,8 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
+    <preference name="SplashScreenSpinnerColor" value="#d18228" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -86,4 +88,5 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="^7.0.0">
         <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
     </plugin>
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
 </widget>

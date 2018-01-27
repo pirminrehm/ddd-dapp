@@ -433,7 +433,8 @@ contract('Team', (accounts) => {
       
       it('should create a new voting with the team contract', done => {
         let noLogWasRecieved = true;
-        contract.VotingCreated().watch((error, log) => {
+        let event = contract.VotingCreated();
+        event.watch((error, log) => {
           if(noLogWasRecieved) {
             noLogWasRecieved = false;
             expect(log).to.be.an('object');
@@ -443,7 +444,7 @@ contract('Team', (accounts) => {
             let votingAddress = log.args.votingAddress;
             expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
             votingInstance1 = Voting.at(votingAddress);
-            contract.VotingCreated().stopWatching();
+            event.stopWatching();
             done();
           }
         });
@@ -460,27 +461,29 @@ contract('Team', (accounts) => {
 
       it('should create a second voting with the team contract', done => {
         // delay -> don not receive first log twice
-        setTimeout(() => {
-          let noLogWasRecieved = true;
-          contract.VotingCreated().watch((error, log) => {
-            if(noLogWasRecieved) {
-              noLogWasRecieved = false;
-              expect(log).to.be.an('object');
-              expect(log.event).to.equal('VotingCreated');        
-              expect(log.args).to.be.an('object');
-              expect(log.args.votingAddress).to.be.a('string');
-              let votingAddress = log.args.votingAddress;
-              expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
-              votingInstance2 = Voting.at(votingAddress);             
-              contract.VotingCreated().stopWatching();
-              done();
-            }
-          });
+        let txHash;
+        let noLogWasRecieved = true;
+        let event = contract.VotingCreated();
+        event.watch((error, log) => {
+          if(noLogWasRecieved && txHash == log.transactionHash) {
+            noLogWasRecieved = false;
+            expect(log).to.be.an('object');
+            expect(log.event).to.equal('VotingCreated');        
+            expect(log.args).to.be.an('object');
+            expect(log.args.votingAddress).to.be.a('string');
+            let votingAddress = log.args.votingAddress;
+            expect(votingAddress).to.match(/^0x[a-f0-9]{40}$/);
+            votingInstance2 = Voting.at(votingAddress);             
+            event.stopWatching();
+            done();
+          }
+        });
 
-          contract.addVoting(data.votingName2, {from: accounts[0]}).then(res => { 
-            expect(res).not.to.be.null;
-          });        
-        }, 500);
+        contract.addVoting(data.votingName2, {from: accounts[0]}).then(res => {
+          txHash = res.tx;
+          expect(res).not.to.be.null;
+        });        
+
       });
 
       it('should get the new votings count', async () => {

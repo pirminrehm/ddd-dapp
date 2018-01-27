@@ -2,6 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 
 import { LocationPoint } from './../../models/location-point';
 import { VotingProvider } from '../../providers/web3/voting';
+import { Subject } from 'rxjs/Subject';
 
 /**
  * Generated class for the VotingClosedDetailsPage page.
@@ -17,16 +18,22 @@ export class VotingClosedDetailsPage implements OnChanges {
   @Input() address: string;
 
   isLoading: Boolean;
-  selectedLocationPoints: LocationPoint[];
+  locationPoints: LocationPoint[];
+
+  chartReloadSubject = new Subject();
 
   constructor(private votingProvider: VotingProvider) {
   }
 
   async ngOnChanges() {
     if(this.address) {
+      console.log(this.address);
       this.isLoading = true;
-      this.selectedLocationPoints = await this.votingProvider.getLocationPoints(this.address);
-      this.isLoading = false;
+      this.votingProvider.getLocationPoints(this.address).then(locationPoints => {
+        this.locationPoints = locationPoints;
+        this.isLoading = false;
+        this.chartReloadSubject.next();
+      });
     }
   }
 }

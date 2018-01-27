@@ -24,7 +24,6 @@ $app-direction: ltr;
 
 
 
-
 // Named Color Variables
 // --------------------------------------------------
 // Named colors makes it easy to reuse colors on various components.
@@ -33,17 +32,88 @@ $app-direction: ltr;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
-$colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222
-);
 
-$refresher-icon-color: color($colors, light);
-$refresher-text-color: color($colors, light);
-$refresher-border-color: color($colors, dark);
+$colors: (
+
+  // primary:    #e7723b, // more intensive
+  primary:    #d18228,
+  secondary:  #d1a26c,
+  lightbrown: #ffe1bb,
+  danger:     #630700,
+  // success:    #316407, // dark green
+  success:    #d18228,
+  light:      #f4f4f4,
+  dark:       #0e0705,
+
+  // tabs:       #241d18, // old
+  // list:       #1b150f, // old
+  tabs:       #1d150f,
+  list:       #18130d,
+  text-light: #fff,
+  text-sub:   #aa9e8e,
+  inactive:   #685c4c,
+
+) !default;
+
+
+$text-color:                 color($colors, text-light) !default;
+$link-color:                 color($colors, primary) !default;
+$background-color:           color($colors, dark) !default;
+$subdued-text-color:         color($colors, text-sub) !default;
+
+$font-family-base:           -apple-system, "Helvetica Neue", "Roboto", sans-serif !default;
+$font-size-base:             1.4rem !default; // 1.4rem == 14px
+
+$content-padding:            16px !default;
+$content-margin:             16px !default;
+
+$toolbar-background:         color($colors, dark) !default;
+$toolbar-border-color:       color($colors, secondary) !default;
+$toolbar-text-color:         $text-color !default;
+$toolbar-active-color:       $link-color !default;
+// $toolbar-inactive-color:     #afafaf !default;
+
+$tabs-background:            color($colors, tabs) !default;
+$tabs-border-color:          color($colors, secondary) !default;
+$tabs-inactive-color:        color($colors, inactive) !default;
+$tabs-md-tab-icon-color:     $tabs-inactive-color !default;
+$tabs-md-tab-text-color:     $tabs-inactive-color !default;
+$tabs-ios-tab-text-color:    $tabs-inactive-color !default;
+$tabs-ios-tab-icon-color:    $tabs-inactive-color !default;
+// $tabs-tab-color-inactive:    #b1b1b1 !default;
+// $tabs-tab-color-active:      $link-color !default;
+
+$list-text-color:            $text-color !default;
+$list-background-color:      color($colors, list) !default;
+$list-border-color:          #000 !default;
+
+$text-input-highlight-color-valid:    color($colors, primary);
+$text-input-highlight-color-invalid:  color($colors, danger);
+
+$card-text-color:            color($colors, text-light);
+$card-md-text-color:         $card-text-color;
+$card-ios-text-color:        $card-text-color;
+$card-item-header-color:     color($colors, secondary);
+
+$label-md-text-color:           $subdued-text-color;
+$label-ios-text-color:          $subdued-text-color;
+$item-md-paragraph-text-color:  $subdued-text-color;
+$item-ios-paragraph-text-color: $subdued-text-color;
+$text-input-placeholder-color:  $subdued-text-color;
+
+// Custom Vars
+// --------------------------------------------------
+// 
+
+
+$toast-success:             color($colors, success);
+$toast-text-success:        color($colors, text-light);
+$toast-danger:              color($colors, danger);
+$toast-text-danger:         color($colors, text-light);
+
+$refresher-icon-color:      color($colors, light);
+$refresher-text-color:      color($colors, light);
+$refresher-border-color:    color($colors, dark);
 
 
 // App iOS Variables
@@ -74,7 +144,7 @@ $refresher-border-color: color($colors, dark);
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.dark";
+// @import "ionic.theme.dark";
 
 
 // Ionicons

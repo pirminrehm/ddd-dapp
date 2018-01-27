@@ -18,20 +18,53 @@
 
 .toast-success {
   > div {
-    background-color: color($colors, secondary) !important;
+    background-color: $toast-success !important;
+    .toast-message {
+      color: $toast-text-success !important;
+    }
   }
 }
 
 .toast-error {
   > div {
-    background-color: color($colors, danger) !important;
+    background-color: $toast-danger !important;  
+    .toast-message {
+      color: $toast-text-danger !important;
+    }
   }
 }
 
 ion-card-header, ion-list-header {
-  ion-spinner {
+  color: color($colors, secondary) !important;
+  font-size: 1.5rem !important;
+  text-transform: uppercase;
+  // font-weight: bold;
+  font-size: 1.3em;
+
+    ion-spinner {
     margin-bottom: -9px;
     margin-left: 5px;
     margin-top: -5px;
   }
+}
+
+ion-card {
+  margin: 0 0 24px 0 !important;
+  width: 100% !important;
+}
+
+ion-card.infobox {
+  ion-item {
+    ion-icon, h2 {
+      color: $card-item-header-color !important; 
+    }
+  }
+}
+
+ion-title {
+  text-align: center;
+}
+
+.segment-button:not(.segment-activated) {
+  opacity: 0.4 !important;
 }

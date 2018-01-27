@@ -6,12 +6,12 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="tabs">
     <ion-title>Votings</ion-title>
   </ion-navbar>
 
   <ion-toolbar>
-    <ion-segment [(ngModel)]="segmentArea"  *ngIf="!!(teamAddress$ | async)">
+    <ion-segment [(ngModel)]="segmentArea" [hidden]="!(teamAddress$ | async)">
       <ion-segment-button value="open">
         Open
       </ion-segment-button>
@@ -30,7 +30,19 @@
 
 <ion-content>
   <div class="no-member" *ngIf="!(teamAddress$ | async)">
-    You're not part of a team. Join a team to create and participate at votings.
+   <ion-card class="infobox">
+      <ion-item>
+        <ion-icon name="help" item-left large></ion-icon>
+        <h2>How should i start?</h2>
+        <p>Join a team!</p>
+      </ion-item>
+      <ion-card-content>
+        <p>
+          Before you start voting, please join a team.
+          You can create your own team or join an existing team by using a qr code.
+        </p>
+      </ion-card-content>
+    </ion-card>
   </div>
 
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!!(teamAddress$ | async)" [enabled]="!(segmentArea == 'open' && selectedOpenVoting)">
@@ -42,7 +54,7 @@
     <div *ngIf="segmentArea == 'open'" class="segment-entry open">
       <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
       <ion-card *ngIf="areOpenVotingsLoading || openVotings.length > 0">
-        <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-card-header>Select a Voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
         <ion-list radio-group [(ngModel)]="selectedOpenVoting">
           <ion-item *ngFor="let voting of openVotings">
             <ion-label>{{ voting.name }}</ion-label>
@@ -59,7 +71,7 @@
       <div *ngIf="!areClosedVotingsLoading && closedVotings.length <= 0">No votings have been closed so far.</div>
       
       <ion-card *ngIf="areClosedVotingsLoading || closedVotings.length > 0">
-        <ion-card-header>Select a voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-card-header>Select a Voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
         <ion-list radio-group [(ngModel)]="selectedClosedVoting">
           <ion-item *ngFor="let voting of closedVotings">
             <ion-label>{{ voting.name }}</ion-label>
@@ -79,7 +91,7 @@
           <ion-label for="name">Name:</ion-label>
           <ion-input class="form-control" type="text" formControlName="name"></ion-input>
         </ion-item>
-        <button ion-button block type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Add a new voting</button>
+        <button ion-button block outline type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Add a new voting</button>
       </form>
     </div>  
   </div>

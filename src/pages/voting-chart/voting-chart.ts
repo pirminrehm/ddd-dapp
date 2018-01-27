@@ -3,11 +3,33 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
+import { Subject } from 'rxjs/Subject';
 
 declare var google:any;
 
 // TODO: More generic way to generate colors...
-export const SLIDE_COLORS = ['#488aff', '#7babff', '#005afa', '#aecbff'];
+export const PRIMARY_SLIDE_COLOR = '#630700';
+export const SLIDE_COLORS = [
+  '#3366CC',
+  '#DC3912',
+  '#FF9900',
+  '#109618',
+  '#990099',
+  '#3B3EAC',
+  '#0099C6',
+  '#DD4477',
+  '#66AA00',
+  '#B82E2E',
+  '#316395',
+  '#994499',
+  '#22AA99',
+  '#AAAA11',
+  '#6633CC',
+  '#E67300',
+  '#329262',
+  '#5574A6',
+  '#3B3EAC',
+];
 
 /**
  * Generated class for the VotingChartPage page.
@@ -24,8 +46,10 @@ export class VotingChartPage implements OnInit {
   @ViewChild('pieChart') pieChart: ElementRef;
   @Input() locationPoints: LocationPoint[];
   @Input() displayLegend: Boolean;
-  @Input() reload: Observable<any>;
+  @Input() reload: Subject<any>;
   @Output() chartDrawn = new EventEmitter();
+
+  private ready$: Promise<any>; 
 
   totalPoints: number = 0;
   
@@ -39,7 +63,7 @@ export class VotingChartPage implements OnInit {
     legend: {position: 'none', textStyle: {color: 'white', fontSize: 15}},
     pieSliceText: 'value',
     pieSliceTextStyle: {color: 'white'}, 
-    colors: ['#f53d3d', ...SLIDE_COLORS]
+    colors: [PRIMARY_SLIDE_COLOR, ...SLIDE_COLORS]
   };
 
   constructor() {}
@@ -47,29 +71,32 @@ export class VotingChartPage implements OnInit {
   ngOnInit() {
     if(this.displayLegend) {
       this.chartOptions.legend.position = 'right';
-      this.chartOptions.chartArea.right = 40;
-      this.chartOptions.chartArea.width = '80%';
+      this.chartOptions.chartArea.left = 20;
+      this.chartOptions.chartArea.right = 20;
+      this.chartOptions.chartArea.width = '100%';
     }
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(() => {
-      this.chart = new google.visualization.PieChart(this.pieChart.nativeElement);
-      this.drawChart();
+    this.ready$ = new Promise((resolve, reject) => {
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(() => {
+        this.chart = new google.visualization.PieChart(this.pieChart.nativeElement);
+        resolve();
+      });
     });
 
-    if(this.reload) {
-      this.reload.debounceTime(200).subscribe(_ => this.drawChart());
+    if(!this.reload) {
+      this.reload = new Subject();
     }
+    this.reload.debounceTime(200).subscribe(_ => this.drawChart());
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const locationPoints = changes.locationPoints;
-    if(locationPoints && locationPoints.currentValue !== locationPoints.previousValue) {
-      this.drawChart();
-    }
+  ngAfterContentInit() {
+    this.reload.next(true);
   }
 
-  drawChart() {
-    if(!this.chart || !this.locationPoints) {
+  private async drawChart() {
+    await this.ready$;
+    
+    if(!this.locationPoints) {
       return;
     }
 
