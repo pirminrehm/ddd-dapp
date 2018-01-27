@@ -69,7 +69,7 @@
         
         <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
         
-        <button ion-button block (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
+        <button ion-button block outline (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
           Refresh token 
           <ion-spinner name="dots" *ngIf="loader.createInvitationToken" color="light"></ion-spinner>
         </button>
