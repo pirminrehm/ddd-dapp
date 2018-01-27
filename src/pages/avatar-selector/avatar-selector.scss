@@ -1,6 +1,5 @@
 page-avatar-selector {
-  top: 10% !important;
-  background: rgba(25,25,25, 0.9) !important;
+  background: rgba(29,21,15, 0.9) !important;
 
   :host {
     margin: 12px !important;
@@ -9,5 +8,9 @@ page-avatar-selector {
 
   img  {
     margin: 8px;
+  }
+
+  ion-grid {
+    margin-top: 48px;
   }
 }
