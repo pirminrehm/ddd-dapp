@@ -114,14 +114,14 @@ export class TeamProvider {
 
   // TRANSACTIONS
 
-  async createTeam(name: string, creatorName: string) {
+  async createTeam(name: string, creatorName: string, avatarId: number) {
     name = await this.web3Provider.toWeb3String(name);
     creatorName = await this.web3Provider.toWeb3String(creatorName);
     
     const contract = await this.web3Provider.getRawContract(teamArtifacts);
     const account = await this.web3Provider.getAccount();
     
-    const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
+    const team = await contract.new(name, creatorName, avatarId, {from: account, gas: 5000000});
     await this.loggingProvider.addTeam(team.address, name);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;

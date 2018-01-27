@@ -1,3 +1,4 @@
+import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
 import { ModalController } from 'ionic-angular';
 import { NotificationProvider } from './../../providers/notification/notification';
 import { Component, Output, OnInit, EventEmitter } from '@angular/core';
@@ -27,6 +28,7 @@ export class TeamNoMemberPage implements OnInit {
   @Output() teamCreated: EventEmitter<any> = new EventEmitter();
 
   createTeamForm: FormGroup;
+  avatarId: number;
 
   constructor(private fb: FormBuilder,
               private teamProvider: TeamProvider,
@@ -40,18 +42,19 @@ export class TeamNoMemberPage implements OnInit {
     this.createTeamForm = this.fb.group({
       name: ['', Validators.required],
       creatorName: ['', Validators.required]
-      // TODO: Add Avatar ID
     });
 
     const creatorName = await this.settingsProvider.getName();
     this.createTeamForm.controls['creatorName'].patchValue(creatorName);
+
+    this.avatarId = await this.settingsProvider.getAvatarId();
   }
 
   async createTeam() {
     try {
       const name = this.createTeamForm.value.name;
       const creatorName = this.createTeamForm.value.creatorName;
-      await this.teamProvider.createTeam(name, creatorName);
+      await this.teamProvider.createTeam(name, creatorName, this.avatarId);
       this.notificationProvider.success(`Congrats! You're now part of the new team ${name}`)
       
       this.teamCreated.emit();
@@ -83,5 +86,13 @@ export class TeamNoMemberPage implements OnInit {
     } catch(e) {
       this.notificationProvider.error('Invalid QR code.');
     }
+  }
+
+  selectAvatar() {
+    const modal = this.modalCtrl.create(AvatarSelectorPage);
+    modal.onDidDismiss(avatarId => {
+      this.avatarId = avatarId
+    })
+    modal.present();
   }
 }
