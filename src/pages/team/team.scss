@@ -5,17 +5,14 @@ page-team {
 
   ion-card {
     margin-bottom: 24px !important;
-  }
-
-  ion-card-header {
-    color: color($colors, secondary) !important;
-    font-weight: bold;
+    ion-item h2 {
+      margin: 2px 0 !important;
+    }
   }
 
   .hint {
     padding: 6px 16px;
   }
-
 
   .qrcode-placeholder {
     /* TODO: Should be improved */
@@ -23,11 +20,14 @@ page-team {
     min-width: 180px;
     min-height: 180px;
   }
-
   
   .members, .approve-members {
     h2, h3 {
       color: color($colors, light);
     }
+  }
+  
+  div.qrcode img {
+    filter: invert(100%) brightness(85%) contrast(95%) sepia(100%) saturate(143%) hue-rotate(333deg);
   }
 }

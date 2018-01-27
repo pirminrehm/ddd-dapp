@@ -35,19 +35,26 @@
 }
 
 ion-card-header, ion-list-header {
-  ion-spinner {
+  color: color($colors, secondary) !important;
+    // font-weight: bold;
+
+    ion-spinner {
     margin-bottom: -9px;
     margin-left: 5px;
     margin-top: -5px;
   }
 }
 
-ion-title {
-  text-align: center;
+ion-card.infobox {
+  ion-item {
+    ion-icon, h2 {
+      color: $card-item-header-color !important; 
+    }
+  }
 }
 
-div.qrcode img {
-  filter: invert(100%) brightness(85%) contrast(95%) sepia(100%) saturate(143%) hue-rotate(333deg)
+ion-title {
+  text-align: center;
 }
 
 .segment-button:not(.segment-activated) {

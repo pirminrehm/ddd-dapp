@@ -35,19 +35,22 @@ $app-direction: ltr;
 
 $colors: (
 
-  primary:    #e7723b,
+  // primary:    #e7723b, // more intensive
+  primary:    #d18228,
   secondary:  #ffc917,
   lightbrown: #ffe1bb,
   danger:     #630700,
-  success:    rgb(49, 100, 7),
+  // success:    #316407, // dark green
+  success:    #d18228,
   light:      #f4f4f4,
   dark:       #0e0705,
 
-  tabs:       #241d18,
-  list:       #1b150f,
+  // tabs:       #241d18, // old
+  // list:       #1b150f, // old
+  tabs:       #1d150f,
+  list:       #18130d,
   text-light: #fff,
-  text-dark:  #222,
-  inactive:   #777,
+  inactive:   #685c4c,
 
 ) !default;
 
@@ -55,7 +58,7 @@ $colors: (
 $text-color:                 color($colors, text-light) !default;
 $link-color:                 color($colors, primary) !default;
 $background-color:           color($colors, dark) !default;
-$subdued-text-color:         #666 !default;
+$subdued-text-color:         rgb(136, 33, 33) !default;
 
 $font-family-base:           -apple-system, "Helvetica Neue", "Roboto", sans-serif !default;
 $font-size-base:             1.4rem !default; // 1.4rem == 14px
@@ -67,21 +70,29 @@ $toolbar-background:         color($colors, dark) !default;
 $toolbar-border-color:       color($colors, secondary) !default;
 $toolbar-text-color:         $text-color !default;
 $toolbar-active-color:       $link-color !default;
-$toolbar-inactive-color:     #afafaf !default;
+// $toolbar-inactive-color:     #afafaf !default;
 
 $tabs-background:            color($colors, tabs) !default;
 $tabs-border-color:          color($colors, secondary) !default;
-$tabs-md-tab-icon-color:     color($colors, inactive) !default;
-$tabs-md-tab-text-color:     $tabs-md-tab-icon-color !default;
-$tabs-ios-tab-text-color:    $tabs-md-tab-icon-color !default;
-$tabs-ios-tab-icon-color:    $tabs-md-tab-icon-color !default;
-$tabs-tab-color-inactive:    #b1b1b1 !default;
-$tabs-tab-color-active:      $link-color !default;
+$tabs-inactive-color:        color($colors, inactive) !default;
+$tabs-md-tab-icon-color:     $tabs-inactive-color !default;
+$tabs-md-tab-text-color:     $tabs-inactive-color !default;
+$tabs-ios-tab-text-color:    $tabs-inactive-color !default;
+$tabs-ios-tab-icon-color:    $tabs-inactive-color !default;
+// $tabs-tab-color-inactive:    #b1b1b1 !default;
+// $tabs-tab-color-active:      $link-color !default;
 
 $list-text-color:            $text-color !default;
 $list-background-color:      color($colors, list) !default;
 $list-border-color:          #000 !default;
 
+$text-input-highlight-color-valid:    color($colors, primary);
+$text-input-highlight-color-invalid:  color($colors, danger);
+
+$card-text-color:            color($colors, text-light);
+$card-md-text-color:         $card-text-color;
+$card-ios-text-color:        $card-text-color;
+$card-item-header-color:     color($colors, secondary);
 
 // Custom Vars
 // --------------------------------------------------
@@ -93,9 +104,9 @@ $toast-text-success:        color($colors, text-light);
 $toast-danger:              color($colors, danger);
 $toast-text-danger:         color($colors, text-light);
 
-$refresher-icon-color: color($colors, light);
-$refresher-text-color: color($colors, light);
-$refresher-border-color: color($colors, dark);
+$refresher-icon-color:      color($colors, light);
+$refresher-text-color:      color($colors, light);
+$refresher-border-color:    color($colors, dark);
 
 
 // App iOS Variables

@@ -10,8 +10,8 @@
     <ion-title>Votings</ion-title>
   </ion-navbar>
 
-  <ion-toolbar>
-    <ion-segment [(ngModel)]="segmentArea"  *ngIf="!!(teamAddress$ | async)">
+  <ion-toolbar *ngIf="!!(teamAddress$ | async)">
+    <ion-segment [(ngModel)]="segmentArea">
       <ion-segment-button value="open">
         Open
       </ion-segment-button>
@@ -29,8 +29,20 @@
 
 
 <ion-content>
-  <div class="no-member" *ngIf="!(teamAddress$ | async)">
-    You're not part of a team. Join a team to create and participate at votings.
+  <div class="no-member">
+   <ion-card *ngIf="!(teamAddress$ | async)" class="infobox">
+      <ion-item>
+        <ion-icon name="help" item-left large></ion-icon>
+        <h2>How should i start?</h2>
+        <p>Join a team!</p>
+      </ion-item>
+      <ion-card-content>
+        <p>
+          Before you start voting, please join a team.
+          You can create your own team or join an existing team by using a qr code.
+        </p>
+      </ion-card-content>
+    </ion-card>
   </div>
 
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!!(teamAddress$ | async)" [enabled]="!(segmentArea == 'open' && selectedOpenVoting)">
