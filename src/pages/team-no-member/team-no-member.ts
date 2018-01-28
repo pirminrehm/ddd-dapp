@@ -81,6 +81,11 @@ export class TeamNoMemberPage implements OnInit {
       }
 
       let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
+      modal.onDidDismiss(succeeded => {
+        if(succeeded) {
+          this.notificationProvider.success('The join team request has been sent sucessfully.');
+        }
+      });
       modal.present();
 
     } catch(e) {
