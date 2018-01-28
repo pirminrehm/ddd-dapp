@@ -23,10 +23,10 @@
         <ion-input formControlName="name" text-left (keyup)="onInputChange()" placeholder="Enter your name..."></ion-input>
       </ion-item>
 
-      <ion-item>
-        Team: 
+      <ion-item class="team-address">
+        <span class="label">Team</span>
         
-        <div class="team-address">
+        <div>
           <span *ngIf="teamAddress$ | async; then showTeamAddress else noTeamAddress"></span>
           <ng-template #showTeamAddress>
             {{ teamName$ | async }}
@@ -48,6 +48,19 @@
       <ion-item>
         <ion-label for="loggingAddress">Logging-Addresse</ion-label>
         <ion-input formControlName="loggingAddress" text-right (keyup)="onInputChange()"></ion-input>
+      </ion-item>
+
+      <ion-item class="team-address">
+        <span class="label">Pending team</span>
+        
+        <div>
+          <span *ngIf="pendingTeamAddress$ | async; then showPendingTeamAddress else noPendingTeamAddress"></span>
+          <ng-template #showPendingTeamAddress>
+            {{ pendingTeamAddress$ | async }}
+            <ion-icon name="close-circle" item-end (click)="removePendingTeamAddress()"></ion-icon>  
+          </ng-template>
+          <ng-template #noPendingTeamAddress>No pending member</ng-template>
+        </div>
       </ion-item>
 
       <button ion-button block outline type="submit" [disabled]="settingsForm.invalid">Save settings</button>

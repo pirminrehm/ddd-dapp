@@ -33,6 +33,7 @@ export class SettingsPage {
   avatarId: number;
 
   teamAddress$: Promise<string>;
+  pendingTeamAddress$: Promise<string>;
   teamName$: Promise<string>;
 
   saveSubject: Subject<Boolean> = new Subject();
@@ -69,6 +70,7 @@ export class SettingsPage {
     });
 
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
+    this.pendingTeamAddress$ = this.settingsProvider.getPendingTeamAddress();
     
     this.teamName$ = null;
     if(await this.teamAddress$) {
@@ -102,6 +104,12 @@ export class SettingsPage {
     this.saveSubject.next(true);
   }
 
+
+  async removePendingTeamAddress() {
+    this.pendingTeamAddress$ = null;
+    this.saveSubject.next(true);
+  }
+
   private async persist(silently: Boolean = false) {
     console.log('** PERSIST SETTINGS ** ');
     try {
@@ -109,6 +117,7 @@ export class SettingsPage {
       await this.settingsProvider.setAccount(this.settingsForm.value.account);
       await this.settingsProvider.setLoggingAddress(this.settingsForm.value.loggingAddress);
       await this.settingsProvider.setTeamAddress(await this.teamAddress$);
+      await this.settingsProvider.setPendingTeamAddress(await this.pendingTeamAddress$);
 
       if(!silently) {
         this.notificationProvier.success('Settings saved');
