@@ -51,10 +51,7 @@ export class TeamNoMemberPage implements OnInit {
 
     this.avatarId = await this.settingsProvider.getAvatarId();
 
-    const pendingTeamAddress = await this.settingsProvider.getPendingTeamAddress();
-    if(pendingTeamAddress) {
-      this.pendingTeamName = await this.teamProvider.getTeamName(pendingTeamAddress);
-    }
+    this.refreshPendingTeam();
   }
 
   async createTeam() {
@@ -90,6 +87,7 @@ export class TeamNoMemberPage implements OnInit {
       let modal = this.modalCtrl.create(TeamJoinRequestPage, qrData);
       modal.onDidDismiss(succeeded => {
         if(succeeded) {
+          this.refreshPendingTeam();
           this.notificationProvider.success('The join team request has been sent sucessfully.');
         }
       });
@@ -106,5 +104,12 @@ export class TeamNoMemberPage implements OnInit {
       this.avatarId = avatarId
     })
     modal.present();
+  }
+
+  private async refreshPendingTeam() {
+    const pendingTeamAddress = await this.settingsProvider.getPendingTeamAddress();
+    if(pendingTeamAddress) {
+      this.pendingTeamName = await this.teamProvider.getTeamName(pendingTeamAddress);
+    }
   }
 }
