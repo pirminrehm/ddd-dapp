@@ -3,9 +3,9 @@
 
   <form [formGroup]="joinRequestForm" (submit)="sendJoinTeamRequest()">
     <ion-item>
-      <ion-label floating>Your public name</ion-label>
+      <ion-label stacked>Your public name</ion-label>
       <ion-avatar item-start class="input-avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
-      <ion-input formControlName="name" text-left></ion-input>
+      <ion-input formControlName="name" text-left placeholder="Enter your name..."></ion-input>
     </ion-item>
       
     <button ion-button outline block icon-start type="submit" [disabled]="joinRequestForm.invalid" class="send-button"><ion-icon name="send"></ion-icon> Send join team request</button>

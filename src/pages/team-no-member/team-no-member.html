@@ -33,14 +33,14 @@
       <form [formGroup]="createTeamForm" (submit)="createTeam()">
         
         <ion-item>
-          <ion-label for="name" floating>Team name</ion-label>
-          <ion-input class="form-control" type="text" formControlName="name"></ion-input>
+          <ion-label for="name" stacked>Team name</ion-label>
+          <ion-input placeholder="Enter a team name..." type="text" formControlName="name"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label floating>Your public name</ion-label>
+          <ion-label stacked>Your public name</ion-label>
           <ion-avatar item-start class="input-avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
-          <ion-input formControlName="creatorName" text-left></ion-input>
+          <ion-input formControlName="creatorName" text-left placeholder="Enter your name..."></ion-input>
         </ion-item>
         
         <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
