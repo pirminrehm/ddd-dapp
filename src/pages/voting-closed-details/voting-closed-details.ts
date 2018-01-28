@@ -20,6 +20,9 @@ export class VotingClosedDetailsPage implements OnChanges {
   isLoading: Boolean;
   locationPoints: LocationPoint[];
 
+  winningLocationPoint: LocationPoint;
+  winningStochasticLocation: string;
+
   chartReloadSubject = new Subject();
 
   constructor(private votingProvider: VotingProvider) {
@@ -27,10 +30,27 @@ export class VotingClosedDetailsPage implements OnChanges {
 
   async ngOnChanges() {
     if(this.address) {
-      console.log(this.address);
       this.isLoading = true;
-      this.votingProvider.getLocationPoints(this.address).then(locationPoints => {
-        this.locationPoints = locationPoints;
+
+      const locationPoints$ = this.votingProvider
+        .getLocationPoints(this.address)
+        .then(locationPoints => {
+          this.locationPoints = locationPoints;
+
+          let winning: LocationPoint;
+          this.locationPoints.forEach((locationPoint) => {
+            if(!winning || locationPoint.points > winning.points) {
+              winning = locationPoint;
+            }
+          });
+          this.winningLocationPoint = winning;
+        });
+    
+      const winningLocation$ = this.votingProvider
+        .getWinningLocation(this.address)
+        .then(winningLocation => this.winningStochasticLocation = winningLocation);
+
+      Promise.all([locationPoints$, winningLocation$]).then(() => {
         this.isLoading = false;
         this.chartReloadSubject.next();
       });
