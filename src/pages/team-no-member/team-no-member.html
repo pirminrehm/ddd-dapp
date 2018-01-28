@@ -1,5 +1,5 @@
 <div padding>
-  <ion-card class="infobox">
+  <ion-card class="infobox" *ngIf="!pendingTeamName">
     <ion-item>
       <ion-icon name="help" item-left large></ion-icon>
       <h2>How should i start?</h2>
@@ -12,6 +12,19 @@
       </p>
     </ion-card-content>
   </ion-card>
+
+  <ion-card class="infobox" *ngIf="pendingTeamName">
+      <ion-item>
+        <ion-icon name="timer" item-left large></ion-icon>
+        <h2>Team: {{ pendingTeamName }}</h2>
+        <p>Your join team request is pending!</p>
+      </ion-item>
+      <ion-card-content>
+        <p>
+          Please wait until the other team members accept your join request.
+        </p>
+      </ion-card-content>
+    </ion-card>
 
   <!-- CREATE A NEW TEAM -->
   <ion-card>

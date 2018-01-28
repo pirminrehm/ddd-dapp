@@ -30,6 +30,8 @@ export class TeamNoMemberPage implements OnInit {
   createTeamForm: FormGroup;
   avatarId: number;
 
+  pendingTeamName: string;
+
   constructor(private fb: FormBuilder,
               private teamProvider: TeamProvider,
               private notificationProvider: NotificationProvider,
@@ -48,6 +50,11 @@ export class TeamNoMemberPage implements OnInit {
     this.createTeamForm.controls['creatorName'].patchValue(creatorName);
 
     this.avatarId = await this.settingsProvider.getAvatarId();
+
+    const pendingTeamAddress = await this.settingsProvider.getPendingTeamAddress();
+    if(pendingTeamAddress) {
+      this.pendingTeamName = await this.teamProvider.getTeamName(pendingTeamAddress);
+    }
   }
 
   async createTeam() {

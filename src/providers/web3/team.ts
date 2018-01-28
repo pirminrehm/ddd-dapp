@@ -36,9 +36,14 @@ export class TeamProvider {
 
 
   // CONTRACT ACCESSORS
-  async getTeamName(): Promise<string> {
+  async getTeamName(address = null): Promise<string> {
     if(!this.state.name) {
-      let name = await this.call('getTeamName');
+      let name;
+      if(address) {
+        name = await this.callAt(address, 'getTeamName');
+      } else {
+        name = await this.call('getTeamName');
+      }
       this.state.name = await this.web3Provider.fromWeb3String(name);
     }
     return this.state.name;
@@ -242,6 +247,16 @@ export class TeamProvider {
       e => this.handleError(e);
     }
   }
+
+    // INTERNAL
+    private async callAt(address: string, name: string, ...params): Promise<any> {
+      const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
+      try {
+        return contract[name].call(...params);
+      } catch(e) {
+        e => this.handleError(e);
+      }
+    }
 
   private async transaction(name: string, ...params): Promise<any> {
     const contract =  await this.getContract();
