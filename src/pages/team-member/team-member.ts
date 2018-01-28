@@ -10,6 +10,7 @@ import { PendingMember } from './../../models/pending-member';
 import { Member } from './../../models/member';
 
 import { Subject } from 'rxjs/Subject';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
 
 /**
  * Generated class for the TeamMemberPage page.
@@ -37,7 +38,8 @@ export class TeamMemberPage implements OnChanges {
 
   segmentArea = 'members';
 
-  constructor(private teamProvider: TeamProvider,
+  constructor(private alertCtrl: AlertController, 
+              private teamProvider: TeamProvider,
               private notificationProvider: NotificationProvider,
               private settingsProvider: SettingsProvider) {
     this.pendingMembers = [];
@@ -108,4 +110,27 @@ export class TeamMemberPage implements OnChanges {
     }
   }
 
+  confirmPendingMember(pendingMember: PendingMember) {
+    let alert = this.alertCtrl.create({
+      title: 'Confirm ' + pendingMember.name,
+      message: `Do you want to confirm ${pendingMember.name}?`,
+      cssClass: 'alert-dark',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.acceptPendingMember(pendingMember);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
 }
