@@ -96,7 +96,7 @@ export class VotingPage implements OnInit {
 
   private async refreshClosedVotings() {
     this.areClosedVotingsLoading = true;
-    this.closedVotings = await this.teamProvider.getClosedVotings();
+    this.closedVotings = await this.teamProvider.getLatestClosedVotings();
     this.areClosedVotingsLoading = false;    
   }
 

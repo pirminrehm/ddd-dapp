@@ -208,11 +208,15 @@ export class TeamProvider {
   }
 
 
-  async getClosedVotings(): Promise<Voting[]> {
+  async getLatestClosedVotings(limit = 5): Promise<Voting[]> {
     const count = await this.getClosedVotingsCount();
+    if(count < limit) {
+      limit = count;
+    }
+
     const votings = [];
-    for(let i = 0; i < count; i++) {
-      votings.push(await this.getClosedVotingByIndex(i));
+    for(let i = 0; i < limit; i++) {
+      votings.push(await this.getClosedVotingByIndex((count-i) - 1));
     }
     return votings;
   }
