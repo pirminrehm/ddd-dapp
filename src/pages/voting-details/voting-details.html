@@ -17,12 +17,14 @@
       </ion-range-slider>
     </div>
 
-    <page-voting-chart [locationPoints]="locationPoints" [reload]="chartReloadSubject"></page-voting-chart>
+    <div *ngIf="locationPoints.length > 0">
+      <page-voting-chart [locationPoints]="locationPoints" [reload]="chartReloadSubject"></page-voting-chart>
 
-    <button ion-button outline block type="submit" [disabled]="remainingPoints != 0 || isTransmitting" (click)="submitVotes()">
-      Submit your votes
-      <ion-spinner name="dots" *ngIf="isTransmitting"></ion-spinner>
-    </button>
+      <button ion-button outline block type="submit" [disabled]="remainingPoints != 0 || isTransmitting" (click)="submitVotes()">
+        Submit your votes
+        <ion-spinner name="dots" *ngIf="isTransmitting"></ion-spinner>
+      </button>
+    </div>
   </ion-card-content>
 </ion-card>
 
