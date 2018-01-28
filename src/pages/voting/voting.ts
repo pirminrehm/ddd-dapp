@@ -71,15 +71,15 @@ export class VotingPage implements OnInit {
   }
 
   private async stateChanged() {
+    // We have to reset the selected voting here to prevent inconsistencies
+    this.selectedOpenVoting = null;
+
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
 
     if(await this.teamAddress$) {
       await this.refreshOpenVotings();
       await this.refreshClosedVotings();
     }
-
-    // We have to reset the selected voting here to prevent inconsistencies
-    this.selectedOpenVoting = null;
   }
   
   async doRefresh(refresher) {
