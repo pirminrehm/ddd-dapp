@@ -1,7 +1,7 @@
 import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
 import { LoggingProvider } from './../../providers/web3/logging';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Web3Provider } from './../../providers/web3/web3';
@@ -19,19 +19,15 @@ import { Subject } from 'rxjs/Subject';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-@IonicPage()
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',
 })
 export class SettingsPage {
-  
   settingsForm: FormGroup;
   accounts: Account[];
 
   avatarId: number;
-
   teamAddress$: Promise<string>;
   pendingTeamAddress$: Promise<string>;
   teamName$: Promise<string>;
@@ -58,6 +54,7 @@ export class SettingsPage {
       .debounceTime(500)
       .subscribe(silently => this.persist(silently));
   }
+
 
   async ionViewWillEnter() {
     this.accounts = (await this.web3Provider.getAccounts())
@@ -99,19 +96,17 @@ export class SettingsPage {
     this.saveSubject.next(false);
   }
 
-  async removeTeamAddress() {
+  removeTeamAddress() {
     this.teamAddress$ = null;
     this.saveSubject.next(true);
   }
 
-
-  async removePendingTeamAddress() {
+  removePendingTeamAddress() {
     this.pendingTeamAddress$ = null;
     this.saveSubject.next(true);
   }
 
   private async persist(silently: Boolean = false) {
-    console.log('** PERSIST SETTINGS ** ');
     try {
       await this.settingsProvider.setName(this.settingsForm.value.name);
       await this.settingsProvider.setAccount(this.settingsForm.value.account);

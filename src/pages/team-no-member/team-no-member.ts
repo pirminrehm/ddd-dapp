@@ -24,12 +24,10 @@ import { SettingsProvider } from '../../providers/storage/settings';
   templateUrl: 'team-no-member.html',
 })
 export class TeamNoMemberPage implements OnInit {
-
   @Output() teamCreated: EventEmitter<any> = new EventEmitter();
 
   createTeamForm: FormGroup;
   avatarId: number;
-
   pendingTeamName: string;
 
   constructor(private fb: FormBuilder,
@@ -100,9 +98,7 @@ export class TeamNoMemberPage implements OnInit {
 
   selectAvatar() {
     const modal = this.modalCtrl.create(AvatarSelectorPage);
-    modal.onDidDismiss(avatarId => {
-      this.avatarId = avatarId
-    })
+    modal.onDidDismiss(avatarId => this.avatarId = avatarId);
     modal.present();
   }
 

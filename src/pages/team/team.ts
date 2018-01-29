@@ -7,8 +7,7 @@ import { NavController } from 'ionic-angular';
   selector: 'page-team',
   templateUrl: 'team.html'
 })
-export class TeamPage {
-
+export class TeamPage implements OnInit {
   teamAddress: Boolean;
   isLoading: Boolean;
 
@@ -22,7 +21,7 @@ export class TeamPage {
     this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
-  async ionViewWillEnter() {
+  ionViewWillEnter() {
     this.stateChanged();
   }
 

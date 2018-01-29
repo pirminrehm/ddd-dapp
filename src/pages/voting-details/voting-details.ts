@@ -1,5 +1,7 @@
-import { Component, OnChanges, Input, SimpleChanges, Output, EventEmitter, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnChanges, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
+
+import { Subject } from 'rxjs/Subject';
 
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
@@ -7,13 +9,7 @@ import { VotingProvider } from './../../providers/web3/voting';
 import { TeamProvider } from './../../providers/web3/team';
 
 import { LocationPoint } from './../../models/location-point';
-import { UserPoint } from './../../models/user-point';
-import { Account } from './../../models/account';
-import { Location } from './../../models/location';
-import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
-import { SLIDE_COLORS } from '../voting-chart/voting-chart';
-
-import { Subject } from 'rxjs/Subject';
+import { SLIDE_COLORS } from './../../models/slider-colors';
 
 /**
  * Generated class for the VotingDetailsPage page.
@@ -55,7 +51,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
     if(!this.address) {
       return;
     }
-    
+
     this.isLoading = true;
 
     this.remainingPoints = 100;

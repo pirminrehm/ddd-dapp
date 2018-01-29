@@ -1,19 +1,39 @@
 page-team-member {
-
   .segment-entry {
     padding: 24px 16px 16px !important;
   }
 
   .segment-entry.createToken {
-    ion-card {
+    ion-card.qr-code-wrapper {
       margin-top: -24px !important;
       background: none !important;
     }
-    .button-wrapper {
+
+    .inner-wrapper {
       margin: 0 24px;
+      ion-card {
+        margin-bottom: 12px !important ;
+      }
+      ion-card-content {
+        font-size: 13px !important;
+      }
     }
     ion-spinner {
       margin-left: 6px;
     }
+  }
+   
+  div.qrcode {
+    img {
+      filter: invert(0%) brightness(85%) contrast(95%) sepia(100%) saturate(143%) hue-rotate(333deg);
+      max-width: 108%;
+      width: 108%;
+      height: 108%;
+      margin: -4%;
+    }
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin-bottom: 12px;
   }
 }

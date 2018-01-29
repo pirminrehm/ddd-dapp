@@ -1,7 +1,9 @@
-import { SettingsProvider } from './../../providers/storage/settings';
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
+import { Subject } from 'rxjs/Subject';
 
 import { TeamProvider } from './../../providers/web3/team';
+import { SettingsProvider } from './../../providers/storage/settings';
 import { NotificationProvider } from './../../providers/notification/notification';
 
 import { TeamInvitation } from './../../models/team-invitation';
@@ -9,8 +11,6 @@ import { Loader } from './../../models/loader';
 import { PendingMember } from './../../models/pending-member';
 import { Member } from './../../models/member';
 
-import { Subject } from 'rxjs/Subject';
-import { AlertController } from 'ionic-angular/components/alert/alert-controller';
 
 /**
  * Generated class for the TeamMemberPage page.
@@ -25,18 +25,15 @@ import { AlertController } from 'ionic-angular/components/alert/alert-controller
 })
 export class TeamMemberPage implements OnChanges {
   @Input() teamAddress: string;
+  segmentArea = 'members';
 
   teamInvitation: TeamInvitation;
-
   pendingMembers: PendingMember[];
   members: Member[];
   loader: Loader;
-
-  refreshSubject: Subject<any>;
-
   userAccount: string;
 
-  segmentArea = 'members';
+  refreshSubject: Subject<any>;
 
   constructor(private alertCtrl: AlertController, 
               private teamProvider: TeamProvider,
@@ -46,12 +43,9 @@ export class TeamMemberPage implements OnChanges {
     this.members = [];
     this.loader = new Loader(['members', 'pendingMembers', 'createInvitationToken']);    
     this.refreshSubject = new Subject();
-
-
   }
 
   ngOnChanges() {
-    console.log('STATE CHANGED TEAM MEMBER')
     if(this.teamAddress) {
       this.stateChanged();
     }
@@ -67,7 +61,7 @@ export class TeamMemberPage implements OnChanges {
     this.loader.activate('createInvitationToken');
     this.teamProvider.onTokenCreated().then(teamInvitation => {
       this.teamInvitation = teamInvitation;
-      console.log(this.teamInvitation);
+      console.log(this.teamInvitation, 'CREATED TEAM INVITATION');
       this.loader.deactivate('createInvitationToken');
     });
 
@@ -80,48 +74,47 @@ export class TeamMemberPage implements OnChanges {
       this.notificationProvider.success(`Pending user ${pendingMember.name} added`);
       this.stateChanged();
     } catch(e) {
-      this.notificationProvider.error(`An error occured while approving the member. ${pendingMember.name} remains unapproved`);
+      this.notificationProvider.error(`An error occured while approving the member. 
+        ${pendingMember.name} remains unapproved`);
       console.log(e);
     }
   }
 
-  async doRefresh(refresher) {
+  doRefresh(refresher) {
+    if(this.segmentArea == 'createToken') {
+      this.createInvitationToken();
+    }
+    
     this.stateChanged();
-
-    // TODO: Listen to stateChanged callback
+    // Add Timeout to wait at least 1 sec
     setTimeout(() => refresher.complete(), 1000);
   }
 
   private async stateChanged() {
     this.refreshSubject.next();
     this.loader.activateAll();
-    this.loader.deactivate('createInvitationToken');    
-    
-    if(this.teamAddress) {
-      this.userAccount = await this.settingsProvider.getAccount();
-      this.teamProvider.getMembers().then(members => {
-        this.members = members;
-        this.loader.deactivate('members');
-      });
-      this.teamProvider.getPendingMembers().then(pendingMembers =>  {
-        this.pendingMembers = pendingMembers;
-        this.loader.deactivate('pendingMembers');
-      });
-    }
+    this.loader.deactivate('createInvitationToken');
+
+    this.userAccount = await this.settingsProvider.getAccount();
+    this.teamProvider.getMembers().then(members => {
+      this.members = members;
+      this.loader.deactivate('members');
+    });
+    this.teamProvider.getPendingMembers().then(pendingMembers =>  {
+      this.pendingMembers = pendingMembers;
+      this.loader.deactivate('pendingMembers');
+    });
   }
 
   confirmPendingMember(pendingMember: PendingMember) {
-    let alert = this.alertCtrl.create({
+    const alert = this.alertCtrl.create({
       title: 'Confirm ' + pendingMember.name,
       message: `Do you want to confirm ${pendingMember.name}?`,
       cssClass: 'alert-dark',
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
+          role: 'cancel'
         },
         {
           text: 'Confirm',

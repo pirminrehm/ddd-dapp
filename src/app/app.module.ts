@@ -1,3 +1,4 @@
+import { SettingsPage } from './../pages/settings/settings';
 import { AvatarSelectorPage } from './../pages/avatar-selector/avatar-selector';
 import { VotingClosedDetailsPage } from './../pages/voting-closed-details/voting-closed-details';
 import { TeamMemberPage } from './../pages/team-member/team-member';
@@ -26,7 +27,6 @@ import { VotingProvider } from '../providers/web3/voting';
 import { VotingDetailsPage } from './../pages/voting-details/voting-details';
 import { TeamProvider } from './../providers/web3/team';
 import { SettingsProvider } from './../providers/storage/settings';
-import { SettingsPageModule } from '../pages/settings/settings.module';
 import { TeamJoinRequestPage } from '../pages/team-join-request/team-join-request';
 import { NotificationProvider } from '../providers/notification/notification';
 import { AppStateProvider } from '../providers/storage/app-state';
@@ -47,13 +47,13 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     VotingDetailsPage,
     TabsPage,
     VotingChartPage,
-    AvatarSelectorPage
+    AvatarSelectorPage,
+    SettingsPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
-    SettingsPageModule,
     NgxQRCodeModule,
     IonRangeSliderModule
   ],
@@ -70,7 +70,8 @@ import { MemberApprovedProvider } from '../providers/helpers/member-approved';
     VotingDetailsPage,
     TabsPage,
     VotingChartPage,
-    AvatarSelectorPage
+    AvatarSelectorPage,
+    SettingsPage
   ],
   providers: [
     Web3Provider,

@@ -1,5 +1,4 @@
 import { SettingsProvider } from './../storage/settings';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { TeamProvider } from '../web3/team';
@@ -13,7 +12,6 @@ import { Observable } from 'rxjs/Observable';
 */
 @Injectable()
 export class MemberApprovedProvider {
-
   private subject = new Subject<string>();
 
   constructor(private settingsProvider: SettingsProvider,

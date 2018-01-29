@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { SettingsProvider } from './../../providers/storage/settings';
 import { TeamProvider } from './../../providers/web3/team';
 import { Voting } from '../../models/voting';
 
-import { VotingProvider } from './../../providers/web3/voting';
 import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
 
 
@@ -16,8 +15,6 @@ import { MemberApprovedProvider } from './../../providers/helpers/member-approve
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-@IonicPage()
 @Component({
   selector: 'page-voting',
   templateUrl: 'voting.html',
@@ -39,7 +36,6 @@ export class VotingPage implements OnInit {
   constructor(private teamProvider: TeamProvider,
               private fb: FormBuilder,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
               private memberApprovedProvider: MemberApprovedProvider) {
   }
 
@@ -48,9 +44,7 @@ export class VotingPage implements OnInit {
       name: ['', [Validators.required]],
     });
 
-    // TODO:
     this.closedVotings = [];
-
     this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
@@ -90,7 +84,6 @@ export class VotingPage implements OnInit {
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
     this.openVotings = await this.teamProvider.getVotings();
-
     this.areOpenVotingsLoading = false;    
   }
 
@@ -100,8 +93,8 @@ export class VotingPage implements OnInit {
     this.areClosedVotingsLoading = false;    
   }
 
-  onVotingClosed() {
-    this.stateChanged();
+  async onVotingClosed() {
+    await this.stateChanged();
     this.selectedOpenVoting = null;
     this.segmentArea = 'closed';
   }

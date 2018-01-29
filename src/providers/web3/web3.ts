@@ -22,7 +22,6 @@ export class Web3Provider {
   private ready: Promise<any>;
 
   private web3: any;
-  private account: string;
   private accounts: string[];
 
   constructor(private platform: Platform,

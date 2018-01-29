@@ -85,8 +85,8 @@ ion-title {
 
 .alert-dark {
   ion-backdrop {
-    background: rgba(29,21,15, 0.95) !important;
-    opacity: 1 !important;
+    background: rgb(31, 18, 10) !important;
+    opacity: 1;
   }
   .alert-wrapper {
     background: color($colors, dark);
