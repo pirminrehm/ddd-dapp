@@ -1,10 +1,12 @@
 <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
 
-<div [style.display]="(address && !isLoading) ? 'block' : 'none'">
-  <page-voting-chart [locationPoints]="locationPoints" displayLegend="true" [reload]="chartReloadSubject"></page-voting-chart>
-  
+<ion-card [style.display]="(address && !isLoading) ? 'block' : 'none'">
+  <ion-card-header>Voting result for {{votingName$ | async}}</ion-card-header>
+  <ion-card-content>
+    <page-voting-chart [locationPoints]="locationPoints" displayLegend="true" [reload]="chartReloadSubject"></page-voting-chart>
+  </ion-card-content>
   <ion-list *ngIf="winningLocationPoint && winningStochasticLocation">
-    <ion-item>
+    <ion-item class="first-winner">
       <ion-label>Majority winner</ion-label>
       <span item-right>{{ winningLocationPoint.location.name }}</span>
     </ion-item>
@@ -13,4 +15,4 @@
       <span item-right>{{ winningStochasticLocation }}</span>
     </ion-item>
   </ion-list>
-</div>
+</ion-card>

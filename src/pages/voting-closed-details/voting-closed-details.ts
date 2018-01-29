@@ -19,6 +19,7 @@ export class VotingClosedDetailsPage implements OnChanges {
 
   isLoading: Boolean;
   locationPoints: LocationPoint[];
+  votingName$: Promise<string>;
 
   winningLocationPoint: LocationPoint;
   winningStochasticLocation: string;
@@ -31,6 +32,8 @@ export class VotingClosedDetailsPage implements OnChanges {
   async ngOnChanges() {
     if(this.address) {
       this.isLoading = true;
+
+      this.votingName$ = this.votingProvider.getVotingName(this.address);
 
       const locationPoints$ = this.votingProvider
         .getLocationPoints(this.address)
@@ -50,7 +53,7 @@ export class VotingClosedDetailsPage implements OnChanges {
         .getWinningLocation(this.address)
         .then(winningLocation => this.winningStochasticLocation = winningLocation);
 
-      Promise.all([locationPoints$, winningLocation$]).then(() => {
+      Promise.all([locationPoints$, winningLocation$, this.votingName$]).then(() => {
         this.isLoading = false;
         this.chartReloadSubject.next();
       });

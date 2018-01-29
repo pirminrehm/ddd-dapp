@@ -71,8 +71,7 @@ export class VotingChartPage implements OnInit {
   ngOnInit() {
     if(this.displayLegend) {
       this.chartOptions.legend.position = 'right';
-      this.chartOptions.chartArea.left = 20;
-      this.chartOptions.chartArea.right = 20;
+      this.chartOptions.chartArea.right = 10;
       this.chartOptions.chartArea.width = '100%';
     }
     this.ready$ = new Promise((resolve, reject) => {
