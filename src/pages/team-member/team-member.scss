@@ -22,4 +22,18 @@ page-team-member {
       margin-left: 6px;
     }
   }
+   
+  div.qrcode {
+    img {
+      filter: invert(0%) brightness(85%) contrast(95%) sepia(100%) saturate(143%) hue-rotate(333deg);
+      max-width: 108%;
+      width: 108%;
+      height: 108%;
+      margin: -4%;
+    }
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
 }

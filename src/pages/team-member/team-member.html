@@ -55,8 +55,9 @@
     <ion-card class="qr-code-wrapper">
       <!-- <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div> -->
       
-      <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
-    
+      <div class="inner-wrapper">
+        <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
+      </div>
         
       <div class="inner-wrapper">
         <ion-card class="invitation-token" *ngIf="!invitationTokenIsLoading && teamInvitation">
