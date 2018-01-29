@@ -29,34 +29,35 @@ export class VotingClosedDetailsPage implements OnChanges {
   constructor(private votingProvider: VotingProvider) {
   }
 
-  async ngOnChanges() {
-    if(this.address) {
-      this.isLoading = true;
-
-      this.votingName$ = this.votingProvider.getVotingName(this.address);
-
-      const locationPoints$ = this.votingProvider
-        .getLocationPoints(this.address)
-        .then(locationPoints => {
-          this.locationPoints = locationPoints;
-
-          let winning: LocationPoint;
-          this.locationPoints.forEach((locationPoint) => {
-            if(!winning || locationPoint.points > winning.points) {
-              winning = locationPoint;
-            }
-          });
-          this.winningLocationPoint = winning;
-        });
-    
-      const winningLocation$ = this.votingProvider
-        .getWinningLocation(this.address)
-        .then(winningLocation => this.winningStochasticLocation = winningLocation);
-
-      Promise.all([locationPoints$, winningLocation$, this.votingName$]).then(() => {
-        this.isLoading = false;
-        this.chartReloadSubject.next();
-      });
+  ngOnChanges() {
+    if(!this.address) {
+      return;
     }
+
+    this.isLoading = true;
+    
+    this.votingName$ = this.votingProvider.getVotingName(this.address);
+    const locationPoints$ = this.votingProvider
+      .getLocationPoints(this.address)
+      .then(locationPoints => {
+        this.locationPoints = locationPoints;
+
+        let winning: LocationPoint;
+        this.locationPoints.forEach((locationPoint) => {
+          if(!winning || locationPoint.points > winning.points) {
+            winning = locationPoint;
+          }
+        });
+        this.winningLocationPoint = winning;
+      });
+  
+    const winningLocation$ = this.votingProvider
+      .getWinningLocation(this.address)
+      .then(winningLocation => this.winningStochasticLocation = winningLocation);
+
+    Promise.all([locationPoints$, winningLocation$, this.votingName$]).then(() => {
+      this.isLoading = false;
+      this.chartReloadSubject.next();
+    });
   }
 }
