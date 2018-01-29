@@ -53,7 +53,7 @@
   <!-- CREATE INVITATION TOKEN -->
   <div *ngIf="segmentArea == 'createToken'" class="segment-entry createToken">
     <ion-card class="qr-code-wrapper">
-      <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
+      <!-- <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div> -->
       
       <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
     
