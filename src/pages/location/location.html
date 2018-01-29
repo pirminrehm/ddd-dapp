@@ -9,9 +9,9 @@
   <form [formGroup]="newLocationForm" (submit)="addLocation()">
     <ion-list>
       <ion-item class="add-location">
-        <ion-input class="form-control" type="text" formControlName="name" placeholder="Add a location..."></ion-input>
-          <button ion-button icon-only item-right round type="submit" [disabled]="newLocationForm.invalid || newLocationForm.pristine">
-            <ion-icon name="add"></ion-icon>
+        <ion-input class="form-control" type="text" formControlName="name" placeholder="Enter a location..."></ion-input>
+          <button ion-button item-right round type="submit" [disabled]="newLocationForm.invalid || newLocationForm.pristine">
+            <ion-icon name="add"></ion-icon> Add
           </button>
       </ion-item>
       <ion-spinner name="dots" *ngIf="areLocationsLoading"></ion-spinner>

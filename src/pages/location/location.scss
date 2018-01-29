@@ -5,10 +5,14 @@ page-location {
 
   .add-location {
     padding-left: 8px;
+    .input-cover {
+      border-bottom: 1px solid color($colors, text-sub);
+      border-bottom-color: color($colors, text-sub) !important;
+    }
   }
 
   ion-icon {
-    width: 25px !important;
+    margin: 0 3px !important;
   }
 
   ion-spinner {
