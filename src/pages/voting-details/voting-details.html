@@ -4,8 +4,10 @@
   <ion-card-header>Vote for {{votingName$ | async}}</ion-card-header>
   <ion-card-content>
     <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
-    <div *ngFor="let locationPoint of locationPoints; let i=index">
-      {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+    <div class="slider-wrapper" *ngFor="let locationPoint of locationPoints; let i=index">
+      <div class="slider-label">
+        {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+      </div>
       <ion-range-slider 
         min="0" 
         max="100" 

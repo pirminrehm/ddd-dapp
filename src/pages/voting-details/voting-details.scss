@@ -12,12 +12,24 @@ page-voting-details {
     text-align: right;
   }
 
+  ion-badge {
+    margin-left: 3px;
+  }
+
   button {
     margin-top: 16px !important;
 
     ion-spinner {
       margin-left: -3px !important;
     }
+  }
+
+  .slider-wrapper {
+    margin-bottom: 18px;
+  }
+
+  .slider-label {
+    margin-bottom: -7px;
   }
 
 
@@ -28,7 +40,7 @@ page-voting-details {
   }
 
   .irs-min, .irs-max {
-    background-color: rgb(36, 36, 36);
+    background-color: color($colors, list);
     border: none;
     color: white;
     z-index: 3;
