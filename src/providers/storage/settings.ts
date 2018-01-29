@@ -29,7 +29,8 @@ export class SettingsProvider {
   }
 
   async getAvatarId() {
-    return await this.get('avatar-id');
+    const avatarId = await this.get('avatar-id');
+    return avatarId ? avatarId : 0;
   }
   
   async getLoggingAddress() {
