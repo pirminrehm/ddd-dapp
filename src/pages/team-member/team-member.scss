@@ -3,4 +3,17 @@ page-team-member {
   .segment-entry {
     padding: 24px 16px 16px !important;
   }
+
+  .segment-entry.createToken {
+    ion-card {
+      margin-top: -24px !important;
+      background: none !important;
+    }
+    .button-wrapper {
+      margin: 0 24px;
+    }
+    ion-spinner {
+      margin-left: 6px;
+    }
+  }
 }

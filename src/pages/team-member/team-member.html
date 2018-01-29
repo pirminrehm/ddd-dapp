@@ -1,4 +1,4 @@
-<div>
+<ion-toolbar>
   <ion-segment [(ngModel)]="segmentArea">
     <ion-segment-button value="members">
       Members
@@ -10,7 +10,7 @@
       Locations
     </ion-segment-button>
   </ion-segment>
-</div>
+</ion-toolbar>
 
 <ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)">
@@ -57,15 +57,17 @@
   <!-- CREATE INVITATION TOKEN -->
   <div *ngIf="segmentArea == 'createToken'" class="segment-entry createToken">
     <ion-card>
-        <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
-        
-        <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
-        
-        <button ion-button block outline (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
+      <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
+      
+      <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
+      
+      <div class="button-wrapper">
+        <button ion-button outline block (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
           Refresh token 
           <ion-spinner name="dots" *ngIf="loader.createInvitationToken" color="light"></ion-spinner>
         </button>
-      </ion-card>
+      </div>
+    </ion-card>
   </div>
 
   <div *ngIf="segmentArea == 'locations'" class="segment-entry locations">

@@ -103,5 +103,6 @@ export class VotingPage implements OnInit {
   onVotingClosed() {
     this.stateChanged();
     this.selectedOpenVoting = null;
+    this.segmentArea = 'closed';
   }
 }

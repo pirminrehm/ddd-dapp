@@ -42,10 +42,15 @@ ion-card-header, ion-list-header {
   font-size: 1.3em;
 
     ion-spinner {
-    margin-bottom: -9px;
-    margin-left: 5px;
-    margin-top: -5px;
+      margin-bottom: -9px;
+      margin-left: 5px;
+      margin-top: -5px;
+      circle { fill: color($colors, secondary) !important;}
   }
+}
+
+ion-spinner {
+  circle { fill: color($colors, primary) !important;}
 }
 
 
@@ -63,6 +68,9 @@ ion-card.infobox {
     ion-icon, h2 {
       color: $card-item-header-color !important; 
     }
+  }
+  .item-inner {
+    margin-left: 9px !important; 
   }
 }
 
@@ -86,5 +94,13 @@ ion-title {
   }
   .alert-message {
     color: color($colors, light);
+  }
+}
+
+ion-toolbar {
+  padding: 0 !important;
+
+  ion-segment {
+    margin-bottom: 12px !important;
   }
 }

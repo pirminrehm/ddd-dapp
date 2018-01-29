@@ -4,8 +4,10 @@
   <ion-card-header>Vote for {{votingName$ | async}}</ion-card-header>
   <ion-card-content>
     <div *ngIf="locationPoints.length== 0">Add a location at the team page before start voting.</div>
-    <div *ngFor="let locationPoint of locationPoints; let i=index">
-      {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+    <div class="slider-wrapper" *ngFor="let locationPoint of locationPoints; let i=index">
+      <div class="slider-label">
+        {{locationPoint.location.name}} <ion-badge item-end [style.backgroundColor]="colors[i]">{{ locationPoint.points }}</ion-badge>
+      </div>
       <ion-range-slider 
         min="0" 
         max="100" 
@@ -17,7 +19,7 @@
       </ion-range-slider>
     </div>
 
-    <div *ngIf="locationPoints.length > 0">
+    <div class="chart-wrapper" *ngIf="locationPoints.length > 0">
       <page-voting-chart [locationPoints]="locationPoints" [reload]="chartReloadSubject"></page-voting-chart>
 
       <button ion-button outline block type="submit" [disabled]="remainingPoints != 0 || isTransmitting" (click)="submitVotes()">
@@ -28,7 +30,16 @@
   </ion-card-content>
 </ion-card>
 
-<div *ngIf="hasVoted">
-  You already voted for this voting.
-  <button ion-button outline block type="submit" (click)="closeVoting()">Close voting</button>
-</div>  
+<ion-card class="infobox" *ngIf="hasVoted">
+  <ion-item>
+    <ion-icon name="alert" item-left large></ion-icon>
+    <h2>Voting {{ votingName$ | async }}</h2>
+    <p>You've already voted!</p>
+  </ion-item>
+  <ion-card-content>
+    <p>
+      Since you have already voted, wait for your team members to vote. Then click on the button below to close the voting. 
+      <button ion-button outline block type="submit" (click)="closeVoting()">Close voting</button>
+    </p>
+  </ion-card-content>
+</ion-card>

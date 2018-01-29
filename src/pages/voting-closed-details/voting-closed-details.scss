@@ -3,8 +3,16 @@ page-voting-closed-details {
     width: 100%;
   }
 
+  ion-card {
+    margin-top: 36px !important;
+  }
+
   ion-list {
-    margin: 10px 20px 0 !important;
+    margin-bottom: 24px !important;
+    
+    .first-winner {
+      border-bottom: 1px solid color($colors, text-sub) !important;
+    }
   }
 
   ion-label {

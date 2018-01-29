@@ -52,25 +52,27 @@ export class VotingDetailsPage implements OnChanges, OnInit {
   }
 
   async ngOnChanges() {
-    if(this.address) {
-      this.isLoading = true;
-
-      this.remainingPoints = 100;
-      this.locationPoints = [];
-      
-      const locations = await this.locationProvider.getLocations();
-      locations.forEach(location => {
-        this.locationPoints.push(new LocationPoint(location, 0));
-      });
-
-      this.votingName$ = this.votingProvider.getVotingName(this.address);
-      await this.votingName$;
-
-      this.isTransmitting = false;
-      this.hasVoted = await this.votingProvider.hasVoted(this.address);
-
-      this.isLoading = false;
+    if(!this.address) {
+      return;
     }
+    
+    this.isLoading = true;
+
+    this.remainingPoints = 100;
+    this.locationPoints = [];
+    
+    const locations = await this.locationProvider.getLocations();
+    locations.forEach(location => {
+      this.locationPoints.push(new LocationPoint(location, 0));
+    });
+
+    this.votingName$ = this.votingProvider.getVotingName(this.address);
+    await this.votingName$;
+
+    this.isTransmitting = false;
+    this.hasVoted = await this.votingProvider.hasVoted(this.address);
+
+    this.isLoading = false;
   }
 
   submitVotes() {
@@ -101,6 +103,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
 
   async closeVoting() {
     await this.teamProvider.closeVoting(this.address);
+    this.notificationProvider.success('The voting has been closed successfully.')
     this.votingClosed.emit(this.address);
   }
 

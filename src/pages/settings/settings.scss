@@ -1,9 +1,10 @@
 page-settings {
   .team-address {
-    span.label {
+    div.label {
+      display: inline-block;
       color: color($colors, text-sub);
     }
-    div {
+    div.value {
       float:right;
       color: colors($colors, light);
 
@@ -12,7 +13,23 @@ page-settings {
       }
     }
 
+    &.first {
+      div.label {
+        width: 52px !important;
+      }
+      div.value {
+        margin-left:-56px;
+        padding-left: 56px;
+        width: 100%;
+        float:none;
+        display: inline-block;
+      }
+      ion-icon {
+        float:right;
+      }
+    }
   }
+
 
   ion-list-header {
     margin-bottom: 1px !important;
