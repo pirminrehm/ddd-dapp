@@ -42,10 +42,15 @@ ion-card-header, ion-list-header {
   font-size: 1.3em;
 
     ion-spinner {
-    margin-bottom: -9px;
-    margin-left: 5px;
-    margin-top: -5px;
+      margin-bottom: -9px;
+      margin-left: 5px;
+      margin-top: -5px;
+      circle { fill: color($colors, secondary) !important;}
   }
+}
+
+ion-spinner {
+  circle { fill: color($colors, primary) !important;}
 }
 
 
