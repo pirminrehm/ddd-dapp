@@ -1,5 +1,5 @@
 import { SettingsProvider } from './../../providers/storage/settings';
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 
 import { TeamProvider } from './../../providers/web3/team';
 import { NotificationProvider } from './../../providers/notification/notification';

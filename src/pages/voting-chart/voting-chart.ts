@@ -1,9 +1,9 @@
 import { LocationPoint } from './../../models/location-point';
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/debounceTime';
+
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/debounceTime';
 
 declare var google:any;
 

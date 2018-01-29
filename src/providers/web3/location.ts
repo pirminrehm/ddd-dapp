@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 // Import our contract artifacts and turn them into usable abstractions.
 const locationArtifacts = require('../../../build/contracts/Location.json');

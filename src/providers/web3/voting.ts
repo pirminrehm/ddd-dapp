@@ -10,7 +10,6 @@ import { LocationProvider } from './location';
 
 import { UserPoint } from '../../models/user-point';
 import { LocationPoint } from '../../models/location-point';
-import { Location } from './../../models/location';
 import { AppStateTypes } from './../../states/types';
 import { VotingState } from '../../states/voting';
 

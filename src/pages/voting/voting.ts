@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { SettingsProvider } from './../../providers/storage/settings';
 import { TeamProvider } from './../../providers/web3/team';
 import { Voting } from '../../models/voting';
 
-import { VotingProvider } from './../../providers/web3/voting';
 import { MemberApprovedProvider } from './../../providers/helpers/member-approved';
 
 
@@ -39,7 +38,6 @@ export class VotingPage implements OnInit {
   constructor(private teamProvider: TeamProvider,
               private fb: FormBuilder,
               private settingsProvider: SettingsProvider,
-              private votingProvider: VotingProvider,
               private memberApprovedProvider: MemberApprovedProvider) {
   }
 

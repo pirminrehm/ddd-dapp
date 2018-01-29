@@ -7,7 +7,7 @@ import { NavController } from 'ionic-angular';
   selector: 'page-team',
   templateUrl: 'team.html'
 })
-export class TeamPage {
+export class TeamPage implements OnInit {
 
   teamAddress: Boolean;
   isLoading: Boolean;
