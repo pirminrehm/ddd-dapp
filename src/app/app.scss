@@ -64,6 +64,9 @@ ion-card.infobox {
       color: $card-item-header-color !important; 
     }
   }
+  .item-inner {
+    margin-left: 9px !important; 
+  }
 }
 
 ion-title {

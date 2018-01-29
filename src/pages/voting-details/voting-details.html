@@ -30,7 +30,16 @@
   </ion-card-content>
 </ion-card>
 
-<div *ngIf="hasVoted">
-  You already voted for this voting.
-  <button ion-button outline block type="submit" (click)="closeVoting()">Close voting</button>
-</div>  
+<ion-card class="infobox" *ngIf="hasVoted">
+  <ion-item>
+    <ion-icon name="alert" item-left large></ion-icon>
+    <h2>Voting {{ votingName$ | async }}</h2>
+    <p>You've already voted!</p>
+  </ion-item>
+  <ion-card-content>
+    <p>
+      Since you have already voted, wait for your team members to vote. Then click on the button below to close the voting. 
+      <button ion-button outline block type="submit" (click)="closeVoting()">Close voting</button>
+    </p>
+  </ion-card-content>
+</ion-card>

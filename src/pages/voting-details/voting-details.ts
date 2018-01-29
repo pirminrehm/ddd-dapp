@@ -101,6 +101,7 @@ export class VotingDetailsPage implements OnChanges, OnInit {
 
   async closeVoting() {
     await this.teamProvider.closeVoting(this.address);
+    this.notificationProvider.success('The voting has been closed successfully.')
     this.votingClosed.emit(this.address);
   }
 

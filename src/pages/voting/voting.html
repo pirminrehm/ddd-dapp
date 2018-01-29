@@ -54,7 +54,7 @@
     <div *ngIf="segmentArea == 'open'" class="segment-entry open">
       <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
       <ion-card *ngIf="areOpenVotingsLoading || openVotings.length > 0">
-        <ion-card-header>Select a Voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-card-header>Select an open voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
         <ion-list radio-group [(ngModel)]="selectedOpenVoting">
           <ion-item *ngFor="let voting of openVotings">
             <ion-label>{{ voting.name }}</ion-label>
@@ -71,7 +71,7 @@
       <div *ngIf="!areClosedVotingsLoading && closedVotings.length <= 0">No votings have been closed so far.</div>
       
       <ion-card *ngIf="areClosedVotingsLoading || closedVotings.length > 0">
-        <ion-card-header>Select a Voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
+        <ion-card-header>Select a closed voting <ion-spinner name="dots" *ngIf="areOpenVotingsLoading"></ion-spinner></ion-card-header>
         <ion-list radio-group [(ngModel)]="selectedClosedVoting">
           <ion-item *ngFor="let voting of closedVotings">
             <ion-label>{{ voting.name }}</ion-label>
