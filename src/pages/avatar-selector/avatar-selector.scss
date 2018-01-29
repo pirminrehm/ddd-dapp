@@ -1,0 +1,16 @@
+page-avatar-selector {
+  background: rgba(29,21,15, 0.9) !important;
+
+  :host {
+    margin: 12px !important;
+    padding: 24px;
+  }
+
+  img  {
+    margin: 8px;
+  }
+
+  ion-grid {
+    margin-top: 48px;
+  }
+}

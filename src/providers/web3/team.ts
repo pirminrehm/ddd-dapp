@@ -36,9 +36,14 @@ export class TeamProvider {
 
 
   // CONTRACT ACCESSORS
-  async getTeamName(): Promise<string> {
+  async getTeamName(address = null): Promise<string> {
     if(!this.state.name) {
-      let name = await this.call('getTeamName');
+      let name;
+      if(address) {
+        name = await this.callAt(address, 'getTeamName');
+      } else {
+        name = await this.call('getTeamName');
+      }
       this.state.name = await this.web3Provider.fromWeb3String(name);
     }
     return this.state.name;
@@ -114,14 +119,14 @@ export class TeamProvider {
 
   // TRANSACTIONS
 
-  async createTeam(name: string, creatorName: string) {
+  async createTeam(name: string, creatorName: string, avatarId: number) {
     name = await this.web3Provider.toWeb3String(name);
     creatorName = await this.web3Provider.toWeb3String(creatorName);
     
     const contract = await this.web3Provider.getRawContract(teamArtifacts);
     const account = await this.web3Provider.getAccount();
     
-    const team = await contract.new(name, creatorName, 0, {from: account, gas: 5000000});
+    const team = await contract.new(name, creatorName, avatarId, {from: account, gas: 5000000});
     await this.loggingProvider.addTeam(team.address, name);
     await this.settingsProvider.setTeamAddress(team.address);
     return team;
@@ -242,6 +247,16 @@ export class TeamProvider {
       e => this.handleError(e);
     }
   }
+
+    // INTERNAL
+    private async callAt(address: string, name: string, ...params): Promise<any> {
+      const contract = await this.web3Provider.getContractAt(teamArtifacts, address);
+      try {
+        return contract[name].call(...params);
+      } catch(e) {
+        e => this.handleError(e);
+      }
+    }
 
   private async transaction(name: string, ...params): Promise<any> {
     const contract =  await this.getContract();

@@ -48,6 +48,11 @@ ion-card-header, ion-list-header {
   }
 }
 
+
+ion-avatar.input-avatar {
+  z-index: 2 !important;
+  margin-top: 12px !important;
+}
 ion-card {
   margin: 0 0 24px 0 !important;
   width: 100% !important;

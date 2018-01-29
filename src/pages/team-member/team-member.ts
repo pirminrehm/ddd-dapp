@@ -1,3 +1,4 @@
+import { SettingsProvider } from './../../providers/storage/settings';
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 import { TeamProvider } from './../../providers/web3/team';
@@ -32,14 +33,19 @@ export class TeamMemberPage implements OnChanges {
 
   refreshSubject: Subject<any>;
 
+  userAccount: string;
+
   segmentArea = 'members';
 
   constructor(private teamProvider: TeamProvider,
-              private notificationProvider: NotificationProvider) {
+              private notificationProvider: NotificationProvider,
+              private settingsProvider: SettingsProvider) {
     this.pendingMembers = [];
     this.members = [];
     this.loader = new Loader(['members', 'pendingMembers', 'createInvitationToken']);    
     this.refreshSubject = new Subject();
+
+
   }
 
   ngOnChanges() {
@@ -90,6 +96,7 @@ export class TeamMemberPage implements OnChanges {
     this.loader.deactivate('createInvitationToken');    
     
     if(this.teamAddress) {
+      this.userAccount = await this.settingsProvider.getAccount();
       this.teamProvider.getMembers().then(members => {
         this.members = members;
         this.loader.deactivate('members');

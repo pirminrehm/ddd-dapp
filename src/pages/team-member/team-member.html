@@ -29,7 +29,7 @@
         <ion-item-sliding *ngFor="let pendingMember of pendingMembers">
           <ion-item>
             <ion-avatar item-start>
-              <img src="img/avatar-{pendingMember.avatarId}.png">
+              <img src="assets/avatars/{{pendingMember.avatarId}}.svg">
             </ion-avatar>
             <h2>{{ pendingMember.name }}</h2>
             <h3>{{ pendingMember.account }}</h3>
@@ -51,9 +51,9 @@
       <ion-list *ngIf="(members.length) > 0 && !(loader.members === -1)">
         <ion-item *ngFor="let member of members">
           <ion-avatar item-start>
-            <img src="img/avatar-{member.avatarId}.png">
+            <img src="assets/avatars/{{member.avatarId}}.svg">
           </ion-avatar>
-          <h2>{{ member.name }}</h2>
+          <h2>{{ member.name }} <span *ngIf="userAccount == member.account">(You)</span></h2>
           <p>{{ member.account }}</p>
         </ion-item>
       </ion-list>

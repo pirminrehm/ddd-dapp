@@ -29,8 +29,7 @@ export class SettingsProvider {
   }
 
   async getAvatarId() {
-    return 0;
-    // TODO: return await this.get('avatar-id');
+    return await this.get('avatar-id');
   }
   
   async getLoggingAddress() {
@@ -48,6 +47,10 @@ export class SettingsProvider {
   async setAccount(value: string) {
     await this.set('account', value);
     this.appStateProvider.resetStates();
+  }
+
+  async setAvatarId(avatarId: number) {
+    await this.set('avatar-id', avatarId);
   }
 
   async setTeamAddress(value: string) {
@@ -78,7 +81,7 @@ export class SettingsProvider {
     }
   }
 
-  private set(key: string, value: string): Promise<any> {
+  private set(key: string, value: string | number): Promise<any> {
     try {
       return this.storage.set(key, value);
     } catch(e) {
