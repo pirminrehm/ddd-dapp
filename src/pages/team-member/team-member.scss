@@ -4,12 +4,19 @@ page-team-member {
   }
 
   .segment-entry.createToken {
-    ion-card {
+    ion-card.qr-code-wrapper {
       margin-top: -24px !important;
       background: none !important;
     }
-    .button-wrapper {
+
+    .inner-wrapper {
       margin: 0 24px;
+      ion-card {
+        margin-bottom: 12px !important ;
+      }
+      ion-card-content {
+        font-size: 13px !important;
+      }
     }
     ion-spinner {
       margin-left: 6px;

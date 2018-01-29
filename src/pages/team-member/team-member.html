@@ -52,12 +52,18 @@
 
   <!-- CREATE INVITATION TOKEN -->
   <div *ngIf="segmentArea == 'createToken'" class="segment-entry createToken">
-    <ion-card>
+    <ion-card class="qr-code-wrapper">
       <div *ngIf="invitationTokenIsLoading" class="qrcode-placeholder"></div>
       
       <ngx-qrcode *ngIf="!invitationTokenIsLoading && teamInvitation" [qrc-value]="teamInvitation.asJson()"></ngx-qrcode>
-      
-      <div class="button-wrapper">
+    
+        
+      <div class="inner-wrapper">
+        <ion-card class="invitation-token" *ngIf="!invitationTokenIsLoading && teamInvitation">
+          <ion-card-header>Token</ion-card-header>
+          <ion-card-content>{{ teamInvitation.token }}</ion-card-content>
+        </ion-card>
+
         <button ion-button outline block (click)="createInvitationToken()" [disabled]="invitationTokenIsLoading">
           Refresh token 
           <ion-spinner name="dots" *ngIf="loader.createInvitationToken" color="light"></ion-spinner>

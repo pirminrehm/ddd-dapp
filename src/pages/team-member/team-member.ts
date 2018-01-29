@@ -81,6 +81,10 @@ export class TeamMemberPage implements OnChanges {
   }
 
   doRefresh(refresher) {
+    if(this.segmentArea == 'createToken') {
+      this.createInvitationToken();
+    }
+    
     this.stateChanged();
     // Add Timeout to wait at least 1 sec
     setTimeout(() => refresher.complete(), 1000);
