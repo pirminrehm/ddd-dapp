@@ -19,7 +19,7 @@
       </ion-range-slider>
     </div>
 
-    <div *ngIf="locationPoints.length > 0">
+    <div class="chart-wrapper" *ngIf="locationPoints.length > 0">
       <page-voting-chart [locationPoints]="locationPoints" [reload]="chartReloadSubject"></page-voting-chart>
 
       <button ion-button outline block type="submit" [disabled]="remainingPoints != 0 || isTransmitting" (click)="submitVotes()">

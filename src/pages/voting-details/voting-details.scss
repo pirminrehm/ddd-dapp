@@ -17,10 +17,11 @@ page-voting-details {
   }
 
   button {
-    margin-top: 16px !important;
 
     ion-spinner {
-      margin-left: -3px !important;
+      width: 28px;
+      margin-left: 6px !important;
+      circle { fill: color($colors, primary) !important;}
     }
   }
 
@@ -30,6 +31,10 @@ page-voting-details {
 
   .slider-label {
     margin-bottom: -7px;
+  }
+
+  .chart-wrapper {
+    margin-top: -24px;
   }
 
 
