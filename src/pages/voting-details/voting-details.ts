@@ -1,4 +1,7 @@
 import { Component, OnChanges, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
+
+import { Subject } from 'rxjs/Subject';
 
 import { NotificationProvider } from './../../providers/notification/notification';
 import { LocationProvider } from './../../providers/web3/location';
@@ -6,10 +9,7 @@ import { VotingProvider } from './../../providers/web3/voting';
 import { TeamProvider } from './../../providers/web3/team';
 
 import { LocationPoint } from './../../models/location-point';
-import { IonRangeSliderCallback } from 'ng2-ion-range-slider';
-import { SLIDE_COLORS } from '../voting-chart/voting-chart';
-
-import { Subject } from 'rxjs/Subject';
+import { SLIDE_COLORS } from './../../models/slider-colors';
 
 /**
  * Generated class for the VotingDetailsPage page.
