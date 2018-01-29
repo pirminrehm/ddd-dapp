@@ -1,4 +1,4 @@
-<div>
+<ion-toolbar>
   <ion-segment [(ngModel)]="segmentArea">
     <ion-segment-button value="members">
       Members
@@ -10,7 +10,7 @@
       Locations
     </ion-segment-button>
   </ion-segment>
-</div>
+</ion-toolbar>
 
 <ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)">

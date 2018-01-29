@@ -6,10 +6,11 @@ page-team-member {
 
   .segment-entry.createToken {
     ion-card {
+      margin-top: -24px !important;
       background: none !important;
     }
     .button-wrapper {
-      margin: 0 20px;
+      margin: 0 24px;
     }
     ion-spinner {
       margin-left: 6px;
