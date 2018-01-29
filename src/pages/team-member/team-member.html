@@ -26,22 +26,14 @@
       <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>
       <ion-card-content *ngIf="(pendingMembers.length == 0) && !(loader.pendingMembers === -1)">No pending invitations</ion-card-content>
       <ion-list *ngIf="(pendingMembers.length > 0) && !(loader.pendingMembers === -1)">
-        <ion-item-sliding *ngFor="let pendingMember of pendingMembers">
-          <ion-item>
-            <ion-avatar item-start>
-              <img src="assets/avatars/{{pendingMember.avatarId}}.svg">
-            </ion-avatar>
-            <h2>{{ pendingMember.name }}</h2>
-            <h3>{{ pendingMember.account }}</h3>
-            <p>Token: {{ pendingMember.invitationToken }}</p>
-          </ion-item>
-          <ion-item-options side="right">
-            <button ion-button color="primary" (click)="acceptPendingMember(pendingMember)">
-              <ion-icon name="checkmark"></ion-icon>
-              Accept
-            </button>
-          </ion-item-options>
-        </ion-item-sliding>
+        <ion-item *ngFor="let pendingMember of pendingMembers" (click)="confirmPendingMember(pendingMember)">
+          <ion-avatar item-start>
+            <img src="assets/avatars/{{pendingMember.avatarId}}.svg">
+          </ion-avatar>
+          <h2>{{ pendingMember.name }}</h2>
+          <h3>{{ pendingMember.account }}</h3>
+          <p>Token: {{ pendingMember.invitationToken }}</p>
+        </ion-item>
       </ion-list>
     </ion-card>
     

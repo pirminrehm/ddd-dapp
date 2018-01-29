@@ -73,3 +73,18 @@ ion-title {
 .segment-button:not(.segment-activated) {
   opacity: 0.4 !important;
 }
+
+
+.alert-dark {
+  ion-backdrop {
+    background: rgba(29,21,15, 0.95) !important;
+    opacity: 1 !important;
+  }
+  .alert-wrapper {
+    background: color($colors, dark);
+    color: color($colors, light);
+  }
+  .alert-message {
+    color: color($colors, light);
+  }
+}
