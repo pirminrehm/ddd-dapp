@@ -2,4 +2,12 @@ page-voting-closed-details {
   ion-spinner {
     width: 100%;
   }
+
+  ion-list {
+    margin: 10px 20px 0 !important;
+  }
+
+  ion-label {
+    color: color($colors, text-sub) !important;
+  }
 }

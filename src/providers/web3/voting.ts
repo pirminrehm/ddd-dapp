@@ -85,6 +85,11 @@ export class VotingProvider {
     return this.state.getLocationPointsByIndex(address, index);
   }
 
+  async getWinningLocation(address: string): Promise<string> {
+    const location = await this.call(address, 'getWinningLocation');
+    return this.web3Provider.fromWeb3String(location);
+  }
+
 
   // TRANSACTIONS
 

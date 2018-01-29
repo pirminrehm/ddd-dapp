@@ -2,4 +2,15 @@
 
 <div [style.display]="(address && !isLoading) ? 'block' : 'none'">
   <page-voting-chart [locationPoints]="locationPoints" displayLegend="true" [reload]="chartReloadSubject"></page-voting-chart>
+  
+  <ion-list *ngIf="winningLocationPoint && winningStochasticLocation">
+    <ion-item>
+      <ion-label>Majority winner</ion-label>
+      <span item-right>{{ winningLocationPoint.location.name }}</span>
+    </ion-item>
+    <ion-item>
+      <ion-label>Stochastic winner</ion-label>
+      <span item-right>{{ winningStochasticLocation }}</span>
+    </ion-item>
+  </ion-list>
 </div>
