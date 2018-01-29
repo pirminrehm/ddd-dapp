@@ -1,7 +1,7 @@
 import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
 import { LoggingProvider } from './../../providers/web3/logging';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Web3Provider } from './../../providers/web3/web3';
@@ -19,8 +19,6 @@ import { Subject } from 'rxjs/Subject';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-@IonicPage()
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',
