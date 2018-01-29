@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 
-
 /*
   Generated class for the NotificationProvider provider.
 
@@ -13,7 +12,6 @@ export class NotificationProvider {
 
   constructor(private toastCtrl: ToastController) {
   }
-
 
   success(message: string) {
     this.presentToast({
@@ -39,5 +37,4 @@ export class NotificationProvider {
     toast.onDidDismiss(() => {});
     toast.present();
   }
-
 }

@@ -12,7 +12,6 @@ import { Observable } from 'rxjs/Observable';
 */
 @Injectable()
 export class MemberApprovedProvider {
-
   private subject = new Subject<string>();
 
   constructor(private settingsProvider: SettingsProvider,

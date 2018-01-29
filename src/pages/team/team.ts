@@ -8,7 +8,6 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'team.html'
 })
 export class TeamPage implements OnInit {
-
   teamAddress: Boolean;
   isLoading: Boolean;
 
@@ -22,7 +21,7 @@ export class TeamPage implements OnInit {
     this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
-  async ionViewWillEnter() {
+  ionViewWillEnter() {
     this.stateChanged();
   }
 

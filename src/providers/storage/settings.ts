@@ -15,6 +15,7 @@ export class SettingsProvider {
               private appStateProvider: AppStateProvider) {
   }
 
+  // Getters
 
   async getName() {
     return await this.get('name');
@@ -41,8 +42,10 @@ export class SettingsProvider {
     return await this.get('pending-team-address');
   }
 
+  // Setters
+
   async setName(value: string) {
-    return await this.set('name', value);
+    await this.set('name', value);
   }
 
   async setAccount(value: string) {
@@ -60,17 +63,12 @@ export class SettingsProvider {
   }
 
   async setLoggingAddress(value: string) {
-    return await this.set('loggingAccount', value);
+    await this.set('loggingAccount', value);
   }
 
   async setPendingTeamAddress(value: string) {
-    return await this.set('pending-team-address', value);
+    await this.set('pending-team-address', value);
   }
-
-
-
-
-  // Getters
 
 
   // INTERNAL

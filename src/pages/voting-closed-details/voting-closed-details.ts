@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 import { LocationPoint } from './../../models/location-point';
 import { VotingProvider } from '../../providers/web3/voting';
-import { Subject } from 'rxjs/Subject';
 
 /**
  * Generated class for the VotingClosedDetailsPage page.
@@ -33,7 +33,6 @@ export class VotingClosedDetailsPage implements OnChanges {
     if(!this.address) {
       return;
     }
-
     this.isLoading = true;
     
     this.votingName$ = this.votingProvider.getVotingName(this.address);
@@ -41,14 +40,7 @@ export class VotingClosedDetailsPage implements OnChanges {
       .getLocationPoints(this.address)
       .then(locationPoints => {
         this.locationPoints = locationPoints;
-
-        let winning: LocationPoint;
-        this.locationPoints.forEach((locationPoint) => {
-          if(!winning || locationPoint.points > winning.points) {
-            winning = locationPoint;
-          }
-        });
-        this.winningLocationPoint = winning;
+        this.determineWinningLocation(locationPoints);
       });
   
     const winningLocation$ = this.votingProvider
@@ -59,5 +51,15 @@ export class VotingClosedDetailsPage implements OnChanges {
       this.isLoading = false;
       this.chartReloadSubject.next();
     });
+  }
+
+  private determineWinningLocation(locationPoints: LocationPoint[]) {
+    let winning: LocationPoint;
+    this.locationPoints.forEach((locationPoint) => {
+      if(!winning || locationPoint.points > winning.points) {
+        winning = locationPoint;
+      }
+    });
+    this.winningLocationPoint = winning;
   }
 }

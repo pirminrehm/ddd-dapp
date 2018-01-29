@@ -50,6 +50,7 @@
   </ion-refresher>
 
   <div *ngIf="!!(teamAddress$ | async)">
+    
     <!-- Open votings -->
     <div *ngIf="segmentArea == 'open'" class="segment-entry open">
       <div *ngIf="!areOpenVotingsLoading && openVotings.length <= 0">No votings are currently in progress.</div>
@@ -93,6 +94,6 @@
         </ion-item>
         <button ion-button block outline type="submit" [disabled]="createVotingForm.invalid || createVotingForm.pristine">Add a new voting</button>
       </form>
-    </div>  
+    </div>
   </div>
 </ion-content>

@@ -17,10 +17,6 @@
       <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- <p class="hint">
-    Glad to see that you're a team member. Invite your friends and start votings now.
-  </p> -->
-
   <div *ngIf="segmentArea == 'members'" class="segment-entry members">
     <ion-card class="approve-members">
       <ion-card-header>Approve pending members <ion-spinner name="dots" *ngIf="loader.pendingMembers"></ion-spinner></ion-card-header>

@@ -15,8 +15,6 @@ import { MemberApprovedProvider } from './../../providers/helpers/member-approve
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-@IonicPage()
 @Component({
   selector: 'page-voting',
   templateUrl: 'voting.html',
@@ -46,9 +44,7 @@ export class VotingPage implements OnInit {
       name: ['', [Validators.required]],
     });
 
-    // TODO:
     this.closedVotings = [];
-
     this.memberApprovedProvider.onApproved().subscribe(_ => this.stateChanged());
   }
 
@@ -88,7 +84,6 @@ export class VotingPage implements OnInit {
   private async refreshOpenVotings() {
     this.areOpenVotingsLoading = true;
     this.openVotings = await this.teamProvider.getVotings();
-
     this.areOpenVotingsLoading = false;    
   }
 
@@ -98,8 +93,8 @@ export class VotingPage implements OnInit {
     this.areClosedVotingsLoading = false;    
   }
 
-  onVotingClosed() {
-    this.stateChanged();
+  async onVotingClosed() {
+    await this.stateChanged();
     this.selectedOpenVoting = null;
     this.segmentArea = 'closed';
   }

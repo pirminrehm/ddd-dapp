@@ -1,9 +1,9 @@
-import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
-import { SettingsProvider } from './../../providers/storage/settings';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavParams, ViewController, ModalController } from 'ionic-angular';
 
+import { AvatarSelectorPage } from './../avatar-selector/avatar-selector';
+import { SettingsProvider } from './../../providers/storage/settings';
 import { TeamProvider } from './../../providers/web3/team';
 import { MemberApprovedProvider } from '../../providers/helpers/member-approved';
 
@@ -35,15 +35,12 @@ export class TeamJoinRequestPage {
 
     this.joinRequestForm = this.fb.group({
       name: ['', [Validators.required]]
-      // TODO: AVATAR ID form field in template
     });
   }
 
   selectAvatar() {
     const modal = this.modalCtrL.create(AvatarSelectorPage);
-    modal.onDidDismiss(avatarId => {
-      this.avatarId = avatarId
-    })
+    modal.onDidDismiss(avatarId => this.avatarId = avatarId);
     modal.present();
   }
 

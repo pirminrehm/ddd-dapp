@@ -4,8 +4,6 @@ import { TeamPage } from '../team/team';
 import { VotingPage } from '../voting/voting';
 import { SettingsPage } from './../settings/settings';
 
-
-
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -16,6 +14,5 @@ export class TabsPage {
   tab3Root = SettingsPage;
 
   constructor() {
-
   }
 }

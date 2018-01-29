@@ -27,12 +27,12 @@ export class VotingChartPage implements OnInit {
   @Input() reload: Subject<any>;
   @Output() chartDrawn = new EventEmitter();
 
-  private ready$: Promise<any>; 
+  private ready$: Promise<any>;
 
   totalPoints: number = 0;
-  
   private chart: any;
 
+  // Default style options
   private readonly chartOptions = {
     pieHole: 0.4,
     fontSize: 14,
@@ -44,7 +44,8 @@ export class VotingChartPage implements OnInit {
     colors: [PRIMARY_SLIDE_COLOR, ...SLIDE_COLORS]
   };
 
-  constructor() {}
+  constructor() {
+  }
 
   ngOnInit() {
     if(this.displayLegend) {
@@ -52,6 +53,7 @@ export class VotingChartPage implements OnInit {
       this.chartOptions.chartArea.right = 10;
       this.chartOptions.chartArea.width = '100%';
     }
+
     this.ready$ = new Promise((resolve, reject) => {
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(() => {
@@ -63,6 +65,7 @@ export class VotingChartPage implements OnInit {
     if(!this.reload) {
       this.reload = new Subject();
     }
+    
     this.reload.debounceTime(200).subscribe(_ => this.drawChart());
   }
 
