@@ -1,5 +1,10 @@
 page-voting {
 
+  ion-toolbar {
+    min-height: 42px !important;
+    padding: 0 !important;
+  }
+
   .no-member {
     padding: 26px;
   }
