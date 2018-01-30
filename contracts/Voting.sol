@@ -44,7 +44,7 @@ contract Voting {
     isMember()
     isValidLocation(locationURI)
     votingIsNotClosed()
-    hasValidePoints(points)
+    hasValidPoints(points)
     willNotExceed100Points(points) {
 
     //init user, if first vote of user
@@ -127,7 +127,7 @@ contract Voting {
 
   //***************** Modifier ****************//
   //-------------------------------------------//
-  modifier hasValidePoints(uint points) {
+  modifier hasValidPoints(uint points) {
     //if points == 0 -> check for fist invocation not possible + stupid call
     //if points are too big overlaod is possible -> negative even if uint
     require(points > 0 && points <= 100);
