@@ -18,7 +18,7 @@
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="SplashScreenDelay" value="6000" />
     <preference name="SplashScreenSpinnerColor" value="#d18228" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <platform name="android">
