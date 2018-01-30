@@ -1,4 +1,13 @@
 page-team-member {
+
+  // Fix height since we use the toolbar + refresher on sub page
+  .fixed-content, .has-refresher .scroll-content {
+    margin-top: 111px; margin-bottom: 56px;
+  }
+  ion-refresher {
+    top: 111px;
+  }
+
   .segment-entry {
     padding: 24px 16px 16px !important;
   }
@@ -10,7 +19,7 @@ page-team-member {
     }
 
     .inner-wrapper {
-      margin: 0 24px;
+      margin: 24px 24px 0;
       ion-card {
         margin-bottom: 12px !important ;
       }

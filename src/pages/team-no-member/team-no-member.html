@@ -1,62 +1,69 @@
-<div padding>
-  <ion-card class="infobox" *ngIf="!pendingTeamName">
-    <ion-item>
-      <ion-icon name="help" item-left large></ion-icon>
-      <h2>How should i start?</h2>
-      <p>Join a team!</p>
-    </ion-item>
-    <ion-card-content>
-      <p>
-        Before you start voting, please join a team.
-        You can create your own team or join an existing team by using a qr code.
-      </p>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card class="infobox" *ngIf="pendingTeamName">
+<ion-header>
+  <ion-navbar color="tabs">
+    <ion-title>Team</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div padding>
+    <ion-card class="infobox" *ngIf="!pendingTeamName">
       <ion-item>
-        <ion-icon name="timer" item-left large></ion-icon>
-        <h2>Team: {{ pendingTeamName }}</h2>
-        <p>Your join team request is pending!</p>
+        <ion-icon name="help" item-left large></ion-icon>
+        <h2>How should i start?</h2>
+        <p>Join a team!</p>
       </ion-item>
       <ion-card-content>
         <p>
-          Please wait until the other team members accept your join request.
+          Before you start voting, please join a team.
+          You can create your own team or join an existing team by using a qr code.
         </p>
       </ion-card-content>
     </ion-card>
 
-  <!-- CREATE A NEW TEAM -->
-  <ion-card>
-    <ion-card-header>Create a team</ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="createTeamForm" (submit)="createTeam()">
-        
+    <ion-card class="infobox" *ngIf="pendingTeamName">
         <ion-item>
-          <ion-label for="name" stacked>Team name</ion-label>
-          <ion-input placeholder="Enter a team name..." type="text" formControlName="name"></ion-input>
+          <ion-icon name="timer" item-left large></ion-icon>
+          <h2>Team: {{ pendingTeamName }}</h2>
+          <p>Your join team request is pending!</p>
         </ion-item>
+        <ion-card-content>
+          <p>
+            Please wait until the other team members accept your join request.
+          </p>
+        </ion-card-content>
+      </ion-card>
 
-        <ion-item>
-          <ion-label stacked>Your public name</ion-label>
-          <ion-avatar item-start class="input-avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
-          <ion-input formControlName="creatorName" text-left placeholder="Enter your name..."></ion-input>
-        </ion-item>
-        
-        <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
+    <!-- CREATE A NEW TEAM -->
+    <ion-card>
+      <ion-card-header>Create a team</ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="createTeamForm" (submit)="createTeam()">
+          
+          <ion-item>
+            <ion-label for="name" stacked>Team name</ion-label>
+            <ion-input placeholder="Enter a team name..." type="text" formControlName="name"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label stacked>Your public name</ion-label>
+            <ion-avatar item-start class="input-avatar"><img src="assets/avatars/{{avatarId}}.svg" (click)="selectAvatar()"></ion-avatar>
+            <ion-input formControlName="creatorName" text-left placeholder="Enter your name..."></ion-input>
+          </ion-item>
+          
+          <button ion-button outline block type="submit" [disabled]="createTeamForm.invalid || createTeamForm.pristine">Create a new team</button>
+      
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- JOIN AN EXISTING TEAM -->
     
-      </form>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- JOIN AN EXISTING TEAM -->
-  
-  <ion-card>
-    <ion-card-header>Join an existing team</ion-card-header>
-    <ion-card-content>
-      <button ion-button outline block icon-left (click)="scanInvitationToken()">
-        <ion-icon name="qr-scanner"></ion-icon>Scan an invitation token
-      </button>
-    </ion-card-content>
-  </ion-card>
-</div>
+    <ion-card>
+      <ion-card-header>Join an existing team</ion-card-header>
+      <ion-card-content>
+        <button ion-button outline block icon-left (click)="scanInvitationToken()">
+          <ion-icon name="qr-scanner"></ion-icon>Scan an invitation token
+        </button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

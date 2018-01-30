@@ -1,16 +1,23 @@
-<ion-toolbar>
-  <ion-segment [(ngModel)]="segmentArea">
-    <ion-segment-button value="members">
-      Members
-    </ion-segment-button>
-    <ion-segment-button value="createToken" (click)="createFirstInvitiationToken()">
-      <ion-icon name="person-add"></ion-icon>
-    </ion-segment-button>
-    <ion-segment-button value="locations">
-      Locations
-    </ion-segment-button>
-  </ion-segment>
-</ion-toolbar>
+<ion-header>
+
+  <ion-navbar color="tabs">
+    <ion-title>Team</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segmentArea">
+      <ion-segment-button value="members">
+        Members
+      </ion-segment-button>
+      <ion-segment-button value="createToken" (click)="createFirstInvitiationToken()">
+        <ion-icon name="person-add"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="locations">
+        Locations
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)">

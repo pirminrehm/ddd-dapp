@@ -1,10 +1,5 @@
-<ion-header>
-  <ion-navbar color="tabs">
-    <ion-title>Team</ion-title>
-  </ion-navbar>
-</ion-header>
+<!-- USER DOES NOT HAVE A TEAM -->
+<page-team-no-member *ngIf="!teamAddress && !isLoading" (teamCreated)="onTeamCreated()"></page-team-no-member>
 
-<ion-content>
-  <page-team-no-member *ngIf="!teamAddress && !isLoading" (teamCreated)="onTeamCreated()"></page-team-no-member>
-  <page-team-member *ngIf="teamAddress && !isLoading" [teamAddress]="teamAddress"></page-team-member>
-</ion-content>
+<!-- USER HAS A TEAM -->
+<page-team-member *ngIf="teamAddress && !isLoading" [teamAddress]="teamAddress"></page-team-member>
