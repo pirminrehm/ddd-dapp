@@ -67,6 +67,7 @@ export class VotingPage implements OnInit {
   private async stateChanged() {
     // We have to reset the selected voting here to prevent inconsistencies
     this.selectedOpenVoting = null;
+    this.selectedClosedVoting = null;
 
     this.teamAddress$ = this.settingsProvider.getTeamAddress();
 
