@@ -2,6 +2,7 @@
 
 `Developers Dining Dilemma` is a mobile application that uses the Ethereum network for decision-making in a team. The aim of the project is to evaluate the feasibility of applications in the blockchain and to use its decentralization to increase the forgery protection of applications.
 
+Licensed under MIT, see [LICENSE.md](./LICENSE.md)
 
 ## Setup the project
 
@@ -75,7 +76,11 @@ Afterwards, migrate the contracts to the Ganache Network:
 
 ```shell 
 $ truffle migrate
-``` 
+```
+> In the console you should see the address of the logging contract like this:<br>
+> `***************** 0x345ca3e014aaf5dca488057592ee47305d9b3e10 *****************`
+> If you want to use the dashboard, store it for later use. <br>
+> If the migration was the first transaction in your local blockchain, the address of the logging contract should be the one shown above.
 
 In Ganache you should see, that some contracts were deployed.
   
@@ -94,6 +99,12 @@ Or with your android phone:
 ```shell
 $ ionic cordova run android --device
 ```
+
+It's also possible to make an production build and run it on your phone:
+```shell
+$ ionic cordova run android --prod --release
+```
+> Note: The included keystore is only for testing purpose. Use your own for secure builds.
 
 After entering the app check the settings tab to make sure an account and a logging address are selected.
 
