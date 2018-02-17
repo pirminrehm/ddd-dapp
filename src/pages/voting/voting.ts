@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { SettingsProvider } from './../../providers/storage/settings';
