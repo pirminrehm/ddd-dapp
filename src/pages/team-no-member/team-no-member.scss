@@ -2,6 +2,6 @@ page-team-no-member {
 
   // Fix height since we use the toolbar + refresher on sub page
   .fixed-content, .scroll-content {
-    margin-top: 56px; margin-bottom: 56px;
+    margin-top: 56px; margin-bottom: 56px; z-index: 0;
   }
 }
