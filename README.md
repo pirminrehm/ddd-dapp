@@ -1,9 +1,23 @@
-# Developers Dining App
+# Developers Dining Dilemma DApp
 
 `Developers Dining Dilemma` is a mobile application that uses the Ethereum network for decision-making in a team. The aim of the project is to evaluate the feasibility of applications in the blockchain and to use its decentralization to increase the forgery protection of applications.
 
+## project scope
+- [DDD-DApp:](#setup-the-project) The main DApp & setup infos (this repository)
+- [DDD-Dasboard:](https://github.com/pirminrehm/ddd-dashboard) Optional extension to visualize the interaction of the DDD-DApp
+- [Demo video:](https://www.youtube.com/watch?v=-KAL6I9kziM) App and Dashboard Demo
 
-## Setup the project
+
+## About the project
+This project was implemented at Stuttgart Media University (Master lecture Mobile Applications) in  winter term 17/18 by Pascal Fecht & Pirmin Rehm <br>
+https://github.com/pfecht <br>
+https://github.com/pirminrehm <br>
+
+The project was initialized and supported by Michel Zedler at EXXETA.<br>
+https://github.com/buffin
+
+
+# Setup the project
 
 ### Prerequisites: 
 
@@ -20,7 +34,7 @@
 
 ### Getting started
 
-1. Clone the `ws17-EthereumBlockchain` project.
+1. Clone the `ddd-dapp` project.
 
 2. Install the project's dependencies:
     ```shell
@@ -59,6 +73,8 @@ If you want to debug / deploy this application on a mobile device, there have to
 
 2. Either add `-h <your-ip>` if you run with *ganache-cli* or set your ip in the settings of *ganache's* user-interface.
 
+> The host address in ganache has to equal the host address in the `truffle.js` !
+
 
 
 ## Workflow
@@ -75,7 +91,11 @@ Afterwards, migrate the contracts to the Ganache Network:
 
 ```shell 
 $ truffle migrate
-``` 
+```
+> In the console you should see the address of the logging contract like this:<br>
+> `***************** 0x345ca3e014aaf5dca488057592ee47305d9b3e10 *****************` <br>
+> If you want to use the dashboard, store it for later use. <br>
+> If the migration was the first transaction in your local blockchain, the address of the logging contract should be the one shown above.
 
 In Ganache you should see, that some contracts were deployed.
   
@@ -95,7 +115,15 @@ Or with your android phone:
 $ ionic cordova run android --device
 ```
 
+It's also possible to make an production build and run it on your phone:
+```shell
+$ ionic cordova run android --prod --release
+```
+> Note: The included keystore is only for testing purpose. Use your own for secure builds.
+
 After entering the app check the settings tab to make sure an account and a logging address are selected.
+
+Watch our demo video for the use of the DApp: https://www.youtube.com/watch?v=-KAL6I9kziM
 
 ## Testing of Smart Contracts
 The tests for smart contracts are based on truffle's built-in features and written in `Mocha`. You can find them in `./test`. 
@@ -109,8 +137,8 @@ $ truffle(development)> test
 
 ## Dashbaord
 
-TODO Link DDD Dashboarad Repo
-
+The experimental dashboard can be usesd to visualize the interaction of the DDD-DApp:<br>
+https://github.com/pirminrehm/ddd-dashboard
 ## License
 
-TODO
+Licensed under MIT, see [LICENSE.md](./LICENSE.md)
